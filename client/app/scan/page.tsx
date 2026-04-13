@@ -140,7 +140,7 @@ export default function ScanPage() {
               <div className="star absolute -bottom-1 -right-1 text-white text-2xl" style={{ animationDelay: '0.6s' }}>✦</div>
 
               {/* CENTER GLOW */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-orange-500/5 to-transparent animate-pulse" />
+              <div className="absolute inset-0 bg-linear-to-b from-transparent via-orange-500/5 to-transparent animate-pulse" />
             </div>
 
             <div className="mt-12 text-center">
@@ -212,7 +212,7 @@ export default function ScanPage() {
 
             <button 
               onClick={() => { setScannedData(null); setAuditStep(0); }} 
-              className="w-full py-6 bg-orange-600 text-white rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-lg shadow-orange-900/40 active:scale-95 transition-all"
+              className="w-full py-6 bg-orange-600 text-white rounded-4xl font-black text-sm uppercase tracking-[0.2em] shadow-lg shadow-orange-900/40 active:scale-95 transition-all"
             >
               Continue Audit
             </button>

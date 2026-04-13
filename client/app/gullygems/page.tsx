@@ -398,24 +398,7 @@ function AIResponseSection({ city, data, isLoading }: { city: string | null; dat
         </div>
       </div>
 
-      {/* Developer JSON */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-2xl">⚙️</span>
-          <h3 className="text-lg font-extrabold text-gray-800">Developer JSON Output</h3>
-          <span className="ml-auto text-xs bg-gray-200 text-gray-600 font-bold px-2 py-1 rounded-full font-mono">
-            structured data
-          </span>
-        </div>
-        <JSONViewer
-          data={{
-            city: city,
-            overview: data.overview,
-            artisans: data.artisans,
-            special_products: data.specialties,
-          }}
-        />
-      </div>
+     
     </div>
   );
 }
