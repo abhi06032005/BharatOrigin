@@ -1,121 +1,144 @@
+'use client';
+
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Award, ShieldCheck, Users, Sparkles, ArrowRight } from 'lucide-react';
 
 const ArtisanFeatureSection = () => {
   const { scrollYProgress } = useScroll();
-  // Parallax move for the Bharat Score badge
-  const badgeY = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const yParallax1 = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const yParallax2 = useTransform(scrollYProgress, [0, 1], [0, 60]);
 
   const features = [
     { 
       title: "Exclusive Portal", 
-      desc: "Only 100% verified artisans can list their craft.", 
-      icon: <Users className="text-blue-400" /> 
+      desc: "Only 100% verified artisans.", 
+      icon: <Users className="text-emerald-500" /> 
     },
     { 
       title: "GI-Tag Certified", 
-      desc: "Authentic traditional crafts with geographic protection.", 
-      icon: <Award className="text-yellow-400" /> 
+      desc: "Authentic & protected crafts.", 
+      icon: <Award className="text-orange-500" /> 
     },
     { 
       title: "Zero Middlemen", 
-      desc: "Direct-to-consumer income for local creators.", 
-      icon: <Sparkles className="text-purple-400" /> 
+      desc: "Direct-to-consumer income.", 
+      icon: <Sparkles className="text-indigo-500" /> 
     }
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center py-24 px-6 overflow-hidden bg-[#080808]">
+    <section className="relative min-h-screen flex items-center justify-center py-24 px-6 overflow-hidden">
+      
       {/* Background Accent */}
-      <div className="absolute top-1/3 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px]" />
+      <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
         
-        {/* Left Side: Content */}
+        {/* ── Left Side: Content ── */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="lg:w-5/12 z-10"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-bold tracking-widest uppercase mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-emerald-500/30 text-emerald-600 text-xs font-bold tracking-widest uppercase mb-8 shadow-sm">
             <ShieldCheck size={14} /> 100% Verified Marketplace
           </div>
           
-          <h2 className="text-5xl md:text-7xl font-bold text-white leading-tight">
+          <h2 className="text-5xl md:text-7xl font-black text-slate-900 leading-[1.1] tracking-tight">
             Crafted by <br />
-            <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+            <span className="text-gradient-emerald">
               Hands, Not Hubs.
             </span>
           </h2>
           
-          <p className="mt-8 text-xl text-gray-400 leading-relaxed max-w-lg">
+          <p className="mt-8 text-lg text-slate-600 font-medium leading-relaxed max-w-lg">
             An exclusive space for traditional creators. We ensure every item carries the 
             weight of history and the promise of authenticity.
           </p>
 
-          <div className="mt-10 space-y-6">
+          <div className="mt-10 space-y-4">
             {features.map((f, i) => (
               <motion.div 
                 key={i}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.2 }}
-                className="flex items-center gap-4"
+                viewport={{ once: true }}
+                className="flex items-center gap-5 p-4 rounded-3xl glass hover:bg-white/70 transition-colors border border-white/50 shadow-sm"
               >
-                <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                <div className="p-3 rounded-2xl bg-white shadow-sm border border-slate-100 flex-shrink-0">
                   {f.icon}
                 </div>
-                <div className="text-gray-200">
-                  <span className="font-bold">{f.title}:</span> {f.desc}
+                <div>
+                  <p className="font-bold text-slate-900 text-lg">{f.title}</p>
+                  <p className="text-slate-500 text-sm font-medium">{f.desc}</p>
                 </div>
               </motion.div>
             ))}
           </div>
 
           <motion.button 
-            whileHover={{ scale: 1.02 }}
-            className="mt-12 group flex items-center gap-3 px-8 py-4 bg-blue-600 rounded-2xl font-bold text-white hover:bg-blue-500 transition-all"
+            whileHover={{ scale: 1.02, y: -2 }}
+            className="mt-10 group flex items-center gap-3 px-8 py-4 bg-emerald-500 rounded-2xl font-bold tracking-wider text-white hover:bg-emerald-600 transition-all shadow-lg hover:shadow-emerald-500/30"
           >
-            Meet the Artisans <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+            MEET THE ARTISANS <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </motion.button>
         </motion.div>
 
-        {/* Right Side: Visual Showcase */}
-        <div className="relative">
-          {/* Main Card */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, rotate: 2 }}
-            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 1 }}
-            className="relative z-10 p-1 rounded-[3rem] bg-gradient-to-b from-blue-500/30 to-transparent border border-white/10 overflow-hidden"
-          >
-            <div className="bg-[#111] p-10 rounded-[2.9rem] backdrop-blur-xl">
-              <div className="h-64 w-full rounded-2xl bg-gradient-to-br from-blue-900/40 to-black border border-white/5 flex items-center justify-center">
-                <p className="text-blue-500/50 italic">Artisan Craft Preview</p>
-              </div>
-              <div className="mt-8">
-                <h3 className="text-2xl font-bold text-white">Traditional Handloom Silk</h3>
-                <div className="flex gap-2 mt-3">
-                  <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-md text-xs text-gray-400">GI-Tag</span>
-                  <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-md text-xs text-gray-400">Handmade</span>
+        {/* ── Right Side: Bento Grid Showcase ── */}
+        <div className="lg:w-7/12 relative h-[700px] w-full z-10 flex items-center justify-center">
+          
+          <div className="grid grid-cols-2 gap-6 w-full h-[600px] relative">
+            
+            {/* Top Left Tall Card */}
+            <motion.div
+              style={{ y: yParallax1 }}
+              className="col-span-1 row-span-2 glass rounded-[40px] p-2 border-white/60 shadow-2xl overflow-hidden relative group"
+            >
+              <div className="w-full h-full rounded-[32px] overflow-hidden relative">
+                <img src="/hero2.png" alt="Artisan 1" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent flex flex-col justify-end p-6">
+                  <p className="text-white font-bold text-xl">Heritage Weavers</p>
+                  <p className="text-emerald-400 font-semibold text-sm">Varanasi, UP</p>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+            
+            {/* Top Right Square Card */}
+            <motion.div
+              style={{ y: yParallax2 }}
+              className="col-span-1 row-span-1 glass rounded-[40px] p-8 border-white/60 shadow-xl flex flex-col justify-center items-start group hover:bg-white/80 transition-colors"
+            >
+               <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-500 mb-6 group-hover:scale-110 transition-transform">
+                 <ShieldCheck size={28} />
+               </div>
+               <p className="text-slate-900 font-black text-3xl">100%</p>
+               <p className="text-slate-500 font-bold text-sm tracking-wide uppercase mt-1">Traceable Origin</p>
+            </motion.div>
 
-          {/* Floating Bharat Score Badge */}
+            {/* Bottom Right Wide Card */}
+            <motion.div
+              style={{ y: yParallax2 }}
+              className="col-span-1 row-span-1 glass rounded-[40px] p-2 border-white/60 shadow-2xl overflow-hidden relative group"
+            >
+              <div className="w-full h-full rounded-[32px] overflow-hidden relative">
+                <img src="/hero4.png" alt="Artisan detail" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent flex flex-col justify-end p-6">
+                  <p className="text-white font-bold text-xl">GI-Tagged Silk</p>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
+
           <motion.div
-            style={{ y: badgeY }}
-            className="absolute -top-12 -right-6 z-20 p-6 rounded-3xl bg-white text-black shadow-2xl shadow-blue-500/20 flex flex-col items-center justify-center text-center border-4 border-blue-600"
-          >
-            <span className="text-xs font-black text-blue-600 uppercase tracking-tighter">Bharat Score</span>
-            <span className="text-5xl font-black italic leading-none">100</span>
-            <div className="mt-2 flex items-center gap-1 text-[10px] font-bold">
-              <ShieldCheck size={12} className="fill-green-500 text-white" /> FULLY INDIAN
-            </div>
-          </motion.div>
+            animate={{ rotate: 360 }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] border border-emerald-500/10 rounded-full border-dashed -z-10"
+          />
         </div>
 
       </div>

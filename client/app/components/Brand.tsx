@@ -1,65 +1,70 @@
+'use client';
+
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Users, Fingerprint, History, PieChart, ExternalLink } from 'lucide-react';
+import { Users, Fingerprint, History, PieChart, Sparkles } from 'lucide-react';
 
 const BrandStorySection = () => {
   const { scrollYProgress } = useScroll();
-  // Parallax for the "Founder Card" overlay
   const cardFloat = useTransform(scrollYProgress, [0.4, 0.8], [50, -50]);
 
   const storyPoints = [
-    { label: "Brand Origin", icon: <Fingerprint className="w-5 h-5" /> },
-    { label: "Founder Details", icon: <Users className="w-5 h-5" /> },
-    { label: "Journey & Mission", icon: <History className="w-5 h-5" /> }
+    { label: "Verifiable Brand Origin", icon: <Fingerprint className="w-5 h-5" /> },
+    { label: "Founder Biographies", icon: <Users className="w-5 h-5" /> },
+    { label: "Mission & Impact Metrics", icon: <History className="w-5 h-5" /> }
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center py-24 px-6 overflow-hidden bg-[#070707]">
-      {/* Background Accent */}
-      <div className="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-amber-600/5 rounded-full blur-[120px] -translate-y-1/2" />
+    <section className="relative min-h-screen flex items-center justify-center py-24 px-6 overflow-hidden">
+      
+      {/* Aurora Ambient Lighting */}
+      <div className="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[100px] -translate-y-1/2 pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-rose-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
         
-        {/* Left Side: Visual Storytelling Card */}
-        <div className="relative order-2 lg:order-1">
+        {/* ── Left Side: Glass Metric Card ── */}
+        <div className="relative order-2 lg:order-1 pt-12 lg:pt-0">
+          
           {/* Main Background Card */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
-            className="p-10 rounded-[3rem] bg-white/[0.03] border border-white/10 backdrop-blur-3xl"
+            initial={{ opacity: 0, scale: 0.95, rotateY: -10 }}
+            whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+            transition={{ duration: 1, ease: 'easeOut' }}
+            viewport={{ once: true }}
+            className="p-10 rounded-[40px] glass shadow-2xl border-white/60 relative z-10"
           >
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500">
-                <PieChart size={24} />
+            <div className="flex items-center gap-4 mb-10">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-orange-600 shadow-sm">
+                <PieChart size={26} />
               </div>
               <div>
-                <h4 className="text-white font-bold">Ownership Transparency</h4>
-                <p className="text-gray-500 text-sm">Verified Equity Data</p>
+                <h4 className="text-slate-900 font-bold text-lg">Ownership Transparency</h4>
+                <p className="text-slate-500 text-sm font-medium mt-0.5">Verified Supply Chain Data</p>
               </div>
             </div>
 
-            {/* Ownership Bar */}
-            <div className="space-y-4">
+            {/* Metric Bar */}
+            <div className="space-y-4 mb-10">
               <div className="flex justify-between items-end">
-                <span className="text-amber-400 font-bold text-3xl">100%</span>
-                <span className="text-gray-400 text-sm pb-1">Indian Owned</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-rose-500 font-black text-5xl">100%</span>
+                <span className="text-slate-500 font-bold text-sm tracking-widest uppercase pb-1">Indian Owned</span>
               </div>
-              <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+              <div className="h-4 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner flex">
                 <motion.div 
                   initial={{ width: 0 }}
                   whileInView={{ width: "100%" }}
-                  transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-                  className="h-full bg-gradient-to-r from-amber-600 to-orange-400"
+                  transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+                  className="h-full bg-gradient-to-r from-orange-400 to-rose-500 rounded-full shadow-lg"
                 />
               </div>
             </div>
 
-            <div className="mt-12 grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4">
                {storyPoints.map((item, i) => (
-                 <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
-                   <div className="text-amber-500/80">{item.icon}</div>
-                   <span className="text-gray-300 font-medium">{item.label}</span>
+                 <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white/50 border border-white/50 hover:bg-white hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/5 transition-all duration-300 group cursor-default">
+                   <div className="text-orange-400 group-hover:text-orange-500 transition-colors group-hover:scale-110 transform duration-300">{item.icon}</div>
+                   <span className="text-slate-700 font-bold group-hover:text-slate-900 transition-colors">{item.label}</span>
                  </div>
                ))}
             </div>
@@ -68,21 +73,21 @@ const BrandStorySection = () => {
           {/* Floating Founder Card */}
           <motion.div
             style={{ y: cardFloat }}
-            className="absolute -bottom-10 -right-6 lg:-right-12 p-6 rounded-2xl bg-[#151515] border border-amber-500/30 shadow-2xl max-w-[240px]"
+            className="absolute -bottom-12 -right-6 lg:-right-12 p-6 rounded-3xl glass border-white/60 shadow-2xl max-w-[260px] z-20 hover:scale-105 transition-transform duration-300"
           >
             <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 mb-4 p-1">
-                <div className="w-full h-full rounded-full bg-[#151515] flex items-center justify-center">
-                  <Users className="text-amber-500" size={32} />
+              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-orange-400 to-rose-500 mb-5 p-[3px] shadow-lg shadow-orange-500/30">
+                <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+                  <Sparkles className="text-orange-500" size={32} />
                 </div>
               </div>
-              <h5 className="text-white font-bold italic">The Founder's Tale</h5>
-              <p className="text-xs text-gray-500 mt-2">Every brand has a heartbeat. We bring the faces behind the labels to the forefront.</p>
+              <h5 className="text-slate-900 font-black text-lg">The Founder's Tale</h5>
+              <p className="text-sm font-medium text-slate-500 mt-2 leading-relaxed">Every brand has a heartbeat. We bring the faces behind the labels to the forefront.</p>
             </div>
           </motion.div>
         </div>
 
-        {/* Right Side: Content */}
+        {/* ── Right Side: Content ── */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -90,31 +95,22 @@ const BrandStorySection = () => {
           viewport={{ once: true }}
           className="order-1 lg:order-2"
         >
-          <span className="px-5 py-2 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 text-xs font-black tracking-[0.2em] uppercase">
+          <span className="px-4 py-2 rounded-full glass border-orange-500/30 text-orange-600 text-xs font-bold tracking-widest uppercase shadow-sm inline-block mb-6">
             Founder Stories
           </span>
           
-          <h2 className="mt-8 text-5xl md:text-6xl font-bold text-white leading-tight">
-            Know the <span className="text-amber-500 italic">People</span> <br />
+          <h2 className="text-5xl md:text-7xl font-black text-slate-900 leading-[1.05] tracking-tight">
+            Know the <span className="text-gradient-saffron">People</span> <br />
             Behind the Product.
           </h2>
           
-          <p className="mt-8 text-lg text-gray-400 leading-relaxed max-w-lg">
-            We don't just show you products; we show you the mission. Discover the entrepreneurs, 
-            the percent of Indian equity, and the grit that built your favorite brands.
+          <p className="mt-8 text-lg font-medium text-slate-600 leading-relaxed max-w-lg">
+            We don't just list products. We tell the story of the makers. Discover the struggles, the triumphs, and the vision of Indian entrepreneurs building for the world.
           </p>
 
-          <div className="mt-10 p-6 rounded-3xl bg-white/5 border-l-4 border-amber-500">
-            <p className="text-white font-medium italic leading-relaxed">
-              "Humanizes Indian brands and builds a lasting emotional connection through radical transparency."
-            </p>
-          </div>
-
-          <div className="mt-12 flex gap-6">
-            <button className="flex items-center gap-2 text-white font-bold hover:text-amber-500 transition-colors group">
-              Explore Brand Journeys <ExternalLink size={18} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
+          <button className="mt-10 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold tracking-wider hover:bg-orange-500 hover:shadow-xl hover:shadow-orange-500/20 transition-all duration-300">
+            READ THEIR STORIES
+          </button>
         </motion.div>
 
       </div>

@@ -17,10 +17,6 @@ const nextConfig: NextConfig = {
     };
     return config;
   },
-  // Allow external access (for mobile testing)
-  serverRuntimeConfig: {
-    PROJECT_ROOT: __dirname,
-  },
 };
 
 export default nextConfig;

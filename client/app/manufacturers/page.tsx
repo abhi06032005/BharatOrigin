@@ -1,179 +1,17 @@
-"use client";
-import { useState } from "react";
+'use client';
 
-const S = `
-@import url('https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,600;0,700;1,400&family=Nunito+Sans:wght@300;400;600;700;800&display=swap');
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --cream:#FFF8EE; --cream2:#FFF3E3; --cream3:#FDEBD0;
-  --white:#FFFFFF; --saffron:#E8650A; --saffron-lt:#FDF0E6;
-  --saffron-md:#F4A35A; --maroon:#8B1A1A; --maroon-lt:#FDF0F0;
-  --green:#1A6B3C; --green-lt:#EAF5EE; --green-br:#27AE60;
-  --navy:#1C2B3A; --text1:#1C2B3A; --text2:#4A5568; --text3:#8A94A6;
-  --border:#E8DDD0; --shadow-sm:0 1px 4px rgba(0,0,0,.07);
-  --shadow-md:0 4px 16px rgba(0,0,0,.09); --shadow-lg:0 8px 32px rgba(0,0,0,.13);
-  --r-sm:6px; --r-md:10px; --r-lg:14px;
-}
-.bp { font-family:'Nunito Sans',sans-serif; background:var(--cream); min-height:100vh; color:var(--text1); }
+import { useState, useMemo } from 'react';
 
-/* TOPBAR */
-.bp-top { background:var(--navy); padding:0 26px; height:58px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,.22); }
-.bp-logo { display:flex; align-items:center; gap:9px; }
-.bp-logo-icon { width:35px; height:35px; background:var(--saffron); border-radius:7px; display:flex; align-items:center; justify-content:center; font-family:'Literata',serif; font-weight:700; font-size:14px; color:#fff; flex-shrink:0; }
-.bp-logo-name { font-family:'Literata',serif; font-size:19px; font-weight:700; color:#fff; line-height:1; }
-.bp-logo-sub { font-size:9px; color:var(--saffron-md); letter-spacing:1.5px; text-transform:uppercase; font-weight:700; }
-.bp-search { flex:1; max-width:440px; margin:0 24px; display:flex; height:36px; border-radius:var(--r-sm); overflow:hidden; border:2px solid var(--saffron); }
-.bp-search input { flex:1; border:none; outline:none; padding:0 13px; font-family:'Nunito Sans',sans-serif; font-size:13px; background:#fff; color:var(--text1); }
-.bp-search-go { background:var(--saffron); border:none; padding:0 14px; color:#fff; font-size:14px; cursor:pointer; transition:background .15s; }
-.bp-search-go:hover { background:#cf5608; }
-.bp-top-r { display:flex; align-items:center; gap:10px; }
-.bp-flag { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--saffron-md); letter-spacing:.5px; background:rgba(255,255,255,.07); padding:5px 11px; border-radius:20px; border:1px solid rgba(255,255,255,.1); }
-.bp-cart-btn { position:relative; display:flex; align-items:center; gap:7px; background:var(--saffron); border:none; border-radius:7px; padding:8px 15px; color:#fff; font-family:'Nunito Sans',sans-serif; font-size:13px; font-weight:800; cursor:pointer; transition:all .15s; white-space:nowrap; }
-.bp-cart-btn:hover { background:#cf5608; box-shadow:0 4px 14px rgba(232,101,10,.35); }
-.bp-cart-badge { position:absolute; top:-5px; right:-5px; background:var(--maroon); color:#fff; border-radius:50%; width:17px; height:17px; font-size:9px; font-weight:800; display:flex; align-items:center; justify-content:center; border:2px solid var(--navy); }
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-/* STRIP */
-.bp-strip { background:var(--saffron-lt); border-bottom:1px solid var(--cream3); padding:7px 26px; display:flex; gap:28px; align-items:center; overflow-x:auto; }
-.bp-strip-item { display:flex; align-items:center; gap:5px; font-size:11.5px; color:var(--text2); font-weight:600; white-space:nowrap; }
-.bp-strip-item strong { color:var(--saffron); }
-
-/* LAYOUT */
-.bp-body { display:flex; min-height:calc(100vh - 82px); }
-
-/* SIDEBAR */
-.bp-side { width:206px; flex-shrink:0; background:var(--white); border-right:1px solid var(--border); padding:18px 0; }
-.bp-side-hd { font-size:9.5px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--text3); padding:0 16px 11px; }
-.bp-cat-btn { width:100%; background:none; border:none; border-left:3px solid transparent; padding:9px 16px; display:flex; align-items:center; gap:9px; cursor:pointer; text-align:left; transition:all .13s; font-family:'Nunito Sans',sans-serif; }
-.bp-cat-btn:hover { background:var(--cream2); }
-.bp-cat-btn.on { background:var(--saffron-lt); border-left-color:var(--saffron); }
-.bp-cat-emoji { font-size:17px; flex-shrink:0; }
-.bp-cat-name { font-size:12px; font-weight:700; color:var(--text2); line-height:1.25; }
-.bp-cat-btn.on .bp-cat-name { color:var(--saffron); }
-.bp-cat-cnt { font-size:10px; color:var(--text3); font-weight:600; }
-.bp-divider { height:1px; background:var(--border); margin:12px 16px; }
-.bp-flt-hd { font-size:9.5px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--text3); padding:0 16px 9px; }
-.bp-flt-row { display:flex; align-items:center; gap:8px; padding:7px 16px; font-size:11.5px; color:var(--text2); font-weight:600; cursor:pointer; border-left:3px solid transparent; transition:background .12s; }
-.bp-flt-row:hover { background:var(--cream2); }
-.bp-flt-row.on { color:var(--green); background:var(--green-lt); border-left-color:var(--green); }
-.bp-flt-dot { width:8px; height:8px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; transition:all .12s; }
-.bp-flt-row.on .bp-flt-dot { background:var(--green); border-color:var(--green); }
-
-/* CONTENT */
-.bp-main { flex:1; padding:20px 22px; min-width:0; }
-.bp-main-hd { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:16px; }
-.bp-main-title { font-family:'Literata',serif; font-size:21px; font-weight:700; color:var(--text1); line-height:1.2; }
-.bp-main-sub { font-size:11.5px; color:var(--text3); margin-top:2px; font-weight:600; }
-.bp-sort { display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--text3); font-weight:600; }
-.bp-sort select { font-family:'Nunito Sans',sans-serif; font-size:11.5px; font-weight:700; color:var(--text1); border:1px solid var(--border); border-radius:5px; padding:5px 9px; background:var(--white); cursor:pointer; outline:none; }
-
-/* GRID */
-.bp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:15px; }
-
-/* CARD */
-.bp-card { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; transition:box-shadow .18s,border-color .18s,transform .18s; }
-.bp-card:hover { box-shadow:var(--shadow-lg); border-color:#ddd0c0; transform:translateY(-2px); }
-.bp-card-img { height:148px; background:linear-gradient(140deg,var(--cream2),var(--cream3)); display:flex; align-items:center; justify-content:center; font-size:64px; position:relative; border-bottom:1px solid var(--border); }
-.bp-india-tag { position:absolute; top:9px; left:9px; background:var(--white); border:1px solid var(--green-br); border-radius:4px; padding:3px 7px; font-size:9.5px; font-weight:800; color:var(--green); display:flex; align-items:center; gap:3px; box-shadow:var(--shadow-sm); }
-.bp-pct-tag { position:absolute; top:9px; right:9px; background:var(--saffron); border-radius:4px; padding:3px 7px; font-size:9.5px; font-weight:800; color:#fff; }
-.bp-card-body { padding:13px 13px 11px; }
-.bp-prod-name { font-size:13px; font-weight:700; color:var(--text1); line-height:1.35; margin-bottom:3px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.bp-mfr { display:flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; color:var(--saffron); margin-bottom:9px; }
-.bp-chips { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:9px; }
-.bp-chip { font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:4px; }
-.bp-chip.g { background:var(--saffron-lt); color:var(--saffron); border:1px solid #F4B97A; }
-.bp-chip.h { background:#EEF2FF; color:#3B4FD8; border:1px solid #C7D0FF; }
-.bp-chip.l { background:var(--maroon-lt); color:var(--maroon); border:1px solid #F4BCBC; }
-.bp-raw-wrap { margin-bottom:9px; }
-.bp-raw-top { display:flex; justify-content:space-between; font-size:9.5px; font-weight:700; color:var(--text3); margin-bottom:3px; text-transform:uppercase; letter-spacing:.6px; }
-.bp-raw-pct { color:var(--green); }
-.bp-raw-track { height:4px; background:var(--cream3); border-radius:10px; overflow:hidden; }
-.bp-raw-fill { height:100%; background:linear-gradient(90deg,var(--green),var(--green-br)); border-radius:10px; transition:width .7s ease; }
-.bp-hr { height:1px; background:var(--border); margin:9px 0; }
-.bp-price-row { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:9px; }
-.bp-price { font-family:'Literata',serif; font-size:20px; font-weight:700; color:var(--maroon); line-height:1; }
-.bp-price-u { font-size:10.5px; color:var(--text3); font-weight:600; margin-left:2px; font-family:'Nunito Sans',sans-serif; }
-.bp-moq { font-size:9.5px; font-weight:800; background:var(--green-lt); color:var(--green); border:1px solid #B2DFBC; border-radius:4px; padding:2px 6px; white-space:nowrap; }
-.bp-actions { display:flex; gap:6px; }
-.btn-add { flex:1; background:var(--saffron); border:none; border-radius:var(--r-sm); padding:9px 0; color:#fff; font-family:'Nunito Sans',sans-serif; font-size:12px; font-weight:800; cursor:pointer; transition:all .15s; letter-spacing:.2px; }
-.btn-add:hover { background:#cf5608; }
-.btn-add.ok { background:var(--green); }
-.btn-det { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:9px 12px; font-family:'Nunito Sans',sans-serif; font-size:11.5px; font-weight:700; color:var(--text2); cursor:pointer; transition:all .15s; }
-.btn-det:hover { border-color:var(--saffron); color:var(--saffron); background:var(--saffron-lt); }
-
-/* CART */
-.bp-ov { position:fixed; inset:0; background:rgba(28,43,58,.45); z-index:200; backdrop-filter:blur(3px); }
-.bp-cart { position:fixed; right:0; top:0; bottom:0; width:382px; background:var(--white); border-left:1px solid var(--border); z-index:201; display:flex; flex-direction:column; box-shadow:-8px 0 40px rgba(0,0,0,.14); }
-.bp-cart-hd { background:var(--navy); padding:17px 20px; display:flex; align-items:center; justify-content:space-between; }
-.bp-cart-title { font-family:'Literata',serif; font-size:17px; font-weight:700; color:#fff; }
-.bp-cart-sub { font-size:10.5px; color:var(--saffron-md); font-weight:600; margin-top:1px; }
-.bp-close { width:30px; height:30px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); border-radius:5px; color:#fff; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .15s; }
-.bp-close:hover { background:rgba(255,255,255,.2); }
-.bp-cart-body { flex:1; overflow-y:auto; padding:14px 18px; background:var(--cream); }
-.bp-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:9px; color:var(--text3); }
-.bp-empty span:first-child { font-size:48px; }
-.bp-ci { background:var(--white); border:1px solid var(--border); border-radius:var(--r-md); padding:11px 12px; margin-bottom:9px; display:flex; gap:9px; align-items:flex-start; }
-.bp-ci-em { font-size:28px; flex-shrink:0; }
-.bp-ci-info { flex:1; min-width:0; }
-.bp-ci-name { font-size:12px; font-weight:700; color:var(--text1); line-height:1.3; margin-bottom:2px; }
-.bp-ci-mfr { font-size:10px; color:var(--saffron); font-weight:700; margin-bottom:7px; }
-.bp-ci-bot { display:flex; align-items:center; justify-content:space-between; }
-.bp-qty { display:flex; align-items:center; gap:5px; background:var(--cream); border:1px solid var(--border); border-radius:5px; padding:2px 5px; }
-.bp-qbtn { background:none; border:none; color:var(--saffron); font-size:15px; font-weight:800; cursor:pointer; width:19px; height:19px; display:flex; align-items:center; justify-content:center; border-radius:3px; transition:background .12s; }
-.bp-qbtn:hover { background:var(--saffron-lt); }
-.bp-qnum { font-size:11.5px; font-weight:800; color:var(--text1); min-width:20px; text-align:center; }
-.bp-ci-price { font-family:'Literata',serif; font-size:14px; font-weight:700; color:var(--maroon); }
-.bp-ci-rm { background:none; border:none; color:var(--text3); font-size:13px; cursor:pointer; flex-shrink:0; padding:1px; border-radius:3px; transition:all .12s; display:flex; align-items:flex-start; }
-.bp-ci-rm:hover { color:var(--maroon); background:var(--maroon-lt); }
-.bp-cart-ft { padding:16px 18px; border-top:1px solid var(--border); background:var(--white); }
-.bp-flag-bar { height:3px; background:linear-gradient(90deg,#FF9933 33.3%,#FFF 33.3% 66.6%,#138808 66.6%); border-radius:2px; margin-bottom:13px; }
-.bp-total-row { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:3px; }
-.bp-total-lbl { font-size:11.5px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:1px; }
-.bp-total-amt { font-family:'Literata',serif; font-size:25px; font-weight:700; color:var(--maroon); }
-.bp-total-note { font-size:10px; color:var(--text3); font-weight:600; margin-bottom:13px; }
-.bp-checkout { width:100%; background:linear-gradient(135deg,#E8650A,#CF5608); border:none; border-radius:var(--r-md); padding:12px; color:#fff; font-family:'Nunito Sans',sans-serif; font-size:13.5px; font-weight:800; cursor:pointer; transition:all .15s; box-shadow:0 3px 12px rgba(232,101,10,.3); }
-.bp-checkout:hover { box-shadow:0 6px 20px rgba(232,101,10,.4); transform:translateY(-1px); }
-.bp-rfq-note { text-align:center; font-size:10px; color:var(--text3); font-weight:600; margin-top:7px; }
-
-/* MODAL */
-.bp-modal-ov { position:fixed; inset:0; background:rgba(28,43,58,.55); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(4px); }
-.bp-modal { background:var(--white); border-radius:var(--r-lg); max-width:530px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 24px 64px rgba(0,0,0,.22); border:1px solid var(--border); }
-.bp-modal-hero { background:linear-gradient(140deg,var(--cream2),var(--cream3)); padding:24px 24px 18px; border-bottom:1px solid var(--border); display:flex; gap:14px; align-items:flex-start; }
-.bp-modal-em { font-size:52px; flex-shrink:0; line-height:1; }
-.bp-modal-hd { flex:1; }
-.bp-modal-pname { font-family:'Literata',serif; font-size:17px; font-weight:700; color:var(--text1); line-height:1.3; margin-bottom:3px; }
-.bp-modal-mfr { font-size:11.5px; font-weight:700; color:var(--saffron); margin-bottom:9px; }
-.bp-modal-certs { display:flex; flex-wrap:wrap; gap:4px; }
-.bp-modal-cert { font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:4px; background:var(--green-lt); color:var(--green); border:1px solid #B2DFBC; }
-.bp-modal-body { padding:18px 24px 22px; }
-.bp-sec { font-size:9.5px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--text3); margin-bottom:9px; margin-top:16px; padding-bottom:5px; border-bottom:1px solid var(--border); }
-.bp-sec:first-child { margin-top:0; }
-.bp-lic { background:var(--saffron-lt); border:1px solid #F4B97A; border-radius:var(--r-md); padding:11px 14px; display:flex; align-items:center; gap:11px; }
-.bp-lic-type { font-size:9.5px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.8px; margin-bottom:2px; }
-.bp-lic-num { font-size:13.5px; font-weight:800; color:var(--saffron); letter-spacing:.5px; }
-.bp-addr { display:flex; gap:9px; align-items:flex-start; font-size:12.5px; color:var(--text2); font-weight:600; line-height:1.5; }
-.bp-india-m { display:flex; align-items:center; gap:16px; background:var(--cream2); border-radius:var(--r-md); padding:13px 15px; border:1px solid var(--border); }
-.bp-india-big { font-family:'Literata',serif; font-size:36px; font-weight:700; color:var(--saffron); line-height:1; }
-.bp-india-info { font-size:11.5px; color:var(--text2); font-weight:600; line-height:1.55; }
-.bp-india-note { font-size:10.5px; color:var(--text3); line-height:1.4; margin-top:3px; }
-.bp-price-big { font-family:'Literata',serif; font-size:26px; font-weight:700; color:var(--maroon); }
-.bp-price-u2 { font-size:12.5px; color:var(--text3); font-weight:600; }
-.bp-moq-detail { display:inline-flex; align-items:center; gap:5px; background:var(--green-lt); border:1px solid #B2DFBC; border-radius:var(--r-sm); padding:4px 11px; font-size:11.5px; font-weight:800; color:var(--green); margin-top:8px; }
-.bp-tax-row { display:flex; gap:8px; margin-top:7px; flex-wrap:wrap; }
-.bp-tax { font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:4px; }
-.bp-tax.a { background:var(--saffron-lt); color:var(--saffron); border:1px solid #F4B97A; }
-.bp-tax.b { background:#EEF2FF; color:#3B4FD8; border:1px solid #C7D0FF; }
-.bp-modal-add { width:100%; background:var(--saffron); border:none; border-radius:var(--r-md); padding:12px; color:#fff; font-family:'Nunito Sans',sans-serif; font-size:13.5px; font-weight:800; cursor:pointer; transition:all .15s; margin-top:16px; }
-.bp-modal-add:hover { background:#cf5608; box-shadow:0 4px 16px rgba(232,101,10,.35); }
-.bp-modal-add.ok { background:var(--green); }
-`;
-
-// ── TYPES ──────────────────────────────────────────────────────────────────────
-
-type Product = {
+interface Manufacturer {
   id: string;
   emoji: string;
   name: string;
-  manufacturer: string;
+  location: string;
+  state: string;
+  founded: string;
+  employees: number;
   license: string;
   licenseType: string;
   address: string;
@@ -187,318 +25,716 @@ type Product = {
   gst: string;
   hsn: string;
   certs: string[];
-};
+  category: string;
+  tags: string[];
+  annualCapacity: string;
+  exportReady: boolean;
+  leadTime: string;
+  paymentTerms: string;
+  speciality: string;
+  story: string;
+  contactPerson: string;
+  phone: string;
+  rating: number;
+  ordersCompleted: number;
+  product: string;
+}
 
-type CartItem = Product & { qty: number };
+interface CartItem extends Manufacturer {
+  quantity: number;
+}
 
-type Category = {
-  id: string;
-  name: string;
-  emoji: string;
-  count: number;
-  desc: string;
-  products: Product[];
-};
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const categories = [
-  { id:"textiles", name:"Textiles & Fabrics", emoji:"🧵", count:5, desc:"Mill-direct cotton, silk & handloom",
-    products:[
-      { id:"t1",emoji:"🥻",name:"Pure Khadi Cotton Fabric – White (Per Metre)",manufacturer:"Sabarmati Khadi Mills Pvt. Ltd.",license:"MSME/GJ/2018/04421",licenseType:"MSME Manufacturing License",address:"Plot 14, GIDC Phase II, Ahmedabad, Gujarat – 382 445",indiaPct:100,raw:98,rawNote:"Long-staple cotton from Saurashtra farmers; natural scouring agents",price:85,unit:"per metre",moq:500,moqUnit:"metres",gst:"5%",hsn:"5208.11",certs:["Khadi India Certified","OEKO-TEX Standard 100"] },
-      { id:"t2",emoji:"🌸",name:"Jaipuri Block-Printed Cotton – 6-Colour (Per Metre)",manufacturer:"Rajputana Prints & Weaves",license:"UAM/RJ/24/0003827",licenseType:"Udyam Registration",address:"Sanganer Industrial Area, Jaipur, Rajasthan – 302 029",indiaPct:100,raw:90,rawNote:"Cotton from MP; AZO-free natural dyes from Ahmedabad",price:145,unit:"per metre",moq:300,moqUnit:"metres",gst:"5%",hsn:"5208.52",certs:["RJ Handicrafts Board Certified"] },
-      { id:"t3",emoji:"✨",name:"Banarasi Brocade Silk Fabric (Per Metre)",manufacturer:"Kashi Silk Handloom Co-operative",license:"HNDLM/UP/BNS/2020/0178",licenseType:"Handloom Cooperative License",address:"Lallapura, Varanasi, Uttar Pradesh – 221 010",indiaPct:100,raw:85,rawNote:"Karnataka mulberry silk; Surat gold zari; domestic dyes",price:1850,unit:"per metre",moq:50,moqUnit:"metres",gst:"5%",hsn:"5007.20",certs:["GI Tag – Banarasi Silk","Silk Mark India"] },
-      { id:"t4",emoji:"🧶",name:"OE Recycled Polyester Fabric – 180 GSM (Per Metre)",manufacturer:"GreenThread Fibres Pvt. Ltd.",license:"IND/GJ/MFG/2021/REC-0032",licenseType:"Industrial Manufacturing License",address:"GIDC Textile Park, Surat, Gujarat – 395 006",indiaPct:100,raw:75,rawNote:"Recycled PET from domestic waste; 25% imported dye chemicals",price:68,unit:"per metre",moq:1000,moqUnit:"metres",gst:"12%",hsn:"5512.11",certs:["GOTS Certified","GRS Standard"] },
-      { id:"t5",emoji:"🪢",name:"South Indian Handloom Lungi – Checkered (Per Piece)",manufacturer:"Kovai Weaves Producers Company",license:"APCO/TN/WVR/2017/1142",licenseType:"Handloom Producer Company",address:"Pappanaickenpalayam, Coimbatore, Tamil Nadu – 641 037",indiaPct:100,raw:100,rawNote:"100% combed cotton from Salem region; zero imports",price:220,unit:"per piece",moq:200,moqUnit:"pieces",gst:"5%",hsn:"6302.91",certs:["Handloom Mark","TN Weavers Co-op"] },
-    ]
+const Stars = ({ rating }: { rating: number }) => (
+  <div className="flex items-center gap-1">
+    {Array.from({ length: 5 }, (_, i) => (
+      <svg key={i} width="12" height="12" viewBox="0 0 24 24"
+        fill={i < Math.floor(rating) ? 'currentColor' : 'none'}
+        stroke="currentColor" strokeWidth="2" className="text-amber-400">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    ))}
+    <span className="text-xs text-gray-500 ml-0.5">{rating}</span>
+  </div>
+);
+
+const IndiaBar = ({ pct }: { pct: number }) => (
+  <div>
+    <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">
+      <span>Indian Raw Material</span>
+      <span className="text-green-600">{pct}%</span>
+    </div>
+    <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+      <div className="h-full bg-green-500 rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
+    </div>
+  </div>
+);
+
+// ─── Manufacturer Data ────────────────────────────────────────────────────────
+
+const MANUFACTURERS: Manufacturer[] = [
+  {
+    id: 't1', emoji: '🥻', category: 'Textiles & Fabrics', product: 'Pure Khadi Cotton Fabric — White (Per Metre)',
+    name: 'Sabarmati Khadi Mills Pvt. Ltd.', location: 'Ahmedabad', state: 'Gujarat', founded: '1952',
+    employees: 340, contactPerson: 'Mr. Rajesh Patel', phone: '+91 79 2658 4421',
+    license: 'MSME/GJ/2018/04421', licenseType: 'MSME Manufacturing License',
+    address: 'Plot 14, GIDC Phase II, Ahmedabad, Gujarat – 382 445',
+    indiaPct: 100, raw: 98, rawNote: 'Long-staple cotton from Saurashtra farmers; natural scouring agents',
+    price: 85, unit: 'per metre', moq: 500, moqUnit: 'metres', gst: '5%', hsn: '5208.11',
+    certs: ['Khadi India Certified', 'OEKO-TEX Standard 100'], tags: ['100% India Made', 'Khadi', 'Eco-Friendly'],
+    annualCapacity: '2.4 lakh metres/year', exportReady: true, leadTime: '15–20 days',
+    paymentTerms: '50% advance, 50% before dispatch', speciality: 'Handspun Khadi with natural dyes',
+    story: 'Founded in 1952 by freedom fighter Manubhai Patel, Sabarmati Khadi Mills has been a cornerstone of India\'s cottage textile industry. Employing over 340 weavers, mostly rural women.',
+    rating: 4.8, ordersCompleted: 1240,
   },
-  { id:"toys", name:"Toys & Games", emoji:"🧸", count:5, desc:"BIS-certified, phthalate-free, child-safe",
-    products:[
-      { id:"toy1",emoji:"🪆",name:"Channapatna Lacquered Wooden Toys – Set of 10",manufacturer:"Karnataka Toy Craft Cluster LLP",license:"MSME/KA/2016/09882",licenseType:"MSME Manufacturing License",address:"Channapatna, Ramanagara District, Karnataka – 562 160",indiaPct:100,raw:95,rawNote:"Ivory wood (Hale tree) & vegetable lacquer sourced locally",price:480,unit:"per set",moq:100,moqUnit:"sets",gst:"12%",hsn:"9503.00",certs:["BIS IS:9873","GI Tag – Channapatna Toys"] },
-      { id:"toy2",emoji:"🎲",name:"Educational Wooden Block Set – 100 Pieces",manufacturer:"BrightMind Edutoys Pvt. Ltd.",license:"IND/MH/TY/2020/BRT-017",licenseType:"Industrial Manufacturing License",address:"TTC Industrial Area, Navi Mumbai, Maharashtra – 400 705",indiaPct:98,raw:80,rawNote:"Rubberwood from Kerala; non-toxic paints from Pune",price:320,unit:"per set",moq:150,moqUnit:"sets",gst:"12%",hsn:"9503.00",certs:["BIS IS:9873 Part 1","ISO 8124"] },
-      { id:"toy3",emoji:"🤖",name:"STEM Robot Kit – Junior Coder (Age 8+)",manufacturer:"Robotix India Learning Labs",license:"STARTUP/KA/2022/STR-0441",licenseType:"DPIIT Startup India",address:"Electronics City Phase 1, Bengaluru, Karnataka – 560 100",indiaPct:85,raw:45,rawNote:"PCB assembled in Bengaluru; motors/sensors partially imported",price:2100,unit:"per kit",moq:50,moqUnit:"kits",gst:"18%",hsn:"9503.00",certs:["BIS CRS","FCC DoC"] },
-      { id:"toy4",emoji:"🎯",name:"Neem Wood Gilli-Danda Premium Set",manufacturer:"Swadeshi Sports Crafts",license:"UAM/UP/25/0010234",licenseType:"Udyam Registration",address:"Meerut Sports Cluster, Meerut, Uttar Pradesh – 250 001",indiaPct:100,raw:100,rawNote:"Aged neem wood from UP farms; zero synthetic coatings",price:180,unit:"per set",moq:200,moqUnit:"sets",gst:"12%",hsn:"9504.90",certs:["Meerut Sports Manufacturers Assoc."] },
-      { id:"toy5",emoji:"🪅",name:"Kondapalli Leather Puppet Set – 5 Characters",manufacturer:"Kondapalli Artisans Welfare Society",license:"HNDCRFT/AP/2019/KNP-0055",licenseType:"Handicraft Board License",address:"Kondapalli Village, Krishna District, Andhra Pradesh – 521 228",indiaPct:100,raw:92,rawNote:"Buffalo leather & vegetable dyes from Andhra; mild wire imported",price:950,unit:"per set",moq:60,moqUnit:"sets",gst:"12%",hsn:"9503.00",certs:["GI Tag – Kondapalli Toys","AP Handicrafts Corp."] },
-    ]
+  {
+    id: 't2', emoji: '🌸', category: 'Textiles & Fabrics', product: 'Jaipuri Block-Printed Cotton — 6-Colour (Per Metre)',
+    name: 'Rajputana Prints & Weaves', location: 'Jaipur', state: 'Rajasthan', founded: '1989',
+    employees: 120, contactPerson: 'Ms. Sunita Verma', phone: '+91 141 2370 882',
+    license: 'UAM/RJ/24/0003827', licenseType: 'Udyam Registration',
+    address: 'Sanganer Industrial Area, Jaipur, Rajasthan – 302 029',
+    indiaPct: 100, raw: 90, rawNote: 'Cotton from MP; AZO-free natural dyes from Ahmedabad',
+    price: 145, unit: 'per metre', moq: 300, moqUnit: 'metres', gst: '5%', hsn: '5208.52',
+    certs: ['RJ Handicrafts Board Certified'], tags: ['Hand-printed', 'Natural Dyes', 'GI Eligible'],
+    annualCapacity: '1.8 lakh metres/year', exportReady: true, leadTime: '10–14 days',
+    paymentTerms: '30% advance, balance on delivery', speciality: '6-pass hand block printing',
+    story: 'Rajputana Prints was born out of a family trade in Sanganer, the hub of Jaipur\'s block-printing heritage. Third-generation owned enterprise.',
+    rating: 4.7, ordersCompleted: 890,
   },
-  { id:"ayurveda", name:"Ayurvedic & Pharma", emoji:"🌿", count:5, desc:"AYUSH-licensed, WHO-GMP formulations",
-    products:[
-      { id:"ay1",emoji:"🫚",name:"Cold-Pressed Virgin Coconut Oil – Food Grade (1L)",manufacturer:"Kerala Naturals Oils Pvt. Ltd.",license:"AYUSH/KL/MFG/2017/CNL-0821",licenseType:"AYUSH Manufacturing License",address:"Palakkad Agro Processing Zone, Palakkad, Kerala – 678 001",indiaPct:100,raw:100,rawNote:"100% Kerala coconuts; zero imported inputs whatsoever",price:185,unit:"per litre",moq:500,moqUnit:"litres",gst:"0%",hsn:"1513.11",certs:["FSSAI Licensed","AGMARK Grade A","Organic India"] },
-      { id:"ay2",emoji:"🌼",name:"Neem-Turmeric Antiseptic Soap (100g Bar)",manufacturer:"Himalaya Naturals Soap Works",license:"AYUSH/UK/MFG/2015/ANS-0194",licenseType:"AYUSH Manufacturing License",address:"Rudrapur Industrial Estate, Uttarakhand – 263 153",indiaPct:100,raw:88,rawNote:"Neem oil from Rajasthan; turmeric from Erode; palm oil partially imported",price:38,unit:"per bar",moq:1000,moqUnit:"bars",gst:"18%",hsn:"3401.11",certs:["AYUSH Approved","ISO 9001:2015"] },
-      { id:"ay3",emoji:"🍵",name:"Ashwagandha Root Powder KSM-66 (1 kg)",manufacturer:"Ixoreal Biomed Pvt. Ltd.",license:"AYUSH/TL/MFG/2014/ABP-0063",licenseType:"AYUSH Herbal License",address:"IDA Mallapur, Hyderabad, Telangana – 500 076",indiaPct:100,raw:100,rawNote:"Withania somnifera from Rajasthan tribal farms only",price:1450,unit:"per kg",moq:25,moqUnit:"kg",gst:"5%",hsn:"1211.90",certs:["AYUSH Premium Mark","Kosher & Halal","Non-GMO Project"] },
-      { id:"ay4",emoji:"🧴",name:"Triphala Churna Tablets 500mg × 1000 Tabs",manufacturer:"Dabur India Ltd. – Herbal Division",license:"AYUSH/UP/MFG/2005/DHL-0012",licenseType:"AYUSH Drug Manufacturing",address:"Dabur Research Foundation, Sahibabad, Ghaziabad, UP – 201 005",indiaPct:100,raw:95,rawNote:"Amla from MP, Haritaki from Bengal, Bibhitaki from Assam",price:680,unit:"per bottle",moq:100,moqUnit:"bottles",gst:"5%",hsn:"3004.90",certs:["WHO-GMP","AYUSH Premium Mark","ISO 22000"] },
-      { id:"ay5",emoji:"🌾",name:"Moringa Leaf Powder – Organic (500g Pack)",manufacturer:"Green India Organic Farms",license:"APEDA/TN/ORG/2019/MOG-0307",licenseType:"APEDA Organic Export License",address:"Dindigul Agri Cluster, Dindigul, Tamil Nadu – 624 001",indiaPct:100,raw:100,rawNote:"Certified organic Tamil Nadu farms; sun-dried & cold-milled",price:420,unit:"per 500g",moq:200,moqUnit:"packs",gst:"0%",hsn:"0712.90",certs:["India Organic","USDA Organic","FSSAI Organic"] },
-    ]
+  {
+    id: 't3', emoji: '✨', category: 'Textiles & Fabrics', product: 'Banarasi Brocade Silk Fabric (Per Metre)',
+    name: 'Kashi Silk Handloom Co-operative', location: 'Varanasi', state: 'Uttar Pradesh', founded: '1971',
+    employees: 620, contactPerson: 'Mr. Awadhesh Kumar', phone: '+91 542 2415 993',
+    license: 'HNDLM/UP/BNS/2020/0178', licenseType: 'Handloom Cooperative License',
+    address: 'Lallapura, Varanasi, Uttar Pradesh – 221 010',
+    indiaPct: 100, raw: 85, rawNote: 'Karnataka mulberry silk; Surat gold zari; domestic dyes',
+    price: 1850, unit: 'per metre', moq: 50, moqUnit: 'metres', gst: '5%', hsn: '5007.20',
+    certs: ['GI Tag – Banarasi Silk', 'Silk Mark India'], tags: ['GI Tagged', 'Heritage Craft', 'Cooperative'],
+    annualCapacity: '40,000 metres/year', exportReady: true, leadTime: '25–35 days',
+    paymentTerms: '40% advance, 60% on completion', speciality: 'Zari brocade with traditional Mughal motifs',
+    story: 'Established in 1971 as a cooperative of 620 weavers from the legendary weaving families of Varanasi, preserving 500-year-old tradition.',
+    rating: 4.9, ordersCompleted: 2100,
   },
-  { id:"electronics", name:"Electronics & Components", emoji:"💡", count:4, desc:"PLI-scheme manufacturers, BIS-CRS certified",
-    products:[
-      { id:"el1",emoji:"💡",name:"9W LED Bulb – Cool White B22 Base",manufacturer:"Halonix Technologies Pvt. Ltd.",license:"BIS/DL/ELE/2016/HAL-0219",licenseType:"BIS Manufacturing License",address:"Plot 51, IMT Manesar, Gurugram, Haryana – 122 050",indiaPct:92,raw:60,rawNote:"Aluminium housing from Rajkot; LED chips partially from Taiwan",price:42,unit:"per bulb",moq:1000,moqUnit:"bulbs",gst:"12%",hsn:"8539.50",certs:["BIS IS:16102","BEE 5-Star","PLI Scheme"] },
-      { id:"el2",emoji:"🔌",name:"5-Pin 16A Power Strip – 3 Sockets + 2 USB",manufacturer:"Anchor Electricals Pvt. Ltd.",license:"BIS/MH/ELE/2012/ANC-0041",licenseType:"BIS Manufacturing License",address:"Panvel Industrial Zone, Raigad, Maharashtra – 410 206",indiaPct:96,raw:78,rawNote:"Polycarbonate from HMEL Bathinda; copper from Hindalco",price:320,unit:"per unit",moq:200,moqUnit:"units",gst:"18%",hsn:"8536.49",certs:["BIS IS:1293","ISI Mark"] },
-      { id:"el3",emoji:"☀️",name:"10W Monocrystalline Solar Panel – 12V",manufacturer:"Waaree Energies Pvt. Ltd.",license:"IND/GJ/SOLAR/2014/WAR-0007",licenseType:"MNRE Solar License",address:"Surat SEZ, Hazira, Gujarat – 394 510",indiaPct:88,raw:55,rawNote:"Aluminium frames & JB boxes Indian; silicon wafers partially imported",price:780,unit:"per panel",moq:100,moqUnit:"panels",gst:"12%",hsn:"8541.43",certs:["IEC 61215","MNRE Empanelled","PLI Solar"] },
-      { id:"el4",emoji:"📟",name:"Industrial IoT Temperature Sensor Module RS485",manufacturer:"Embsys IoT Solutions Pvt. Ltd.",license:"STARTUP/TS/2021/EMB-0882",licenseType:"DPIIT Startup India",address:"T-Hub Phase 2, Hyderabad, Telangana – 500 081",indiaPct:80,raw:40,rawNote:"PCB designed & assembled in Hyderabad; MCUs from global supply",price:1850,unit:"per module",moq:50,moqUnit:"modules",gst:"18%",hsn:"9025.19",certs:["BIS CRS","CE DoC","STQC Tested"] },
-    ]
+  {
+    id: 'toy1', emoji: '🪆', category: 'Toys & Games', product: 'Channapatna Lacquered Wooden Toys — Set of 10',
+    name: 'Karnataka Toy Craft Cluster LLP', location: 'Channapatna', state: 'Karnataka', founded: '2008',
+    employees: 85, contactPerson: 'Mr. Suresh Gowda', phone: '+91 8110 254 321',
+    license: 'MSME/KA/2016/09882', licenseType: 'MSME Manufacturing License',
+    address: 'Channapatna, Ramanagara District, Karnataka – 562 160',
+    indiaPct: 100, raw: 95, rawNote: 'Ivory wood (Hale tree) & vegetable lacquer sourced locally',
+    price: 480, unit: 'per set', moq: 100, moqUnit: 'sets', gst: '12%', hsn: '9503.00',
+    certs: ['BIS IS:9873', 'GI Tag – Channapatna Toys'], tags: ['GI Tagged', 'Child Safe', 'Eco-Friendly'],
+    annualCapacity: '50,000 sets/year', exportReady: true, leadTime: '12–18 days',
+    paymentTerms: '50% advance before production', speciality: 'Vegetable lacquer finish, non-toxic and child-safe',
+    story: 'Channapatna, "Toy Town of India", has been crafting lacquered wooden toys for 200+ years under royal patronage.',
+    rating: 4.9, ordersCompleted: 3200,
   },
-  { id:"agri", name:"Agri & Food Processing", emoji:"🌾", count:4, desc:"Farm-to-factory, FSSAI-licensed processors",
-    products:[
-      { id:"ag1",emoji:"🌾",name:"Premium 1121 Sella Basmati Rice (25 kg Bag)",manufacturer:"KRBL Ltd. – India Gate Division",license:"FSSAI/UP/FBO/2009/KRB-0001",licenseType:"FSSAI Central License",address:"Alipur, Delhi – 110 036 (Mill: Dhuri, Punjab – 148 024)",indiaPct:100,raw:100,rawNote:"Paddy contracted directly from Haryana & Punjab farmers",price:2200,unit:"per 25 kg bag",moq:50,moqUnit:"bags",gst:"5%",hsn:"1006.30",certs:["APEDA Registered","GI Tag – Basmati","ISO 22000"] },
-      { id:"ag2",emoji:"🌶️",name:"Guntur Sannam Chilli Powder S4 (5 kg Tin)",manufacturer:"Andhra Spice Millers Association",license:"FSSAI/AP/FBO/2014/ASM-0277",licenseType:"FSSAI State License",address:"Guntur Mirchi Yard, Guntur, Andhra Pradesh – 522 003",indiaPct:100,raw:100,rawNote:"Red chillies exclusively from Guntur district farms",price:1100,unit:"per 5 kg tin",moq:100,moqUnit:"tins",gst:"5%",hsn:"0904.22",certs:["Spices Board India","GI Tag – Guntur Chilli"] },
-      { id:"ag3",emoji:"🍯",name:"Raw Himalayan Multifloral Honey (30 kg Drum)",manufacturer:"National Bee Board Cooperative, Himachal",license:"FSSAI/HP/FBO/2018/NBB-0033",licenseType:"FSSAI Central License",address:"Solan Beekeeping Cluster, Solan, Himachal Pradesh – 173 212",indiaPct:100,raw:100,rawNote:"Single-origin bee colonies from Kullu-Manali altitude forests",price:4800,unit:"per 30 kg drum",moq:20,moqUnit:"drums",gst:"0%",hsn:"0409.00",certs:["National Bee Board Certified","FSSAI Premium","Non-GMO"] },
-      { id:"ag4",emoji:"🫛",name:"Black-Eyed Peas / Lobia (50 kg Jute Sack)",manufacturer:"Punjab Pulses Milling Cooperative",license:"FSSAI/PB/FBO/2011/PPM-0144",licenseType:"FSSAI State License",address:"Ludhiana Agri Processing Zone, Ludhiana, Punjab – 141 003",indiaPct:100,raw:100,rawNote:"Lobia from contracted farms in Punjab & Haryana only",price:3800,unit:"per 50 kg sack",moq:40,moqUnit:"sacks",gst:"0%",hsn:"0713.35",certs:["AGMARK","APEDA Registered","ISO 22000"] },
-    ]
+  {
+    id: 'ay1', emoji: '🫚', category: 'Ayurvedic & Pharma', product: 'Cold-Pressed Virgin Coconut Oil — Food Grade (1L)',
+    name: 'Kerala Naturals Oils Pvt. Ltd.', location: 'Palakkad', state: 'Kerala', founded: '2003',
+    employees: 180, contactPerson: 'Dr. Maya Nambiar', phone: '+91 491 252 8840',
+    license: 'AYUSH/KL/MFG/2017/CNL-0821', licenseType: 'AYUSH Manufacturing License',
+    address: 'Palakkad Agro Processing Zone, Palakkad, Kerala – 678 001',
+    indiaPct: 100, raw: 100, rawNote: '100% Kerala coconuts; zero imported inputs',
+    price: 185, unit: 'per litre', moq: 500, moqUnit: 'litres', gst: '0%', hsn: '1513.11',
+    certs: ['FSSAI Licensed', 'AGMARK Grade A', 'Organic India'], tags: ['100% India Made', 'Organic', 'Zero Imports'],
+    annualCapacity: '3 lakh litres/year', exportReady: true, leadTime: '7–10 days',
+    paymentTerms: 'Immediate or net-30 for verified', speciality: 'Cold-press extracted at < 40°C',
+    story: 'Founded by Dr. Maya Nambiar, processing coconuts exclusively from traditional Kerala farms within 50km.',
+    rating: 4.9, ordersCompleted: 4800,
+  },
+  {
+    id: 'ay3', emoji: '🍵', category: 'Ayurvedic & Pharma', product: 'Ashwagandha Root Powder KSM-66 (1 kg)',
+    name: 'Ixoreal Biomed Pvt. Ltd.', location: 'Hyderabad', state: 'Telangana', founded: '1988',
+    employees: 450, contactPerson: 'Mr. Kartikeya Rao', phone: '+91 40 2304 5900',
+    license: 'AYUSH/TL/MFG/2014/ABP-0063', licenseType: 'AYUSH Herbal License',
+    address: 'IDA Mallapur, Hyderabad, Telangana – 500 076',
+    indiaPct: 100, raw: 100, rawNote: 'Withania somnifera from Rajasthan tribal farms',
+    price: 1450, unit: 'per kg', moq: 25, moqUnit: 'kg', gst: '5%', hsn: '1211.90',
+    certs: ['AYUSH Premium Mark', 'Kosher & Halal', 'Non-GMO Project'], tags: ['Premium', 'Certified', 'Export Ready'],
+    annualCapacity: '800 MT/year', exportReady: true, leadTime: '5–8 days',
+    paymentTerms: 'Net-30 for bulk; prepaid for spot', speciality: 'KSM-66 with 5% withanolides',
+    story: 'Ixoreal Biomed pioneered the KSM-66 standardized Ashwagandha extract, now sold in 50+ countries.',
+    rating: 5.0, ordersCompleted: 6200,
+  },
+  {
+    id: 'el1', emoji: '💡', category: 'Electronics', product: '9W LED Bulb — Cool White B22 Base',
+    name: 'Halonix Technologies Pvt. Ltd.', location: 'Gurugram', state: 'Haryana', founded: '1991',
+    employees: 1200, contactPerson: 'Mr. Gaurav Suri', phone: '+91 124 450 3232',
+    license: 'BIS/DL/ELE/2016/HAL-0219', licenseType: 'BIS Manufacturing License',
+    address: 'Plot 51, IMT Manesar, Gurugram, Haryana – 122 050',
+    indiaPct: 92, raw: 60, rawNote: 'Aluminium housing from Rajkot; LED chips partially from Taiwan',
+    price: 42, unit: 'per bulb', moq: 1000, moqUnit: 'bulbs', gst: '12%', hsn: '8539.50',
+    certs: ['BIS IS:16102', 'BEE 5-Star', 'PLI Scheme'], tags: ['PLI Scheme', 'Energy Star', 'BIS Certified'],
+    annualCapacity: '8 crore bulbs/year', exportReady: false, leadTime: '3–5 days',
+    paymentTerms: 'LC or advance for new buyers', speciality: 'BEE 5-star rated, 25,000 hr life',
+    story: 'One of India\'s largest LED lighting manufacturers and key PLI-scheme beneficiary with 3 plants.',
+    rating: 4.6, ordersCompleted: 12400,
+  },
+  {
+    id: 'ag1', emoji: '🌾', category: 'Agri & Food', product: 'Premium 1121 Sella Basmati Rice (25 kg Bag)',
+    name: 'KRBL Ltd. – India Gate Division', location: 'Alipur', state: 'Delhi', founded: '1889',
+    employees: 3800, contactPerson: 'Mr. Anoop Kumar Gupta', phone: '+91 11 4211 8800',
+    license: 'FSSAI/UP/FBO/2009/KRB-0001', licenseType: 'FSSAI Central License',
+    address: 'Alipur, Delhi – 110 036 (Mill: Dhuri, Punjab – 148 024)',
+    indiaPct: 100, raw: 100, rawNote: 'Paddy from Haryana & Punjab farmers',
+    price: 2200, unit: 'per 25 kg bag', moq: 50, moqUnit: 'bags', gst: '5%', hsn: '1006.30',
+    certs: ['APEDA Registered', 'GI Tag – Basmati', 'ISO 22000'], tags: ['GI Tagged', 'Heritage Brand', 'Export Leader'],
+    annualCapacity: '8 lakh MT/year', exportReady: true, leadTime: '2–3 days',
+    paymentTerms: 'Standard B2B credit terms', speciality: 'Aged 2 years minimum; 8.4mm grain length',
+    story: 'Founded in 1889, KRBL is Asia\'s largest Basmati rice miller. Exports to 90+ countries with direct farm procurement.',
+    rating: 4.9, ordersCompleted: 85000,
+  },
+  {
+    id: 'ag3', emoji: '🍯', category: 'Agri & Food', product: 'Raw Himalayan Multifloral Honey (30 kg Drum)',
+    name: 'National Bee Board Cooperative, Himachal', location: 'Solan', state: 'Himachal Pradesh', founded: '2004',
+    employees: 220, contactPerson: 'Mr. Prakash Sharma', phone: '+91 1792 228 431',
+    license: 'FSSAI/HP/FBO/2018/NBB-0033', licenseType: 'FSSAI Central License',
+    address: 'Solan Beekeeping Cluster, Solan, Himachal Pradesh – 173 212',
+    indiaPct: 100, raw: 100, rawNote: 'Single-origin from Kullu-Manali altitude forests',
+    price: 4800, unit: 'per 30 kg drum', moq: 20, moqUnit: 'drums', gst: '0%', hsn: '0409.00',
+    certs: ['National Bee Board Certified', 'FSSAI Premium', 'Non-GMO'], tags: ['0% GST', 'Organic', 'Mountain Sourced'],
+    annualCapacity: '1,200 MT/year', exportReady: true, leadTime: '10–15 days',
+    paymentTerms: 'Full advance for first order; net-30 after', speciality: 'HMF < 10 mg/kg from 2,500m+ altitude',
+    story: 'Operating from pristine Kullu-Manali forests, this cooperative of 220 beekeepers is certified by the National Bee Board.',
+    rating: 5.0, ordersCompleted: 2800,
   },
 ];
 
-export default function BulkplierMarketplace() {
-  const [activeCat, setActiveCat] = useState<string>("textiles");
-  const [cart, setCart]           = useState<CartItem[]>([]);
-  const [cartOpen, setCartOpen]   = useState<boolean>(false);
-  const [modal, setModal]         = useState<Product | null>(null);
-  const [added, setAdded]         = useState<Set<string>>(new Set());
-  const [f100, setF100]           = useState<boolean>(false);
-  const [fCert, setFCert]         = useState<boolean>(false);
+const ALL_CATEGORIES = ['All', ...Array.from(new Set(MANUFACTURERS.map(m => m.category)))];
 
-  const cat = categories.find(c => c.id === activeCat)!;
+// ─── Manufacturer Card ────────────────────────────────────────────────────────
 
-  const flash = (id: string) => {
-    setAdded(s => new Set([...s, id]));
-    setTimeout(() => setAdded(s => { const n = new Set(s); n.delete(id); return n; }), 1800);
+const ManufacturerCard = ({
+  m,
+  onDetail,
+  onAdd,
+  isInCart,
+}: {
+  m: Manufacturer;
+  onDetail: () => void;
+  onAdd: () => void;
+  isInCart: boolean;
+}) => {
+  const [added, setAdded] = useState(false);
+
+  const handleAdd = () => {
+    if (added) return;
+    setAdded(true);
+    onAdd();
+    setTimeout(() => setAdded(false), 1800);
   };
-
-  const addToCart = (p: Product) => {
-    setCart(prev => {
-      const ex = prev.find(i => i.id === p.id);
-      return ex ? prev.map(i => i.id === p.id ? { ...i, qty: i.qty + 1 } : i) : [...prev, { ...p, qty: 1 }];
-    });
-    flash(p.id);
-  };
-
-  const products = cat.products.filter(p => {
-    if (f100 && p.indiaPct < 100) return false;
-    if (fCert && !p.certs.some(c => /ayush|gmp|organic|bis|gi tag/i.test(c))) return false;
-    return true;
-  });
-
-  const totalQty = cart.reduce((s,i) => s + i.qty, 0);
-  const totalAmt = cart.reduce((s,i) => s + i.price * i.qty, 0);
 
   return (
-    <>
-      <style>{S}</style>
-      <div className="bp">
+    <div className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-gray-300">
 
-        {/* TOPBAR */}
-        <div className="bp-top">
-          <div className="bp-logo">
-            <div className="bp-logo-icon">B₂</div>
-            <div>
-              <div className="bp-logo-name">Bulkplier</div>
-              <div className="bp-logo-sub">Wholesale · B2B</div>
-            </div>
-          </div>
-          <div className="bp-search">
-            <input placeholder="Search manufacturers, products, HSN codes…" />
-            <button className="bp-search-go">🔍</button>
-          </div>
-          <div className="bp-top-r">
-            <div className="bp-flag">🇮🇳 Bharat Made</div>
-            <button className="bp-cart-btn" onClick={() => setCartOpen(true)}>
-              🛒 RFQ Cart
-              {totalQty > 0 && <span className="bp-cart-badge">{totalQty}</span>}
-            </button>
+      {/* Top: emoji + badges */}
+      <div className="flex items-start justify-between">
+        <span className="text-4xl">{m.emoji}</span>
+        <div className="flex gap-1.5">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200">
+            ✓ {m.indiaPct}% India
+          </span>
+          {m.exportReady && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+              🌍 Export
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Category */}
+      <span className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 bg-gray-100 px-2.5 py-0.5 rounded-full border border-gray-200 self-start">
+        {m.category}
+      </span>
+
+      {/* Product name */}
+      <p className="text-[15px] font-semibold text-gray-900 leading-snug line-clamp-2">{m.product}</p>
+
+      {/* Manufacturer */}
+      <p className="text-xs font-semibold text-amber-600">🏭 {m.name}</p>
+
+      {/* Location */}
+      <p className="text-[11px] text-gray-400 font-semibold">📍 {m.location}, {m.state} · Est. {m.founded} · {m.employees} staff</p>
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-1.5">
+        {m.tags.slice(0, 2).map(t => (
+          <span key={t} className="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-200">{t}</span>
+        ))}
+        {m.certs.slice(0, 1).map(c => (
+          <span key={c} className="text-[10px] font-bold px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200">✓ {c}</span>
+        ))}
+      </div>
+
+      {/* India raw material bar */}
+      <IndiaBar pct={m.raw} />
+
+      {/* Rating + orders */}
+      <div className="flex items-center justify-between">
+        <Stars rating={m.rating} />
+        <span className="text-[10px] text-gray-400 font-bold">{m.ordersCompleted.toLocaleString()} orders</span>
+      </div>
+
+      <div className="h-px bg-gray-100" />
+
+      {/* Price + MOQ */}
+      <div className="flex items-end justify-between">
+        <div>
+          <span className="text-lg font-bold text-gray-900">₹{m.price.toLocaleString('en-IN')}</span>
+          <span className="text-xs text-gray-400 ml-1">{m.unit}</span>
+        </div>
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200">
+          MOQ {m.moq.toLocaleString()} {m.moqUnit}
+        </span>
+      </div>
+
+      {/* Info pills */}
+      <div className="flex gap-1.5 flex-wrap">
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-200">GST {m.gst}</span>
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-200">HSN {m.hsn}</span>
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-200">⏱ {m.leadTime}</span>
+      </div>
+
+      {/* CTAs */}
+      <div className="flex gap-2 mt-1">
+        <button
+          onClick={handleAdd}
+          className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+            added || isInCart
+              ? 'bg-green-600 text-white'
+              : 'bg-gray-900 text-white hover:bg-gray-700 active:scale-[0.98]'
+          }`}
+        >
+          {added ? 'Added ✓' : isInCart ? 'In RFQ Cart' : '+ Add to RFQ'}
+        </button>
+        <button
+          onClick={onDetail}
+          className="px-4 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 text-gray-700 hover:bg-gray-50 transition"
+        >
+          Details
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ─── Detail Modal ─────────────────────────────────────────────────────────────
+
+const DetailModal = ({ m, onClose, onAdd, isInCart }: { m: Manufacturer; onClose: () => void; onAdd: () => void; isInCart: boolean }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+    <div
+      onClick={e => e.stopPropagation()}
+      className="relative bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200"
+    >
+      {/* Header */}
+      <div className="p-6 border-b border-gray-200 flex gap-4">
+        <span className="text-5xl flex-shrink-0">{m.emoji}</span>
+        <div className="flex-1 min-w-0">
+          <p className="text-lg font-bold text-gray-900 leading-snug mb-1">{m.product}</p>
+          <p className="text-sm font-semibold text-amber-600 mb-2">🏭 {m.name}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {m.certs.map(c => (
+              <span key={c} className="text-[10px] font-bold px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200">✓ {c}</span>
+            ))}
           </div>
         </div>
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-sm font-semibold p-2 hover:bg-gray-100 rounded-lg flex-shrink-0 self-start transition">
+          ✕
+        </button>
+      </div>
 
-        {/* STRIP */}
-        <div className="bp-strip">
-          {[["🏭","2,400+","Verified Manufacturers"],["📦","18","Product Categories"],["✅","MSME/AYUSH/BIS","Licensed Only"],["🚚","MOQ Enforced","Bulk Pricing"],["💰","0% GST","on select categories"]].map(([ic,b,t]) => (
-            <div className="bp-strip-item" key={t}>{ic} <strong>{b}</strong> {t}</div>
+      <div className="p-6 space-y-6">
+        {/* Story */}
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400 font-bold mb-2">The Story</p>
+          <p className="text-sm text-gray-600 leading-relaxed italic">{m.story}</p>
+        </div>
+
+        {/* Stats grid */}
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            ['Founded', m.founded],
+            ['Employees', m.employees.toLocaleString()],
+            ['Annual Capacity', m.annualCapacity],
+            ['Lead Time', m.leadTime],
+            ['Contact', m.contactPerson],
+            ['Phone', m.phone],
+          ].map(([k, v]) => (
+            <div key={String(k)} className="p-3 rounded-xl border border-gray-200 bg-gray-50">
+              <p className="text-[10px] uppercase tracking-wide text-gray-400 font-bold mb-0.5">{k}</p>
+              <p className="text-sm font-semibold text-gray-900">{v}</p>
+            </div>
           ))}
         </div>
 
-        {/* BODY */}
-        <div className="bp-body">
+        {/* Speciality */}
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400 font-bold mb-2">Speciality</p>
+          <p className="text-sm text-gray-600">{m.speciality}</p>
+        </div>
 
-          {/* SIDEBAR */}
-          <div className="bp-side">
-            <div className="bp-side-hd">Categories</div>
-            {categories.map(c => (
-              <button key={c.id} className={`bp-cat-btn${activeCat===c.id?" on":""}`} onClick={() => setActiveCat(c.id)}>
-                <span className="bp-cat-emoji">{c.emoji}</span>
-                <div>
-                  <div className="bp-cat-name">{c.name}</div>
-                  <div className="bp-cat-cnt">{c.count} products</div>
-                </div>
-              </button>
-            ))}
-            <div className="bp-divider" />
-            <div className="bp-flt-hd">Filters</div>
-            <div className={`bp-flt-row${f100?" on":""}`} onClick={() => setF100(v => !v)}>
-              <div className="bp-flt-dot" /> 100% Made in India
-            </div>
-            <div className={`bp-flt-row${fCert?" on":""}`} onClick={() => setFCert(v => !v)}>
-              <div className="bp-flt-dot" /> Certified Quality
-            </div>
-          </div>
-
-          {/* CONTENT */}
-          <div className="bp-main">
-            <div className="bp-main-hd">
-              <div>
-                <div className="bp-main-title">{cat.emoji} {cat.name}</div>
-                <div className="bp-main-sub">{cat.desc} · {products.length} products shown</div>
-              </div>
-              <div className="bp-sort">
-                Sort: <select><option>Relevance</option><option>Price: Low–High</option><option>Price: High–Low</option><option>% India Made</option></select>
-              </div>
-            </div>
-
-            <div className="bp-grid">
-              {products.map(p => (
-                <div className="bp-card" key={p.id}>
-                  <div className="bp-card-img">
-                    <span>{p.emoji}</span>
-                    <span className="bp-india-tag">✓ {p.indiaPct}% India Made</span>
-                    <span className="bp-pct-tag">🇮🇳 {p.indiaPct}%</span>
-                  </div>
-                  <div className="bp-card-body">
-                    <div className="bp-prod-name">{p.name}</div>
-                    <div className="bp-mfr">🏭 {p.manufacturer}</div>
-                    <div className="bp-chips">
-                      <span className="bp-chip g">GST {p.gst}</span>
-                      <span className="bp-chip h">HSN {p.hsn}</span>
-                      <span className="bp-chip l">📍 {p.address.split(",").slice(-2).join(",").trim()}</span>
-                    </div>
-                    <div className="bp-raw-wrap">
-                      <div className="bp-raw-top"><span>Indian Raw Material</span><span className="bp-raw-pct">{p.raw}%</span></div>
-                      <div className="bp-raw-track"><div className="bp-raw-fill" style={{ width:`${p.raw}%` }} /></div>
-                    </div>
-                    <div className="bp-hr" />
-                    <div className="bp-price-row">
-                      <div><span className="bp-price">₹{p.price.toLocaleString("en-IN")}</span><span className="bp-price-u"> {p.unit}</span></div>
-                      <span className="bp-moq">MOQ {p.moq.toLocaleString()} {p.moqUnit}</span>
-                    </div>
-                    <div className="bp-actions">
-                      <button className={`btn-add${added.has(p.id)?" ok":""}`} onClick={() => addToCart(p)}>
-                        {added.has(p.id) ? "✓ Added to RFQ" : "+ Add to RFQ Cart"}
-                      </button>
-                      <button className="btn-det" onClick={() => setModal(p)}>Details</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+        {/* License */}
+        <div className="p-4 rounded-xl border border-amber-200 bg-amber-50 flex items-start gap-3">
+          <span className="text-xl">📜</span>
+          <div>
+            <p className="text-[10px] uppercase tracking-wide text-gray-400 font-bold mb-0.5">{m.licenseType}</p>
+            <p className="text-sm font-bold text-amber-700">{m.license}</p>
           </div>
         </div>
 
-        {/* CART PANEL */}
-        {cartOpen && (<>
-          <div className="bp-ov" onClick={() => setCartOpen(false)} />
-          <div className="bp-cart">
-            <div className="bp-cart-hd">
-              <div>
-                <div className="bp-cart-title">🛒 RFQ Cart</div>
-                <div className="bp-cart-sub">{totalQty} item{totalQty!==1?"s":""} · Bulk Quote Request</div>
-              </div>
-              <button className="bp-close" onClick={() => setCartOpen(false)}>✕</button>
+        {/* Address */}
+        <p className="text-sm text-gray-500">📍 {m.address}</p>
+
+        {/* India depth */}
+        <div className="p-4 rounded-xl border border-gray-200 bg-gray-50">
+          <div className="flex items-center gap-4 mb-2">
+            <span className="text-3xl font-bold text-amber-600">{m.indiaPct}%</span>
+            <div>
+              <p className="text-sm text-gray-600"><span className="text-green-600 font-bold">{m.raw}%</span> Indian raw material</p>
+              <p className="text-xs text-gray-400">{m.rawNote}</p>
             </div>
-            <div className="bp-cart-body">
-              {cart.length === 0 ? (
-                <div className="bp-empty">
-                  <span>📦</span>
-                  <span style={{ fontSize:13,fontWeight:700,color:"var(--text2)" }}>Your RFQ cart is empty</span>
-                  <span style={{ fontSize:11,fontWeight:600 }}>Add products to request a bulk quote</span>
-                </div>
-              ) : cart.map(item => (
-                <div className="bp-ci" key={item.id}>
-                  <span className="bp-ci-em">{item.emoji}</span>
-                  <div className="bp-ci-info">
-                    <div className="bp-ci-name">{item.name}</div>
-                    <div className="bp-ci-mfr">{item.manufacturer}</div>
-                    <div className="bp-ci-bot">
-                      <div className="bp-qty">
-                        <button className="bp-qbtn" onClick={() => setCart(p => p.map(i => i.id===item.id?{...i,qty:Math.max(1,i.qty-1)}:i))}>−</button>
-                        <span className="bp-qnum">{item.qty}</span>
-                        <button className="bp-qbtn" onClick={() => setCart(p => p.map(i => i.id===item.id?{...i,qty:i.qty+1}:i))}>+</button>
-                        <span style={{ fontSize:9,color:"var(--text3)",fontWeight:700 }}>{item.moqUnit}</span>
-                      </div>
-                      <span className="bp-ci-price">₹{(item.price*item.qty).toLocaleString("en-IN")}</span>
-                    </div>
-                  </div>
-                  <button className="bp-ci-rm" onClick={() => setCart(p => p.filter(i => i.id!==item.id))}>✕</button>
+          </div>
+          <IndiaBar pct={m.raw} />
+        </div>
+
+        {/* Pricing */}
+        <div>
+          <div className="flex items-baseline gap-2 mb-2">
+            <span className="text-2xl font-bold text-gray-900">₹{m.price.toLocaleString('en-IN')}</span>
+            <span className="text-sm text-gray-400">{m.unit}</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs font-bold px-3 py-1 rounded-lg bg-green-50 text-green-700 border border-green-200">📦 MOQ: {m.moq.toLocaleString()} {m.moqUnit}</span>
+            <span className="text-xs font-bold px-3 py-1 rounded-lg bg-gray-100 text-gray-600 border border-gray-200">GST {m.gst}</span>
+            <span className="text-xs font-bold px-3 py-1 rounded-lg bg-gray-100 text-gray-600 border border-gray-200">HSN {m.hsn}</span>
+          </div>
+          <p className="text-xs text-gray-400 mt-2">Payment: {m.paymentTerms}</p>
+        </div>
+
+        {/* CTA */}
+        <button
+          onClick={onAdd}
+          className={`w-full py-3 rounded-xl text-sm font-semibold transition-all ${
+            isInCart ? 'bg-green-600 text-white' : 'bg-gray-900 text-white hover:bg-gray-700'
+          }`}
+        >
+          {isInCart ? '✓ In RFQ Cart' : '🛒 Add to RFQ Cart'}
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+
+export default function ManufacturersPage() {
+  const [activeCat, setActiveCat] = useState('All');
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState<'relevance' | 'price_asc' | 'price_desc' | 'rating' | 'india_pct'>('relevance');
+  const [f100, setF100] = useState(false);
+  const [fExport, setFExport] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [showCart, setShowCart] = useState(false);
+  const [modal, setModal] = useState<Manufacturer | null>(null);
+
+  // ── Cart helpers ──────────────────────────────────────────────────────────
+
+  const addToCart = (m: Manufacturer) => {
+    setCart(prev => {
+      const ex = prev.find(i => i.id === m.id);
+      if (ex) return prev.map(i => i.id === m.id ? { ...i, quantity: i.quantity + 1 } : i);
+      return [...prev, { ...m, quantity: 1 }];
+    });
+  };
+
+  const updateQty = (id: string, delta: number) => {
+    setCart(prev => prev.map(i => i.id === id ? { ...i, quantity: Math.max(0, i.quantity + delta) } : i).filter(i => i.quantity > 0));
+  };
+
+  const removeFromCart = (id: string) => setCart(prev => prev.filter(i => i.id !== id));
+
+  const cartTotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
+  const isInCart = (id: string) => cart.some(i => i.id === id);
+
+  // ── Category counts ───────────────────────────────────────────────────────
+
+  const categoryCounts = useMemo(() => {
+    const c: Record<string, number> = { All: MANUFACTURERS.length };
+    MANUFACTURERS.forEach(m => { c[m.category] = (c[m.category] ?? 0) + 1; });
+    return c;
+  }, []);
+
+  // ── Filtering ─────────────────────────────────────────────────────────────
+
+  const filtered = useMemo(() => {
+    let list = MANUFACTURERS;
+    if (activeCat !== 'All') list = list.filter(m => m.category === activeCat);
+    if (f100) list = list.filter(m => m.indiaPct === 100);
+    if (fExport) list = list.filter(m => m.exportReady);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(m => m.name.toLowerCase().includes(q) || m.product.toLowerCase().includes(q) || m.state.toLowerCase().includes(q) || m.location.toLowerCase().includes(q));
+    }
+    switch (sortBy) {
+      case 'price_asc': return [...list].sort((a, b) => a.price - b.price);
+      case 'price_desc': return [...list].sort((a, b) => b.price - a.price);
+      case 'rating': return [...list].sort((a, b) => b.rating - a.rating);
+      case 'india_pct': return [...list].sort((a, b) => b.indiaPct - a.indiaPct);
+      default: return list;
+    }
+  }, [activeCat, search, sortBy, f100, fExport]);
+
+  // ─── Render ───────────────────────────────────────────────────────────────
+
+  return (
+    <div className="min-h-screen bg-[#faf8f3] flex">
+
+      {/* ── LEFT SIDEBAR ────────────────────────────────────────────── */}
+      <aside className="w-[280px] min-h-screen sticky top-0 border-r border-gray-200 bg-white px-5 py-7 overflow-y-auto flex-shrink-0">
+
+        {/* Header */}
+        <div className="mb-7">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400 font-bold mb-2">
+            🇮🇳 B2B Wholesale
+          </p>
+          <h2 className="text-3xl font-bold text-gray-900">Manufacturers</h2>
+          <p className="text-sm text-gray-500 mt-2 leading-6">
+            Verified Indian manufacturers with MSME, BIS & AYUSH licenses.
+          </p>
+        </div>
+
+        {/* Search */}
+        <div className="relative mb-5">
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search manufacturers..."
+            className="w-full px-4 py-3 pr-10 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
+          />
+          <svg className="absolute right-3 top-3.5 text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+          </svg>
+        </div>
+
+        {/* Categories */}
+        <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400 font-bold mb-3">Categories</p>
+        <div className="space-y-1.5 mb-7">
+          {ALL_CATEGORIES.map(cat => {
+            const active = cat === activeCat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCat(cat)}
+                className={`w-full text-left px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all duration-150 flex items-center justify-between ${
+                  active
+                    ? 'bg-gray-900 text-white border-gray-900 shadow-sm'
+                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                }`}
+              >
+                <span>{cat}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${active ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'}`}>
+                  {categoryCounts[cat] ?? 0}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Filters */}
+        <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400 font-bold mb-3">Filters</p>
+        <div className="space-y-1.5">
+          {[
+            { label: '100% Made in India', active: f100, toggle: () => setF100(v => !v) },
+            { label: 'Export Ready', active: fExport, toggle: () => setFExport(v => !v) },
+          ].map(opt => (
+            <button
+              key={opt.label}
+              onClick={opt.toggle}
+              className={`w-full text-left px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all duration-150 flex items-center gap-2.5 ${
+                opt.active
+                  ? 'bg-gray-900 text-white border-gray-900 shadow-sm'
+                  : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${opt.active ? 'bg-white' : 'bg-green-500'}`} />
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      {/* ── MAIN CONTENT ────────────────────────────────────────────── */}
+      <main className="flex-1 overflow-hidden">
+
+        {/* Hero strip */}
+        <section className="px-10 py-10 border-b border-gray-200 bg-white">
+          <p className="text-xs uppercase tracking-[0.18em] text-gray-400 font-bold mb-2">Verified Partners</p>
+          <h1 className="text-5xl font-bold text-gray-900 mb-3">
+            {activeCat === 'All' ? 'All Manufacturers' : activeCat}
+          </h1>
+          <p className="text-gray-600 text-lg max-w-3xl leading-8">
+            Licensed Indian manufacturers, cooperatives, and artisan clusters — with full supply chain transparency and bulk pricing.
+          </p>
+        </section>
+
+        {/* Sort + Cart bar */}
+        <section className="sticky top-0 z-30 bg-white border-b border-gray-200 px-10 py-4">
+          <div className="flex justify-between gap-5 flex-wrap items-center">
+            <div className="flex gap-2 flex-wrap">
+              {([
+                { value: 'relevance', label: 'Relevance' },
+                { value: 'price_asc', label: 'Price ↑' },
+                { value: 'price_desc', label: 'Price ↓' },
+                { value: 'rating', label: 'Top Rated' },
+                { value: 'india_pct', label: '% India Made' },
+              ] as const).map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setSortBy(opt.value)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    sortBy === opt.value
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setShowCart(true)}
+              className="px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold shadow-md flex items-center gap-2 hover:bg-gray-700 transition relative"
+            >
+              🛒 RFQ Cart ({cartCount}) • ₹{cartTotal.toLocaleString('en-IN')}
+            </button>
+          </div>
+        </section>
+
+        {/* Results */}
+        <section className="px-10 py-8">
+          <div className="mb-6 text-sm text-gray-500">
+            {filtered.length} manufacturer{filtered.length !== 1 ? 's' : ''}
+            {search ? ` for "${search}"` : ''}
+            {activeCat !== 'All' ? ` in ${activeCat}` : ''}
+          </div>
+
+          {filtered.length > 0 ? (
+            <div className="grid grid-cols-3 gap-6 items-stretch">
+              {filtered.map(m => (
+                <div key={m.id} className="h-full">
+                  <ManufacturerCard
+                    m={m}
+                    onDetail={() => setModal(m)}
+                    onAdd={() => addToCart(m)}
+                    isInCart={isInCart(m.id)}
+                  />
                 </div>
               ))}
             </div>
-            {cart.length > 0 && (
-              <div className="bp-cart-ft">
-                <div className="bp-flag-bar" />
-                <div className="bp-total-row">
-                  <span className="bp-total-lbl">Estimated Total</span>
-                  <span className="bp-total-amt">₹{totalAmt.toLocaleString("en-IN")}</span>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <p className="text-lg font-semibold text-gray-700 mb-1">No manufacturers found</p>
+              <p className="text-sm text-gray-400">Try adjusting your search or filters</p>
+              <button
+                onClick={() => { setSearch(''); setActiveCat('All'); setF100(false); setFExport(false); }}
+                className="mt-5 px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-700 transition"
+              >
+                Clear all filters
+              </button>
+            </div>
+          )}
+        </section>
+      </main>
+
+      {/* ── CART DRAWER ─────────────────────────────────────────────── */}
+      {showCart && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowCart(false)} />
+          <div className="relative w-[380px] h-screen bg-white shadow-2xl border-l border-gray-200 flex flex-col">
+            {/* Header */}
+            <div className="p-5 border-b border-gray-200 flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">RFQ Cart</h2>
+                <p className="text-xs text-gray-400 mt-0.5">{cartCount} item{cartCount !== 1 ? 's' : ''} · Bulk Quote Request</p>
+              </div>
+              <button onClick={() => setShowCart(false)} className="text-gray-400 hover:text-gray-700 text-sm font-semibold transition p-2 hover:bg-gray-100 rounded-lg">
+                ✕ Close
+              </button>
+            </div>
+
+            {/* Items */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-3">
+              {cart.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-center pb-10">
+                  <span className="text-5xl mb-4">📦</span>
+                  <p className="text-base font-semibold text-gray-700 mb-1">Your RFQ cart is empty</p>
+                  <p className="text-sm text-gray-400">Add manufacturers to request a bulk quote</p>
                 </div>
-                <div className="bp-total-note">Exclusive of GST · Final pricing after supplier confirmation</div>
-                <button className="bp-checkout">Send Bulk RFQ to Suppliers →</button>
-                <div className="bp-rfq-note">Our sourcing desk responds within 4 business hours</div>
+              ) : (
+                cart.map(item => (
+                  <div key={item.id} className="border border-gray-200 rounded-xl p-4 flex gap-3">
+                    <span className="text-3xl flex-shrink-0">{item.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-900 truncate">{item.product}</p>
+                      <p className="text-xs text-amber-600 font-semibold mt-0.5">{item.name}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => updateQty(item.id, -1)} className="w-7 h-7 rounded-lg border border-gray-200 text-gray-600 text-sm font-bold flex items-center justify-center hover:bg-gray-50 transition">−</button>
+                          <span className="text-sm font-bold text-gray-900 min-w-[20px] text-center">{item.quantity}</span>
+                          <button onClick={() => updateQty(item.id, 1)} className="w-7 h-7 rounded-lg border border-gray-200 text-gray-600 text-sm font-bold flex items-center justify-center hover:bg-gray-50 transition">+</button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-gray-900">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                          <button onClick={() => removeFromCart(item.id)} className="text-gray-300 hover:text-red-500 transition p-1">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            {cart.length > 0 && (
+              <div className="p-5 border-t border-gray-200">
+                <div className="flex justify-between text-sm text-gray-500 mb-1.5">
+                  <span>Estimated Total</span>
+                  <span className="font-semibold text-gray-900">₹{cartTotal.toLocaleString('en-IN')}</span>
+                </div>
+                <p className="text-xs text-gray-400 mb-4">Exclusive of GST · Final pricing after supplier confirmation</p>
+                <div className="flex justify-between font-bold text-lg mb-4 pt-3 border-t border-gray-100">
+                  <span>Total</span>
+                  <span>₹{cartTotal.toLocaleString('en-IN')}</span>
+                </div>
+                <button className="w-full bg-gray-900 text-white py-3.5 rounded-xl font-semibold text-sm hover:bg-gray-700 transition active:scale-[0.99]">
+                  Send Bulk RFQ to Suppliers →
+                </button>
+                <button onClick={() => setCart([])} className="w-full mt-2 text-xs text-gray-400 hover:text-red-500 py-1 transition">
+                  Clear cart
+                </button>
               </div>
             )}
           </div>
-        </>)}
+        </div>
+      )}
 
-        {/* DETAIL MODAL */}
-        {modal && (
-          <div className="bp-modal-ov" onClick={() => setModal(null)}>
-            <div className="bp-modal" onClick={e => e.stopPropagation()}>
-              <div className="bp-modal-hero">
-                <span className="bp-modal-em">{modal.emoji}</span>
-                <div className="bp-modal-hd">
-                  <div className="bp-modal-pname">{modal.name}</div>
-                  <div className="bp-modal-mfr">🏭 {modal.manufacturer}</div>
-                  <div className="bp-modal-certs">{modal.certs.map(c => <span key={c} className="bp-modal-cert">✓ {c}</span>)}</div>
-                </div>
-                <button className="bp-close" style={{ flexShrink:0 }} onClick={() => setModal(null)}>✕</button>
-              </div>
-              <div className="bp-modal-body">
-                <div className="bp-sec">Manufacturing License</div>
-                <div className="bp-lic">
-                  <span style={{ fontSize:20 }}>📜</span>
-                  <div>
-                    <div className="bp-lic-type">{modal.licenseType}</div>
-                    <div className="bp-lic-num">{modal.license}</div>
-                  </div>
-                </div>
-
-                <div className="bp-sec">Factory Address</div>
-                <div className="bp-addr"><span>📍</span><span>{modal.address}</span></div>
-
-                <div className="bp-sec">India Manufacturing Depth</div>
-                <div className="bp-india-m">
-                  <div className="bp-india-big">{modal.indiaPct}%</div>
-                  <div>
-                    <div className="bp-india-info">Value addition on Indian soil<br/><span style={{ color:"var(--green)",fontWeight:800 }}>{modal.raw}%</span> Indian raw material content</div>
-                    <div className="bp-india-note">{modal.rawNote}</div>
-                    <div style={{ marginTop:8 }}>
-                      <div className="bp-raw-top" style={{ marginBottom:4 }}><span>Raw Material Origin</span><span className="bp-raw-pct">{modal.raw}% Indian</span></div>
-                      <div className="bp-raw-track" style={{ height:6 }}><div className="bp-raw-fill" style={{ width:`${modal.raw}%` }} /></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bp-sec">Pricing & MOQ</div>
-                <div style={{ display:"flex",alignItems:"baseline",gap:5,marginBottom:7 }}>
-                  <span className="bp-price-big">₹{modal.price.toLocaleString("en-IN")}</span>
-                  <span className="bp-price-u2">{modal.unit}</span>
-                </div>
-                <span className="bp-moq-detail">📦 Minimum Order: {modal.moq.toLocaleString()} {modal.moqUnit}</span>
-                <div className="bp-tax-row">
-                  <span className="bp-tax a">GST {modal.gst}</span>
-                  <span className="bp-tax b">HSN {modal.hsn}</span>
-                </div>
-
-                <button className={`bp-modal-add${added.has(modal.id)?" ok":""}`} onClick={() => addToCart(modal)}>
-                  {added.has(modal.id) ? "✓ Added to RFQ Cart" : "🛒 Add to RFQ Cart"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </>
+      {/* ── DETAIL MODAL ─────────────────────────────────────────────── */}
+      {modal && (
+        <DetailModal
+          m={modal}
+          onClose={() => setModal(null)}
+          onAdd={() => addToCart(modal)}
+          isInCart={isInCart(modal.id)}
+        />
+      )}
+    </div>
   );
 }

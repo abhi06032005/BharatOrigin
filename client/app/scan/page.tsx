@@ -1,244 +1,292 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BrowserMultiFormatReader } from "@zxing/library";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 
-// 1. Audit Data Mockup
-const PRODUCT_DATA: Record<string, any> = {
-  "6281006438842": { 
-    name: "Dove Shampoo", 
-    score: 45, 
-    brand: "Unilever", 
-    owner: "Foreign (PLC)", 
-    origin: "India", 
-    auditLogs: ["Checking GS1 Prefix...", "Parent: Unilever found", "FDI Analysis: 100%", "Locating regional plants..."] 
+// --- Types ---
+type Product = {
+  name: string;
+  score: number;
+  brand: string;
+  owner: string;
+  indianShare: number;
+  foreignShare: number;
+  origin: string;
+  category: string;
+  ingredients: string;
+  sustainability: string;
+  founded?: string;
+  headquarters?: string;
+  revenue?: string;
+  employees?: string;
+  about?: string;
+};
+
+const PRODUCT_DATA: Record<string, Product> = {
+  "8906087772859": {
+    name: "Mamaearth Shampoo",
+    score: 92,
+    brand: "Honasa Consumer Ltd",
+    owner: "Indian Majority Owned",
+    indianShare: 78,
+    foreignShare: 22,
+    origin: "India (Bhiwadi Plant)",
+    category: "Personal Care",
+    ingredients: "Onion Oil, Plant Keratin",
+    sustainability: "Plastic Positive Brand",
+    founded: "2016",
+    headquarters: "Gurugram, Haryana",
+    revenue: "₹1,900+ Cr",
+    employees: "900+",
+    about: "Mamaearth is one of India's fastest growing personal care brands focused on toxin-free and natural products.",
   },
-  "8906087772859": { 
-    name: "Mamaearth Shampoo", 
-    score: 92, 
-    brand: "Honasa", 
-    owner: "Indian", 
-    origin: "India", 
-    auditLogs: ["GS1: 890 Verified", "Entity: Honasa Consumer Ltd", "Ownership: Indian Majority", "Verifying 'Made in India' cert..."] 
+  "6281006438842": {
+    name: "Dove Shampoo",
+    score: 45,
+    brand: "Unilever",
+    owner: "Foreign Owned (UK)",
+    indianShare: 18,
+    foreignShare: 82,
+    origin: "India (Regional Plant)",
+    category: "Personal Care",
+    ingredients: "Synthetic / Sulfate Based",
+    sustainability: "Moderate Eco Impact",
+    founded: "1957",
+    headquarters: "London, United Kingdom",
+    revenue: "$60B+ Parent Group",
+    employees: "1,00,000+",
+    about: "Dove is a global beauty and hygiene brand owned by Unilever, operating in many countries.",
   },
 };
 
 export default function ScanPage() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [scannedData, setScannedData] = useState<any>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [auditStep, setAuditStep] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [fetchStep, setFetchStep] = useState("");
+  const [product, setProduct] = useState<Product | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [scannedCode, setScannedCode] = useState("");
+  const html5QrCode = useRef<any>(null);
 
   useEffect(() => {
-    let isMounted = true;
-    
-    // We use numeric keys for Hints to avoid the "DecodeHintType undefined" error
-    // 2 = POSSIBLE_FORMATS. [2, 3, 4, 11] = EAN_13, EAN_8, UPC_A, UPC_E
-  
-    const reader = new BrowserMultiFormatReader( );
-    let streamRef: MediaStream | null = null;
-      const hints = new Map();
-    hints.set(2, [2, 3, 4, 11]); 
-    (reader as any).hints = hints;
-    const startScanner = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { 
-            facingMode: "environment", 
-            width: { ideal: 1280 }, 
-            height: { ideal: 720 } 
-          } 
-        });
-        
-        if (!isMounted) {
-          stream.getTracks().forEach(t => t.stop());
-          return;
-        }
-
-        streamRef = stream;
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.setAttribute("playsinline", "true");
-          await videoRef.current.play();
-
-          reader.decodeFromVideoDevice(undefined as any, videoRef.current, (res) => {
-            if (res && isMounted && !isAnalyzing && !scannedData) {
-              const code = res.getText();
-              if (PRODUCT_DATA[code]) {
-                handleMatch(PRODUCT_DATA[code], stream);
-              }
-            }
-          });
-        }
-      } catch (err) {
-        console.error("Scanner Error:", err);
+    setIsMounted(true);
+    return () => {
+      if (html5QrCode.current) {
+        html5QrCode.current.stop().catch(() => {});
       }
     };
+  }, []);
 
-    const handleMatch = (data: any, stream: MediaStream) => {
-      setIsAnalyzing(true);
-      stream.getTracks().forEach((t) => t.stop());
-      reader.reset();
+  useEffect(() => {
+    if (isMounted && !product && !isFetching && !notFound) {
+      initScanner();
+    }
+  }, [isMounted, product, isFetching, notFound]);
 
-      let step = 0;
-      const interval = setInterval(() => {
-        step++;
-        setAuditStep(step);
-        if (step >= 4) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setScannedData(data);
-            setIsAnalyzing(false);
-          }, 400);
-        }
-      }, 500);
-    };
+  const initScanner = async () => {
+    const { Html5Qrcode } = await import("html5-qrcode");
+    if (!html5QrCode.current) {
+      html5QrCode.current = new Html5Qrcode("reader");
+    }
 
-    startScanner();
-
-    return () => {
-      isMounted = false;
-      reader.reset();
-      if (streamRef) streamRef.getTracks().forEach((t) => t.stop());
-    };
-  }, [isAnalyzing, scannedData]);
-
-  const getScoreColor = (score: number) => {
-    if (score > 80) return "text-green-500";
-    if (score > 50) return "text-yellow-500";
-    return "text-red-500";
+    try {
+      await html5QrCode.current.start(
+        { facingMode: "environment" },
+        { fps: 30, aspectRatio: 1.0 },
+        (decodedText: string) => handleScanSuccess(decodedText),
+        () => {}
+      );
+    } catch (err) {
+      console.error("Scanner error:", err);
+    }
   };
 
+  const handleScanSuccess = async (value: string) => {
+    if (isFetching) return;
+    if (html5QrCode.current) await html5QrCode.current.stop();
+
+    setScannedCode(value);
+    setIsFetching(true);
+    setNotFound(false);
+
+    const steps = ["Decrypting Code", "Searching Registry", "Verifying Origin"];
+    for (const step of steps) {
+      setFetchStep(step);
+      await new Promise((res) => setTimeout(res, 600));
+    }
+
+    const found = PRODUCT_DATA[value];
+    if (found) {
+      setProduct(found);
+    } else {
+      setNotFound(true);
+    }
+    setIsFetching(false);
+  };
+
+  const reset = () => {
+    setProduct(null);
+    setNotFound(false);
+    setScannedCode("");
+    setIsFetching(false);
+  };
+
+  if (!isMounted) return null;
+
   return (
-    <div className="fixed inset-0 bg-black text-white flex flex-col font-sans overflow-hidden select-none">
-      
-      {/* 1. CAMERA / SCANNING UI */}
-      {!isAnalyzing && !scannedData && (
-        <div className="flex-1 relative w-full h-full">
-          <video 
-            ref={videoRef} 
-            className="absolute inset-0 w-full h-full object-cover opacity-90"
-            playsInline
-            muted
-            autoPlay
-          />
-          
-          {/* PAYTM STYLE OVERLAY */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            
-            {/* VIBRANT SCANNER BOX */}
-            <div className="relative w-72 h-48 border-2 border-white/10 rounded-3xl overflow-hidden bg-white/5 backdrop-blur-[2px]">
-              
-              {/* SOFT SCANNING BEAM */}
-              <div className="absolute top-1/2 left-0 w-full h-1 bg-orange-500/60 blur-md animate-beam" />
-              
-              {/* CORNER STARS (PAYTM FEEL) */}
-              <div className="star absolute -top-1 -left-1 text-orange-500 text-2xl">✦</div>
-              <div className="star absolute -top-1 -right-1 text-orange-400 text-2xl" style={{ animationDelay: '0.2s' }}>✦</div>
-              <div className="star absolute -bottom-1 -left-1 text-orange-300 text-2xl" style={{ animationDelay: '0.4s' }}>✦</div>
-              <div className="star absolute -bottom-1 -right-1 text-white text-2xl" style={{ animationDelay: '0.6s' }}>✦</div>
-
-              {/* CENTER GLOW */}
-              <div className="absolute inset-0 bg-linear-to-b from-transparent via-orange-500/5 to-transparent animate-pulse" />
-            </div>
-
-            <div className="mt-12 text-center">
-              <h1 className="text-2xl font-black italic tracking-tighter text-orange-500">BHARAT<span className="text-white">ORIGIN</span></h1>
-              <p className="mt-2 text-[10px] font-black tracking-[0.4em] uppercase text-white/40 animate-pulse">
-                Align Barcode to Audit
+    <div className="min-h-screen bg-[#FDFDFD] text-slate-900 font-sans antialiased">
+      {/* --- Immersive Scanner --- */}
+      {!product && !isFetching && !notFound && (
+        <div className="relative h-screen w-full overflow-hidden bg-black">
+          <div id="reader" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 z-10 pointer-events-none">
+            <div className="absolute inset-0 bg-black/20" />
+            {/* Smooth Laser Animation */}
+            <div className="absolute top-0 left-0 w-full h-0.75 bg-liinear-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_20px_#22d3ee] animate-scan-laser" />
+            <div className="absolute bottom-0 left-0 w-full p-10 pb-20 bg-linear-to-t from-black/90 to-transparent text-center">
+              <h1 className="text-white text-3xl font-light tracking-tight">
+                Bharat <span className="font-bold text-cyan-400">Origin</span>
+              </h1>
+              <p className="text-slate-300 text-xs mt-3 uppercase tracking-[0.2em] opacity-70">
+                Scanning for Indian Ownership
               </p>
             </div>
           </div>
-
-          {/* VIGNETTE */}
-          <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_150px_rgba(0,0,0,0.8)]" />
         </div>
       )}
 
-      {/* 2. ANALYZING STATE */}
-      {isAnalyzing && (
-        <div className="flex-1 flex flex-col items-center justify-center p-8 bg-zinc-950 animate-in fade-in duration-300">
-          <div className="relative mb-12">
-            <div className="w-28 h-28 border-[6px] border-orange-500/10 border-t-orange-500 rounded-full animate-spin" />
-            <div className="absolute inset-0 flex items-center justify-center font-black text-2xl text-orange-500 italic">
-               {auditStep * 25}%
-            </div>
-          </div>
-          <div className="w-full max-w-xs space-y-4 text-center">
-            <h2 className="text-xl font-black italic text-orange-500 tracking-tighter uppercase">Compiling Origin Audit</h2>
-            <div className="bg-zinc-900/60 rounded-[2.5rem] p-6 border border-white/5 backdrop-blur-3xl text-left">
-              {PRODUCT_DATA["8906087772859"].auditLogs.map((log: string, i: number) => (
-                <p key={i} className={`text-xs mb-3 flex items-center gap-3 transition-all duration-500 ${i < auditStep ? 'opacity-100 text-green-400 font-bold' : 'opacity-10'}`}>
-                   {i < auditStep ? "▶" : "○"} {log}
-                </p>
-              ))}
-            </div>
-          </div>
+      {/* --- Professional Loading --- */}
+      {isFetching && (
+        <div className="h-screen flex flex-col items-center justify-center bg-white">
+          <div className="w-16 h-16 rounded-full border-[3px] border-slate-100 border-t-cyan-500 animate-spin" />
+          <p className="mt-8 text-slate-400 font-medium tracking-widest uppercase text-[10px]">
+            {fetchStep}...
+          </p>
         </div>
       )}
 
-      {/* 3. RESULT STATE */}
-      {scannedData && (
-        <div className="flex-1 p-6 flex flex-col items-center justify-center bg-black animate-in slide-in-from-bottom-20 duration-500">
-          <div className="w-full max-w-sm bg-zinc-900 border-t-4 border-orange-600 rounded-[3rem] p-10 shadow-2xl relative overflow-hidden">
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl" />
-            
-            <div className="flex justify-between items-start mb-10">
-              <div className="max-w-[70%]">
-                <h2 className="text-3xl font-black italic mb-2 tracking-tighter leading-tight">{scannedData.name}</h2>
-                <div className="bg-orange-500/20 text-orange-400 text-[10px] font-black px-3 py-1 rounded-lg inline-block uppercase tracking-widest italic">
-                  {scannedData.brand}
-                </div>
-              </div>
-              <div className="text-right">
-                <div className={`text-6xl font-black italic tracking-tighter leading-none ${getScoreColor(scannedData.score)}`}>
-                  {scannedData.score}
-                </div>
-                <p className="text-[9px] text-zinc-500 uppercase font-black mt-1">Bharat Score</p>
-              </div>
-            </div>
-
-            <div className="space-y-3 mb-10">
-              <div className="flex items-center justify-between p-5 bg-black/40 rounded-2xl border border-white/5">
-                <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Ownership</span>
-                <span className="font-bold text-white text-xs">{scannedData.owner}</span>
-              </div>
-              <div className="flex items-center justify-between p-5 bg-black/40 rounded-2xl border border-white/5">
-                <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Plant</span>
-                <span className="font-bold text-white text-xs uppercase tracking-tighter">{scannedData.origin}</span>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => { setScannedData(null); setAuditStep(0); }} 
-              className="w-full py-6 bg-orange-600 text-white rounded-4xl font-black text-sm uppercase tracking-[0.2em] shadow-lg shadow-orange-900/40 active:scale-95 transition-all"
-            >
-              Continue Audit
+      {/* --- Not Found State --- */}
+      {notFound && !isFetching && (
+        <div className="h-screen flex flex-col items-center justify-center p-8 bg-white text-center">
+          <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-8 border border-slate-100">
+            <svg className="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">No Match Found</h2>
+          <p className="text-slate-500 mt-4 max-w-xs leading-relaxed">
+            Barcode <span className="font-mono font-bold text-slate-900 underline decoration-cyan-400 underline-offset-4">{scannedCode}</span> is not in our database yet.
+          </p>
+          <div className="mt-10 space-y-3 w-full max-w-xs">
+            <button onClick={reset} className="w-full py-4 rounded-2xl bg-slate-900 text-white font-bold hover:bg-black transition-all">
+              Try Another
+            </button>
+            <button className="w-full py-4 rounded-2xl bg-white border border-slate-200 text-slate-500 font-semibold text-sm">
+              Request Manual Review
             </button>
           </div>
         </div>
       )}
 
-      <style jsx>{`
-        .star {
-          animation: sparkle 1.5s infinite ease-in-out;
-          filter: drop-shadow(0 0 8px #f97316);
-          will-change: transform, opacity;
+      {/* --- Results Dashboard --- */}
+      {product && !isFetching && (
+        <main className="max-w-5xl mx-auto px-6 py-12">
+          <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div>
+              <span className="inline-block px-3 py-1 bg-cyan-50 text-cyan-700 text-[10px] font-bold rounded-full mb-3 uppercase tracking-widest">
+                {product.category}
+              </span>
+              <h2 className="text-5xl font-extrabold tracking-tight text-slate-900">
+                {product.name}
+              </h2>
+              <p className="text-xl text-slate-500 mt-2">{product.brand}</p>
+            </div>
+            <div className="flex items-center gap-4 bg-white border border-slate-100 p-5 rounded-3xl shadow-sm">
+              <div className="text-right">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Score</p>
+                <p className={`text-4xl font-black ${product.score > 70 ? "text-emerald-500" : "text-orange-500"}`}>
+                  {product.score}
+                </p>
+              </div>
+              <div className="h-10 w-px bg-slate-100" />
+              <div className={`w-3 h-3 rounded-full ${product.score > 70 ? "bg-emerald-500 shadow-[0_0_12px_#10b981]" : "bg-orange-500"}`} />
+            </div>
+          </header>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <StatCard title="Ownership" value={product.owner} />
+              <StatCard title="Manufacturing" value={product.origin} />
+              <StatCard title="Headquarters" value={product.headquarters} />
+              <StatCard title="Revenue" value={product.revenue} />
+              <div className="md:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Background</h3>
+                <p className="text-slate-600 leading-relaxed italic text-lg">"{product.about}"</p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] shadow-xl relative overflow-hidden">
+                <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6">Ownership Mix</h3>
+                <div className="h-48 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: "Indian", value: product.indianShare },
+                          { name: "Foreign", value: product.foreignShare },
+                        ]}
+                        dataKey="value"
+                        innerRadius={55}
+                        outerRadius={75}
+                        stroke="none"
+                        paddingAngle={8}
+                      >
+                        <Cell fill="#22d3ee" />
+                        <Cell fill="#334155" />
+                      </Pie>
+                      <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', backgroundColor: '#000', color: '#fff', fontSize: '12px' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex justify-between mt-6 text-[11px] font-bold uppercase tracking-widest">
+                  <span className="text-cyan-400">Indian {product.indianShare}%</span>
+                  <span className="text-slate-500">Foreign {product.foreignShare}%</span>
+                </div>
+              </div>
+              <button onClick={reset} className="w-full py-5 rounded-2xl bg-slate-900 hover:bg-black text-white font-bold transition-all transform active:scale-[0.98] shadow-2xl">
+                Scan Next Product
+              </button>
+            </div>
+          </div>
+        </main>
+      )}
+
+      <style jsx global>{`
+        @keyframes scan-laser {
+          0% { top: 0%; opacity: 0; }
+          15% { opacity: 1; }
+          85% { opacity: 1; }
+          100% { top: 100%; opacity: 0; }
         }
-        @keyframes sparkle {
-          0%, 100% { transform: scale(0.6) rotate(0deg); opacity: 0.4; }
-          50% { transform: scale(1.1) rotate(45deg); opacity: 1; }
-        }
-        .animate-beam {
-          will-change: transform;
-          animation: beamMove 2.5s infinite ease-in-out;
-        }
-        @keyframes beamMove {
-          0%, 100% { transform: translateY(-70px); opacity: 0.2; }
-          50% { transform: translateY(70px); opacity: 0.8; }
-        }
+        .animate-scan-laser { animation: scan-laser 3s ease-in-out infinite; }
+        #reader video { object-fit: cover !important; height: 100vh !important; }
       `}</style>
+    </div>
+  );
+}
+
+function StatCard({ title, value }: { title: string; value?: string }) {
+  return (
+    <div className="bg-white p-6 rounded-[1.8rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
+      <p className="text-[9px] uppercase tracking-[0.15em] text-slate-400 font-bold mb-2">{title}</p>
+      <p className="text-slate-900 font-bold text-base leading-tight">{value || "—"}</p>
     </div>
   );
 }
