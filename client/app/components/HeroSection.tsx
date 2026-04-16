@@ -117,9 +117,9 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* ── Left Column: Giant Typography ── */}
-          <div className="lg:col-span-5 flex flex-col items-start">
+          <div className="lg:col-span-6 flex flex-col items-start pr-0 lg:pr-8">
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] tracking-tight mb-6">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[4.5rem] xl:text-[5.5rem] font-black leading-[1.05] tracking-tight mb-6">
               <span className="text-slate-800">Discover</span> <br />
               <span className="text-slate-800">the Soul of</span> <br />
               <span className="relative inline-block h-[1.15em] w-full mt-1">
@@ -130,7 +130,7 @@ export default function HeroSection() {
                     animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
                     exit={{ y: -50, opacity: 0, filter: 'blur(10px)' }}
                     transition={{ duration: 0.7, ease: "anticipate" }}
-                    className="absolute left-0 top-0 text-gradient-saffron"
+                    className="absolute left-0 top-0 text-gradient-saffron whitespace-nowrap"
                   >
                     {BHARAT_VERSIONS[langIdx].text}
                   </motion.span>
@@ -165,119 +165,91 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* ── Center Column: Heritage Card Stack ── */}
-          <div className="lg:col-span-4 relative h-[520px] flex items-center justify-center">
-            
-            {/* Decorative diya glow behind the card */}
-            <div className="absolute w-[300px] h-[300px] bg-orange-400/15 rounded-full blur-[60px] animate-diya pointer-events-none" />
-            
+          {/* ── Right Column: Dynamic Hero Image ── */}
+          <div className="lg:col-span-6 relative h-[450px] lg:h-[520px] xl:h-[580px] w-full rounded-[40px] overflow-hidden shadow-2xl group border border-orange-200/50">
             <AnimatePresence mode="wait">
-              <motion.div
+              <motion.img 
                 key={activeCard}
-                initial={{ opacity: 0, scale: 0.92, rotateY: 15 }}
-                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                exit={{ opacity: 0, scale: 0.92, rotateY: -15 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="relative w-full max-w-[320px] aspect-[3/4] rounded-[36px] glass-warm shadow-2xl overflow-hidden p-1.5 border border-orange-200/40"
-              >
-                <div className="w-full h-full rounded-[28px] overflow-hidden relative">
-                  <img 
-                    src={HERITAGE_CARDS[activeCard].img} 
-                    alt={HERITAGE_CARDS[activeCard].title} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
-                  
-                  {/* Card overlay content */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="px-2.5 py-1 rounded-full bg-orange-500/90 text-white text-[10px] font-black tracking-wider">
-                        BHARAT SCORE {HERITAGE_CARDS[activeCard].score}
-                      </div>
-                    </div>
-                    <h3 className="text-white font-black text-2xl tracking-tight">{HERITAGE_CARDS[activeCard].title}</h3>
-                    <div className="flex items-center gap-2 mt-2">
-                      <MapPin className="w-3.5 h-3.5 text-orange-300" />
-                      <span className="text-orange-200 text-sm font-bold">{HERITAGE_CARDS[activeCard].origin}</span>
-                    </div>
-                    <p className="text-white/60 text-xs font-bold mt-1 tracking-wider uppercase">{HERITAGE_CARDS[activeCard].craft}</p>
-                  </div>
-                </div>
-              </motion.div>
+                src={HERITAGE_CARDS[activeCard].img}
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1 }}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
             </AnimatePresence>
 
-            {/* Card position indicators */}
-            <div className="absolute -bottom-2 flex gap-2">
+            {/* Gradient Overlay for Text Readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
+
+            {/* Bottom Content Area */}
+            <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 flex items-end justify-between">
+              <div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  key={`score-${activeCard}`}
+                  className="px-3 py-1.5 bg-orange-500 text-white text-[10px] font-black rounded-full mb-4 tracking-widest inline-block shadow-lg"
+                >
+                  BHARAT SCORE {HERITAGE_CARDS[activeCard].score}
+                </motion.div>
+                
+                <motion.h3 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  key={`title-${activeCard}`}
+                  className="text-white text-3xl md:text-4xl xl:text-5xl font-black mb-3 tracking-tight"
+                >
+                  {HERITAGE_CARDS[activeCard].title}
+                </motion.h3>
+                
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  key={`loc-${activeCard}`}
+                  className="flex items-center gap-2"
+                >
+                  <MapPin className="w-5 h-5 text-orange-400" />
+                  <span className="text-orange-100 font-bold md:text-lg">{HERITAGE_CARDS[activeCard].origin}</span>
+                  <span className="text-white/40 mx-2 hidden sm:inline">•</span>
+                  <span className="text-orange-200 tracking-wider text-sm font-bold uppercase hidden sm:inline">{HERITAGE_CARDS[activeCard].craft}</span>
+                </motion.div>
+              </div>
+
+              {/* Floating Stat Block inside Image */}
+              <div className="hidden md:flex flex-col items-end gap-3 translate-y-2">
+                <div className="p-5 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl text-right">
+                  <p className="text-4xl font-black text-white">2.8M+</p>
+                  <p className="text-[10px] text-white/70 uppercase tracking-widest font-bold mt-1">Verified Artisans</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Top Right Trust Badge */}
+            <div className="absolute top-6 right-6 hidden sm:block">
+              <div className="p-3 pr-5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center">
+                  <ShieldCheck className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                   <p className="font-bold text-white text-xs leading-tight">100% Verified</p>
+                   <p className="text-[9px] text-white/70 uppercase tracking-wider">Origin Tracking</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Position Indicators */}
+            <div className="absolute top-8 left-8 flex gap-2">
               {HERITAGE_CARDS.map((_, i) => (
                 <button 
                   key={i} 
                   onClick={() => setActiveCard(i)}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === activeCard ? 'w-8 bg-orange-500' : 'w-3 bg-orange-300/40'
+                    i === activeCard ? 'w-8 bg-orange-500' : 'w-3 bg-white/40 hover:bg-white/60'
                   }`} 
                 />
               ))}
             </div>
-          </div>
-
-          {/* ── Right Column: Stats + Floating Info Cards ── */}
-          <div className="lg:col-span-3 flex flex-col gap-5">
-            
-            {/* Trust badge */}
-            <motion.div 
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="p-5 rounded-3xl glass-warm border border-orange-200/40 shadow-lg animate-float-gentle"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center shadow-sm">
-                  <ShieldCheck className="w-5 h-5 text-orange-600" />
-                </div>
-                <div>
-                  <p className="font-black text-slate-800 text-sm">100% Verified</p>
-                  <p className="text-xs text-slate-500 font-medium">Cryptographic Origin</p>
-                </div>
-              </div>
-              <div className="h-2 w-full bg-orange-100 rounded-full overflow-hidden">
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: '100%' }}
-                  transition={{ duration: 2, delay: 1, ease: 'easeOut' }}
-                  className="h-full bg-gradient-to-r from-orange-400 to-emerald-500 rounded-full"
-                />
-              </div>
-            </motion.div>
-
-            {/* Artisan stat card */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="p-5 rounded-3xl glass-warm border border-orange-200/40 shadow-lg animate-float-gentle"
-              style={{ animationDelay: '1.5s' }}
-            >
-              <p className="text-3xl font-black text-gradient-saffron">2.8M+</p>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Verified Artisans</p>
-              <p className="text-xs text-slate-400 font-medium mt-2">Across 29 states & 7 union territories</p>
-            </motion.div>
-
-            {/* Rating card */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.7 }}
-              className="p-5 rounded-3xl glass-warm border border-orange-200/40 shadow-lg animate-float-gentle"
-              style={{ animationDelay: '3s' }}
-            >
-              <div className="flex items-center gap-1 mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
-                ))}
-              </div>
-              <p className="font-black text-slate-800 text-sm">Trusted by 50,000+ Buyers</p>
-              <p className="text-xs text-slate-500 font-medium mt-1">Globally sourced, heritage certified</p>
-            </motion.div>
           </div>
 
         </div>
