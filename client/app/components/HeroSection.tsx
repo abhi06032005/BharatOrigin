@@ -4,37 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Sparkles, MapPin, ShieldCheck, Star } from 'lucide-react';
 
-const BHARAT_VERSIONS = [
-  { text: 'भारत', lang: 'Hindi', sub: 'The Land of Heritage' },
-  { text: 'Bhārat', lang: 'Sanskrit', sub: 'The Ancient Civilization' },
-  { text: 'பாரதம்', lang: 'Tamil', sub: 'The Cradle of Craft' },
-  { text: 'ভারত', lang: 'Bengali', sub: 'The Canvas of Culture' },
-  { text: 'ભારત', lang: 'Gujarati', sub: 'The Pride of Artisans' },
-];
-
-const HERITAGE_CARDS = [
-  {
-    title: 'Banarasi Silk',
-    origin: 'Varanasi, UP',
-    score: 98,
-    img: '/hero4.png',
-    craft: 'Handloom Weaving',
-  },
-  {
-    title: 'Blue Pottery',
-    origin: 'Jaipur, Rajasthan',
-    score: 96,
-    img: '/hero3.png',
-    craft: 'Ceramic Art',
-  },
-  {
-    title: 'Organic Spices',
-    origin: 'Munnar, Kerala',
-    score: 94,
-    img: '/hero1.png',
-    craft: 'Traditional Farming',
-  },
-];
+import { BHARAT_VERSIONS, HERITAGE_CARDS } from './HeroSectionData';
 
 export default function HeroSection() {
   const [langIdx, setLangIdx] = useState(0);

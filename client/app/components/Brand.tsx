@@ -3,16 +3,13 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Users, Fingerprint, History, PieChart, Sparkles } from 'lucide-react';
+import { storyPoints } from './BrandData';
 
 const BrandStorySection = () => {
   const { scrollYProgress } = useScroll();
   const cardFloat = useTransform(scrollYProgress, [0.4, 0.8], [50, -50]);
 
-  const storyPoints = [
-    { label: "Verifiable Brand Origin", icon: <Fingerprint className="w-5 h-5" /> },
-    { label: "Founder Biographies", icon: <Users className="w-5 h-5" /> },
-    { label: "Mission & Impact Metrics", icon: <History className="w-5 h-5" /> }
-  ];
+
 
   return (
     <section className="relative min-h-screen flex items-center justify-center py-24 px-6 overflow-hidden">

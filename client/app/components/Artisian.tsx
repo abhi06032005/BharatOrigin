@@ -3,29 +3,13 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Award, ShieldCheck, Users, Sparkles, ArrowRight } from 'lucide-react';
+import { features } from './ArtisianData';
 
 const ArtisanFeatureSection = () => {
   const { scrollYProgress } = useScroll();
   const yParallax1 = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const yParallax2 = useTransform(scrollYProgress, [0, 1], [0, 60]);
 
-  const features = [
-    { 
-      title: "Exclusive Portal", 
-      desc: "Only 100% verified artisans.", 
-      icon: <Users className="text-emerald-500" /> 
-    },
-    { 
-      title: "GI-Tag Certified", 
-      desc: "Authentic & protected crafts.", 
-      icon: <Award className="text-orange-500" /> 
-    },
-    { 
-      title: "Zero Middlemen", 
-      desc: "Direct-to-consumer income.", 
-      icon: <Sparkles className="text-indigo-500" /> 
-    }
-  ];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center py-24 px-6 overflow-hidden">

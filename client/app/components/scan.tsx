@@ -3,16 +3,13 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ScanText, Cpu, Search, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
+import { detectionStats } from './scanData';
 
 const AIScanSection = () => {
   const { scrollYProgress } = useScroll();
   const scale = useTransform(scrollYProgress, [0.8, 1], [0.95, 1.05]);
 
-  const detectionStats = [
-    { label: "Manufacturing Country", status: "Detecting...", icon: <Cpu className="w-4 h-4 text-cyan-500" /> },
-    { label: "Brand Ownership", status: "Verified", icon: <CheckCircle className="w-4 h-4 text-emerald-500" /> },
-    { label: "Indian Alternative", status: "Available", icon: <RefreshCw className="w-4 h-4 text-indigo-500" /> }
-  ];
+
 
   return (
     <section className="relative min-h-screen flex items-center justify-center py-24 px-6 overflow-hidden">

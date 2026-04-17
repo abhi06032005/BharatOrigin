@@ -3,17 +3,12 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ShoppingBag, MapPin, ShieldCheck, BarChart3, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { features } from './B2CFeatureData';
 
 const B2CFeatureSection = () => {
   const { scrollYProgress } = useScroll();
   const yPos = useTransform(scrollYProgress, [0, 1], [0, -80]);
 
-  const features = [
-    { title: "Verified Products", desc: "Browse & shop authentic goods natively", icon: <ShoppingBag /> },
-    { title: "Smart Discovery", desc: "Category-wise local artisan search", icon: <MapPin /> },
-    { title: "Origin Data", desc: "Cryptographic breakdown of roots", icon: <ShieldCheck /> },
-    { title: "Bharat Score", desc: "Algorithmic trust indicator", icon: <BarChart3 /> },
-  ];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center py-20 px-6 overflow-hidden">

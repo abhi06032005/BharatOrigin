@@ -3,16 +3,13 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Factory, Truck, PackageCheck, BarChart4, ArrowRight, Zap, Boxes } from 'lucide-react';
+import { b2bHighlights, wholesaleOrders } from './wholeSaleData';
 
 const B2BWholesaleSection = () => {
   const { scrollYProgress } = useScroll();
   const xMove = useTransform(scrollYProgress, [0.6, 1], [-60, 0]);
 
-  const b2bHighlights = [
-    { title: "Bulk Manufacturing", desc: "Direct-from-factory Indian sourcing", icon: <Factory /> },
-    { title: "Inventory Sourcing", desc: "Reliable made-in-India stock for retailers", icon: <PackageCheck /> },
-    { title: "Supply Chain Power", desc: "Reducing imports, strengthening local ties", icon: <Truck /> }
-  ];
+
 
   return (
     <section className="relative min-h-screen flex items-center justify-center py-24 px-6 overflow-hidden">
@@ -88,11 +85,7 @@ const B2BWholesaleSection = () => {
 
             {/* Bulk Order Ticker Animation */}
             <div className="space-y-4">
-               {[
-                 { item: "Khadi Cotton Rolls", qty: "500m", time: "Just now", status: "PROCESSING" },
-                 { item: "Terracotta Pots", qty: "1000 pcs", time: "2m ago", status: "DISPATCHED" },
-                 { item: "Organic Spices", qty: "50 kg", time: "15m ago", status: "DELIVERED" },
-               ].map((order, i) => (
+               {wholesaleOrders.map((order, i) => (
                  <motion.div 
                    key={i}
                    animate={{ opacity: [0.6, 1, 0.6], y: [0, -2, 0] }}

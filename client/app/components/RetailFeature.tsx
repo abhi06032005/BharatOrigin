@@ -3,16 +3,12 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { MapPin, Store, Navigation, ShoppingBag, ArrowUpRight } from 'lucide-react';
+import { highlights } from './RetailFeatureData';
 
 const RetailFeatureSection = () => {
   const { scrollYProgress } = useScroll();
   const yPos = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
-  const highlights = [
-    { title: "Local Discovery", desc: "Made-in-India shops in your radius", icon: <MapPin /> },
-    { title: "Smart Geolocation", desc: "Real-time location-based filtering", icon: <Navigation /> },
-    { title: "In-Store Inventory", desc: "See available categories nearby", icon: <Store /> }
-  ];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center py-24 px-6 overflow-hidden">

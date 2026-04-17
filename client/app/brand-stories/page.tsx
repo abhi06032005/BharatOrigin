@@ -22,140 +22,8 @@ import {
   Store
 } from "lucide-react";
 
-interface Brand {
-  id: string;
-  name: string;
-  tagline: string;
-  category: string;
-  logo: string;
-  founder: string;
-  founderImage: string;
-  origin: string;
-  year: number;
-  indianOwnership: number;
-  story: string;
-  mission: string;
-  journey: string[];
-  shopUrl: string;
-  rating: number;
-  tags: string[];
-}
+import { Brand, BRANDS, CATEGORIES } from "./brandStoriesData";
 
-const CATEGORIES = [
-  { id: "all", label: "All Brands", icon: Sparkles },
-  { id: "beauty", label: "Beauty & Wellness", icon: Heart },
-  { id: "food", label: "Food & Beverages", icon: BadgeIndianRupee },
-  { id: "fashion", label: "Fashion & Apparel", icon: ShoppingBag },
-  { id: "tech", label: "Technology", icon: Rocket },
-  { id: "home", label: "Home & Living", icon: MapPin },
-];
-
-const BRANDS: Brand[] = [
-  {
-    id: "1",
-    name: "Forest Essentials",
-    tagline: "Luxurious Ayurveda",
-    category: "beauty",
-    logo: "🌿",
-    founder: "Mira Kulkarni",
-    founderImage: "👩‍💼",
-    origin: "Rishikesh, Uttarakhand",
-    year: 2000,
-    indianOwnership: 100,
-    story:
-      "Born from the ancient Ayurvedic traditions of Rishikesh, Forest Essentials was founded by Mira Kulkarni who envisioned bringing the wisdom of 5,000-year-old Ayurvedic beauty rituals to the modern world. Each product is handcrafted using time-honored techniques and the purest ingredients sourced from the Himalayas.",
-    mission:
-      "To revive traditional Ayurvedic beauty practices and make them accessible worldwide while preserving India's rich heritage of natural wellness.",
-    journey: [
-      "2000 — Founded in Rishikesh with just 5 products",
-      "2005 — Opened first flagship store in Delhi",
-      "2010 — Expanded to 50+ stores across India",
-      "2015 — International launch in luxury retail",
-      "2023 — 200+ products, a global Ayurvedic beauty icon",
-    ],
-    shopUrl: "/shop?brand=forest-essentials",
-    rating: 4.8,
-    tags: ["Ayurveda", "Luxury", "Natural"],
-  },
-  {
-    id: "2",
-    name: "Paper Boat",
-    tagline: "Drinks and Memories",
-    category: "food",
-    logo: "⛵",
-    founder: "Neeraj Kakkar",
-    founderImage: "👨‍💼",
-    origin: "Bengaluru, Karnataka",
-    year: 2013,
-    indianOwnership: 85,
-    story:
-      "Paper Boat was born from a deep nostalgia for the drinks our grandmothers made — aam panna, jaljeera, kokum. Neeraj Kakkar and his team at Hector Beverages wanted to bottle the flavors of Indian childhood and share those memories with a new generation.",
-    mission:
-      "To bring back traditional Indian beverages using authentic recipes and natural ingredients, one sip at a time.",
-    journey: [
-      "2013 — Launched with Aam Panna and Jaljeera",
-      "2015 — Raised $30M, expanded to 15 flavors",
-      "2017 — Reached 100,000+ retail outlets",
-      "2020 — Launched healthy snack line",
-      "2024 — India's most loved nostalgic beverage brand",
-    ],
-    shopUrl: "/shop?brand=paper-boat",
-    rating: 4.6,
-    tags: ["Traditional", "Nostalgic", "Natural"],
-  },
-  {
-    id: "3",
-    name: "boAt",
-    tagline: "Plug into Nirvana",
-    category: "tech",
-    logo: "🎧",
-    founder: "Aman Gupta & Sameer Mehta",
-    founderImage: "👨‍💻",
-    origin: "New Delhi",
-    year: 2016,
-    indianOwnership: 100,
-    story:
-      "boAt disrupted the Indian audio market by offering fashionable, affordable, and high-quality audio products. Aman Gupta, after noticing that Indians were paying premium prices for average audio gear, decided to create a homegrown brand that would be aspirational yet accessible.",
-    mission:
-      "To democratize premium audio in India by making world-class sound accessible to every young Indian.",
-    journey: [
-      "2016 — Started with indestructible Apple cables",
-      "2017 — Launched first audio product line",
-      "2019 — Became India's #1 earwear brand",
-      "2021 — Crossed ₹1,500 Cr revenue",
-      "2024 — Expanded to smartwatches and gaming gear",
-    ],
-    shopUrl: "/shop?brand=boat",
-    rating: 4.5,
-    tags: ["Audio", "Youth", "Affordable"],
-  },
-  {
-    id: "4",
-    name: "FabIndia",
-    tagline: "Celebrate India",
-    category: "fashion",
-    logo: "🧵",
-    founder: "John Bissell",
-    founderImage: "👔",
-    origin: "New Delhi",
-    year: 1960,
-    indianOwnership: 90,
-    story:
-      "FabIndia connects over 55,000 craft-based rural producers to modern urban markets. What started as an export house for home furnishings has become India's largest private platform for products made from traditional techniques and hand-based processes.",
-    mission:
-      "To provide employment to traditional artisans and sustain India's rich craft heritage through modern retail.",
-    journey: [
-      "1960 — Founded to export home furnishings",
-      "1976 — First retail store in Greater Kailash, Delhi",
-      "2000 — Expanded into garments and organic food",
-      "2010 — 150+ stores, empowering 40,000+ artisans",
-      "2024 — A legacy brand synonymous with Indian craftsmanship",
-    ],
-    shopUrl: "/shop?brand=fabindia",
-    rating: 4.7,
-    tags: ["Handloom", "Artisan", "Heritage"],
-  },
-];
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -210,9 +78,9 @@ const Index = () => {
             {/* Hero Profile Section */}
             <section className="relative px-6 pt-12 pb-16 mx-auto max-w-7xl">
               <div className="glass-warm rounded-[40px] border border-orange-200/40 p-8 md:p-12 shadow-2xl overflow-hidden relative">
-                
+
                 <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-orange-400/20 blur-[80px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/4" />
-                
+
                 <div className="flex flex-col items-start gap-8 md:flex-row md:items-center relative z-10">
                   <div className="flex h-32 w-32 items-center justify-center rounded-3xl bg-white shadow-xl shadow-orange-500/10 border border-orange-100 text-6xl">
                     {selectedBrand.logo}
@@ -249,8 +117,8 @@ const Index = () => {
                     className="flex flex-col items-center justify-center gap-2 rounded-3xl bg-slate-900 px-8 py-6 font-bold tracking-wider text-white shadow-lg transition-transform hover:scale-105 group"
                   >
                     <div className="flex items-center gap-2">
-                       <ShoppingBag className="h-5 w-5 text-orange-400" />
-                       EXPLORE & SHOP
+                      <ShoppingBag className="h-5 w-5 text-orange-400" />
+                      EXPLORE & SHOP
                     </div>
                     <span className="text-xs text-slate-400 font-medium group-hover:text-white transition-colors">Direct from brand</span>
                   </a>
@@ -261,7 +129,7 @@ const Index = () => {
             {/* Content Grid */}
             <div className="mx-auto max-w-7xl px-6 pb-20">
               <div className="grid gap-8 lg:grid-cols-12">
-                
+
                 {/* Left Column: Story */}
                 <div className="lg:col-span-8 space-y-8">
                   <div className="rounded-[32px] glass border border-white/60 p-10 shadow-lg">
@@ -359,13 +227,13 @@ const Index = () => {
                   {/* Shop CTA Box */}
                   <div className="rounded-[32px] glass-warm border border-orange-200/40 p-10 shadow-2xl text-center relative overflow-hidden flex flex-col items-center">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400/20 blur-2xl rounded-full" />
-                    
+
                     <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-orange-500 mb-6 shadow-md border border-orange-100">
                       <ShoppingBag size={32} />
                     </div>
                     <h3 className="text-2xl font-black text-slate-900 mb-2">Buy Authentic</h3>
                     <p className="text-slate-600 font-medium mb-8">Purchase directly from {selectedBrand.name}'s verified catalog.</p>
-                    
+
                     <a
                       href={selectedBrand.shopUrl}
                       className="w-full flex items-center justify-center gap-2 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white px-6 py-4 font-bold tracking-wider shadow-lg hover:shadow-xl transition-all"
@@ -389,15 +257,15 @@ const Index = () => {
             <header className="pt-8 px-6 mb-12">
               <div className="mx-auto flex max-w-7xl flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-3">
-                   <div className="w-12 h-12 bg-white rounded-2xl shadow-md border border-orange-100 flex items-center justify-center text-orange-500">
-                     <Flag size={24} />
-                   </div>
+                  <div className="w-12 h-12 bg-white rounded-2xl shadow-md border border-orange-100 flex items-center justify-center text-orange-500">
+                    <Flag size={24} />
+                  </div>
                   <div>
-                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">Brand Stories</h1>
-                     <span className="text-xs font-bold text-orange-600 uppercase tracking-widest">The Makers of India</span>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Brand Stories</h1>
+                    <span className="text-xs font-bold text-orange-600 uppercase tracking-widest">The Makers of India</span>
                   </div>
                 </div>
-                
+
                 <div className="relative group">
                   <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-orange-400" />
                   <input
@@ -420,7 +288,7 @@ const Index = () => {
             </header>
 
             <div className="mx-auto max-w-7xl px-6 pb-20">
-              
+
               {/* Category Filter */}
               <div className="mb-12 flex flex-wrap gap-3">
                 {CATEGORIES.map((cat) => {
@@ -430,11 +298,10 @@ const Index = () => {
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.id)}
-                      className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold transition-all shadow-sm ${
-                        active
+                      className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold transition-all shadow-sm ${active
                           ? "bg-slate-900 text-white shadow-xl scale-105"
                           : "glass border border-white/60 text-slate-600 hover:bg-white hover:text-slate-900"
-                      }`}
+                        }`}
                     >
                       <Icon className={`h-4 w-4 ${active ? 'text-orange-400' : 'text-slate-400'}`} />
                       {cat.label}
@@ -455,7 +322,7 @@ const Index = () => {
                     className="group flex flex-col items-start rounded-[32px] glass-warm border border-orange-200/40 p-8 text-left transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/10 cursor-pointer relative overflow-hidden"
                   >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 blur-2xl rounded-full" />
-                    
+
                     <div className="mb-6 flex w-full items-start justify-between relative z-10">
                       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-md border border-orange-100 text-4xl group-hover:scale-110 transition-transform duration-300">
                         {brand.logo}
@@ -465,22 +332,22 @@ const Index = () => {
                         {brand.indianOwnership}%
                       </div>
                     </div>
-                    
+
                     <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-1 relative z-10">
                       {brand.name}
                     </h3>
                     <p className="text-sm font-bold text-orange-600 relative z-10">
                       {brand.tagline}
                     </p>
-                    
+
                     <div className="mt-4 flex items-center gap-2 text-xs font-bold text-slate-500 relative z-10">
                       <Users className="h-4 w-4 text-slate-400" /> {brand.founder}
                       <span className="mx-1 text-slate-300">•</span>
                       <span>{brand.year}</span>
                     </div>
-                    
+
                     <div className="mt-6 flex flex-wrap gap-2 relative z-10">
-                      {brand.tags.slice(0,2).map((tag) => (
+                      {brand.tags.slice(0, 2).map((tag) => (
                         <span key={tag} className="rounded-lg bg-white/60 border border-white/80 px-2.5 py-1 text-[10px] font-black uppercase text-slate-600">
                           {tag}
                         </span>
@@ -488,9 +355,9 @@ const Index = () => {
                     </div>
 
                     <div className="mt-8 flex w-full items-center justify-between text-sm font-black text-slate-400 group-hover:text-orange-500 transition-colors relative z-10">
-                      READ STORY 
+                      READ STORY
                       <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-300">
-                         <ArrowRight className="h-4 w-4 text-orange-600" />
+                        <ArrowRight className="h-4 w-4 text-orange-600" />
                       </div>
                     </div>
                   </motion.button>
@@ -514,7 +381,7 @@ const Index = () => {
                 <div className="rounded-[40px] bg-gradient-to-br from-slate-900 to-slate-800 p-10 md:p-16 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-10">
                   <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/20 blur-[100px] rounded-full pointer-events-none" />
                   <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-500/20 blur-[100px] rounded-full pointer-events-none" />
-                  
+
                   <div className="relative z-10 max-w-2xl text-center md:text-left">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold tracking-widest uppercase mb-6 shadow-sm backdrop-blur-md">
                       <Store size={14} className="text-orange-400" /> Merchant Onboarding
@@ -530,7 +397,7 @@ const Index = () => {
 
                   <div className="relative z-10 shrink-0">
                     <button className="px-10 py-5 rounded-2xl bg-white text-slate-900 font-black tracking-wider hover:bg-orange-100 hover:scale-105 transition-all shadow-xl flex items-center gap-3">
-                       ONBOARD YOUR BRAND <ArrowRight className="w-5 h-5 text-orange-500" />
+                      ONBOARD YOUR BRAND <ArrowRight className="w-5 h-5 text-orange-500" />
                     </button>
                     <p className="text-center text-slate-400 text-xs font-bold mt-4 uppercase tracking-widest">Takes 5 minutes</p>
                   </div>
