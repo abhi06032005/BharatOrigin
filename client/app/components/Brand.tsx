@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Users, Fingerprint, History, PieChart, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 import { storyPoints } from './BrandData';
 
 const BrandStorySection = () => {
@@ -105,9 +106,9 @@ const BrandStorySection = () => {
             We don't just list products. We tell the story of the makers. Discover the struggles, the triumphs, and the vision of Indian entrepreneurs building for the world.
           </p>
 
-          <button className="mt-10 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold tracking-wider hover:bg-orange-500 hover:shadow-xl hover:shadow-orange-500/20 transition-all duration-300">
+          <Link href="/brand-stories" className="mt-10 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold tracking-wider hover:bg-orange-500 hover:shadow-xl hover:shadow-orange-500/20 transition-all duration-300 inline-block">
             READ THEIR STORIES
-          </button>
+          </Link>
         </motion.div>
 
       </div>

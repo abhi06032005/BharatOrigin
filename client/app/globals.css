@@ -172,6 +172,11 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ─── Utility Classes ────────────────────────────────────────────── */
 .animate-scan        { animation: scan 3s linear infinite alternate; }
 .animate-float-slow  { animation: float-slow 5s ease-in-out infinite; }
@@ -180,6 +185,7 @@ body {
 .animate-radar       { animation: radar-spin 10s linear infinite; }
 .animate-gradient-x  { animation: gradient-x 15s ease infinite; background-size: 200% 200%; }
 .animate-diya        { animation: diya-flicker 3s ease-in-out infinite; }
+.animate-fadeIn      { animation: fadeIn 0.5s ease-out forwards; }
 
 /* Text Gradient Utilities */
 .text-gradient-saffron {

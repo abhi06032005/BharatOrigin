@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Sparkles, MapPin, ShieldCheck, Star } from 'lucide-react';
+import Link from 'next/link';
 
 import { BHARAT_VERSIONS, HERITAGE_CARDS } from './HeroSectionData';
 
@@ -125,13 +126,13 @@ export default function HeroSection() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <button className="px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold tracking-wider hover:shadow-xl hover:shadow-orange-500/30 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 group">
+              <Link href="/shop" className="px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold tracking-wider hover:shadow-xl hover:shadow-orange-500/30 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 group">
                 EXPLORE TRADITIONS
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <button className="px-8 py-4 rounded-2xl glass-warm font-bold text-amber-800 tracking-wider hover:bg-white/80 transition-all duration-300 flex items-center justify-center gap-2">
+              </Link>
+              <Link href="/artisans" className="px-8 py-4 rounded-2xl glass-warm font-bold text-amber-800 tracking-wider hover:bg-white/80 transition-all duration-300 flex items-center justify-center gap-2">
                 VIEW ARTISANS
-              </button>
+              </Link>
             </div>
           </div>
 

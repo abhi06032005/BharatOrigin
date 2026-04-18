@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import Navbar from "../components/Navbar";
 
 import { Product, PRODUCT_DATA } from "./scanProductData";
 
@@ -86,7 +87,11 @@ export default function ScanPage() {
   if (!isMounted) return null;
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-slate-900 font-sans antialiased">
+    <div className="relative min-h-screen overflow-x-hidden text-slate-900 font-sans antialiased">
+      <div className="aurora-bg" />
+      <div className="indian-pattern-overlay" />
+      <div className="rangoli-corner rangoli-corner--tl" />
+      <div className="rangoli-corner rangoli-corner--br" />
       {/* --- Immersive Scanner --- */}
       {!product && !isFetching && !notFound && (
         <div className="relative h-screen w-full overflow-hidden bg-black">
@@ -142,7 +147,9 @@ export default function ScanPage() {
 
       {/* --- Results Dashboard --- */}
       {product && !isFetching && (
-        <main className="max-w-5xl mx-auto px-6 py-12">
+        <>
+        <Navbar />
+        <main className="max-w-5xl mx-auto px-6 py-12 mt-20 relative z-10">
           <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
               <span className="inline-block px-3 py-1 bg-cyan-50 text-cyan-700 text-[10px] font-bold rounded-full mb-3 uppercase tracking-widest">
@@ -171,9 +178,9 @@ export default function ScanPage() {
               <StatCard title="Manufacturing" value={product.origin} />
               <StatCard title="Headquarters" value={product.headquarters} />
               <StatCard title="Revenue" value={product.revenue} />
-              <div className="md:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Background</h3>
-                <p className="text-slate-600 leading-relaxed italic text-lg">"{product.about}"</p>
+              <div className="md:col-span-2 glass-warm p-8 rounded-[2.5rem] border border-orange-200/40 shadow-sm mt-4">
+                <h3 className="text-sm font-black text-orange-600 uppercase tracking-widest mb-4">Background</h3>
+                <p className="text-slate-700 font-medium leading-relaxed italic text-lg">"{product.about}"</p>
               </div>
             </div>
 
@@ -212,6 +219,7 @@ export default function ScanPage() {
             </div>
           </div>
         </main>
+        </>
       )}
 
       <style jsx global>{`
@@ -230,9 +238,9 @@ export default function ScanPage() {
 
 function StatCard({ title, value }: { title: string; value?: string }) {
   return (
-    <div className="bg-white p-6 rounded-[1.8rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
-      <p className="text-[9px] uppercase tracking-[0.15em] text-slate-400 font-bold mb-2">{title}</p>
-      <p className="text-slate-900 font-bold text-base leading-tight">{value || "—"}</p>
+    <div className="glass p-6 rounded-[1.8rem] border border-white/60 shadow-sm transition-all hover:shadow-md hover:border-orange-200/50">
+      <p className="text-[10px] uppercase tracking-[0.15em] text-orange-500 font-bold mb-2">{title}</p>
+      <p className="text-slate-900 font-black text-base leading-tight">{value || "—"}</p>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Factory, Truck, PackageCheck, BarChart4, ArrowRight, Zap, Boxes } from 'lucide-react';
+import Link from 'next/link';
 import { b2bHighlights, wholesaleOrders } from './wholeSaleData';
 
 const B2BWholesaleSection = () => {
@@ -63,9 +64,9 @@ const B2BWholesaleSection = () => {
             ))}
           </div>
 
-          <button className="mt-10 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold tracking-wider hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/20 transition-all duration-300 flex items-center gap-3 group">
+          <Link href="/manufacturers" className="mt-10 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold tracking-wider hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/20 transition-all duration-300 flex items-center gap-3 group w-fit">
             ACCESS B2B PORTAL <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Link>
         </motion.div>
 
         {/* ── Right Side: Mock Glass B2B Interface ── */}

@@ -223,11 +223,10 @@ export default function AIShopperPage() {
             ) : (
               <button
                 onClick={() => addToCart(product)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${
-                  isAdded
-                    ? 'bg-emerald-500 text-white scale-95'
-                    : 'bg-gray-900 text-white hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 active:scale-95'
-                }`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${isAdded
+                  ? 'bg-emerald-500 text-white scale-95'
+                  : 'bg-gray-900 text-white hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 active:scale-95'
+                  }`}
               >
                 {isAdded ? '✓ Added' : 'Add to Cart'}
               </button>
@@ -320,7 +319,7 @@ export default function AIShopperPage() {
                 Namaste! 🙏
               </h2>
               <p className="text-lg text-gray-500 max-w-lg mb-2 leading-relaxed">
-                I'm your <span className="font-bold text-orange-600">AI Personal Shopper</span> — tell me what you need, 
+                I'm your <span className="font-bold text-orange-600">AI Personal Shopper</span> — tell me what you need,
                 and I'll find the best Indian products for you.
               </p>
               <p className="text-sm text-gray-400 mb-10">
@@ -394,11 +393,10 @@ export default function AIShopperPage() {
               <div className={`max-w-[85%] ${msg.role === 'user' ? 'order-first' : ''}`}>
                 {/* Text Bubble */}
                 <div
-                  className={`px-5 py-3.5 rounded-2xl text-sm leading-relaxed ${
-                    msg.role === 'user'
-                      ? 'bg-gray-900 text-white rounded-br-md ml-auto'
-                      : 'bg-white border border-gray-100 text-gray-700 rounded-bl-md shadow-sm'
-                  }`}
+                  className={`px-5 py-3.5 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
+                    ? 'bg-gray-900 text-white rounded-br-md ml-auto'
+                    : 'bg-white border border-gray-100 text-gray-700 rounded-bl-md shadow-sm'
+                    }`}
                 >
                   {msg.content.split('\n').map((line, i) => (
                     <p key={i} className={i > 0 ? 'mt-2' : ''}>
@@ -525,11 +523,10 @@ export default function AIShopperPage() {
             <button
               type="submit"
               disabled={!input.trim() || isTyping}
-              className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-                input.trim() && !isTyping
-                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/25 hover:shadow-lg hover:shadow-orange-500/30 hover:scale-[1.02] active:scale-95'
-                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              }`}
+              className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${input.trim() && !isTyping
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/25 hover:shadow-lg hover:shadow-orange-500/30 hover:scale-[1.02] active:scale-95'
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
             >
               <Send className="w-4 h-4" />
               <span className="hidden sm:inline">Send</span>

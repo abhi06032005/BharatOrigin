@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Award, ShieldCheck, Users, Sparkles, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { features } from './ArtisianData';
 
 const ArtisanFeatureSection = () => {
@@ -64,12 +65,12 @@ const ArtisanFeatureSection = () => {
             ))}
           </div>
 
-          <motion.button 
-            whileHover={{ scale: 1.02, y: -2 }}
+          <Link
+            href="/artisans"
             className="mt-10 group flex items-center gap-3 px-8 py-4 bg-emerald-500 rounded-2xl font-bold tracking-wider text-white hover:bg-emerald-600 transition-all shadow-lg hover:shadow-emerald-500/30"
           >
             MEET THE ARTISANS <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </motion.button>
+          </Link>
         </motion.div>
 
         {/* ── Right Side: Bento Grid Showcase ── */}

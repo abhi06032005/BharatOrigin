@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Navbar from '../components/Navbar';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -227,7 +228,7 @@ const ManufacturerCard = ({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-gray-300">
+    <div className="glass-warm border border-orange-200/40 rounded-3xl p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-orange-500/10 hover:border-orange-300 relative overflow-hidden">
 
       {/* Top: emoji + badges */}
       <div className="flex items-start justify-between">
@@ -245,15 +246,15 @@ const ManufacturerCard = ({
       </div>
 
       {/* Category */}
-      <span className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 bg-gray-100 px-2.5 py-0.5 rounded-full border border-gray-200 self-start">
+      <span className="text-[11px] font-bold uppercase tracking-wider text-orange-600 bg-orange-100/50 px-3 py-1 rounded-full self-start">
         {m.category}
       </span>
 
       {/* Product name */}
-      <p className="text-[15px] font-semibold text-gray-900 leading-snug line-clamp-2">{m.product}</p>
+      <p className="text-base font-black text-slate-900 leading-snug line-clamp-2">{m.product}</p>
 
       {/* Manufacturer */}
-      <p className="text-xs font-semibold text-amber-600">🏭 {m.name}</p>
+      <p className="text-xs font-bold text-amber-600">🏭 {m.name}</p>
 
       {/* Location */}
       <p className="text-[11px] text-gray-400 font-semibold">📍 {m.location}, {m.state} · Est. {m.founded} · {m.employees} staff</p>
@@ -298,19 +299,19 @@ const ManufacturerCard = ({
       </div>
 
       {/* CTAs */}
-      <div className="flex gap-2 mt-1">
+      <div className="flex gap-2 mt-2">
         <button
           onClick={handleAdd}
-          className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${added || isInCart
-            ? 'bg-green-600 text-white'
-            : 'bg-gray-900 text-white hover:bg-gray-700 active:scale-[0.98]'
+          className={`flex-1 py-3 rounded-2xl text-sm font-bold tracking-wider transition-all duration-200 shadow-md ${added || isInCart
+            ? 'bg-emerald-500 text-white shadow-emerald-500/20'
+            : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:scale-[1.02] active:scale-95 shadow-orange-500/20'
             }`}
         >
           {added ? 'Added ✓' : isInCart ? 'In RFQ Cart' : '+ Add to RFQ'}
         </button>
         <button
           onClick={onDetail}
-          className="px-4 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 text-gray-700 hover:bg-gray-50 transition"
+          className="px-5 py-3 rounded-2xl text-sm font-bold border border-orange-200/60 bg-white/50 text-slate-700 hover:bg-white hover:text-orange-600 hover:border-orange-400 transition-all shadow-sm"
         >
           Details
         </button>
@@ -322,38 +323,38 @@ const ManufacturerCard = ({
 // ─── Detail Modal ─────────────────────────────────────────────────────────────
 
 const DetailModal = ({ m, onClose, onAdd, isInCart }: { m: Manufacturer; onClose: () => void; onAdd: () => void; isInCart: boolean }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
-    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
     <div
       onClick={e => e.stopPropagation()}
-      className="relative bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200"
+      className="relative glass-warm rounded-[40px] max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-orange-200/50"
     >
       {/* Header */}
-      <div className="p-6 border-b border-gray-200 flex gap-4">
-        <span className="text-5xl flex-shrink-0">{m.emoji}</span>
-        <div className="flex-1 min-w-0">
-          <p className="text-lg font-bold text-gray-900 leading-snug mb-1">{m.product}</p>
-          <p className="text-sm font-semibold text-amber-600 mb-2">🏭 {m.name}</p>
-          <div className="flex flex-wrap gap-1.5">
+      <div className="p-8 border-b border-orange-200/40 flex gap-6 mt-4 relative">
+        <button onClick={onClose} className="absolute top-0 right-6 text-slate-400 hover:text-orange-600 text-sm font-bold w-10 h-10 hover:bg-orange-100 rounded-2xl flex items-center justify-center transition">
+          ✕
+        </button>
+        <span className="text-6xl flex-shrink-0 p-4 bg-white rounded-3xl shadow-sm border border-orange-100">{m.emoji}</span>
+        <div className="flex-1 min-w-0 pr-8">
+          <p className="text-2xl font-black text-slate-900 leading-snug mb-2">{m.product}</p>
+          <p className="text-sm font-bold text-amber-600 mb-3">🏭 {m.name}</p>
+          <div className="flex flex-wrap gap-2">
             {m.certs.map(c => (
-              <span key={c} className="text-[10px] font-bold px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200">✓ {c}</span>
+              <span key={c} className="text-[10px] font-black px-2 py-1 rounded bg-emerald-50/80 text-emerald-700 border border-emerald-200/50 uppercase tracking-widest shadow-sm">✓ {c}</span>
             ))}
           </div>
         </div>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-sm font-semibold p-2 hover:bg-gray-100 rounded-lg flex-shrink-0 self-start transition">
-          ✕
-        </button>
       </div>
 
       <div className="p-6 space-y-6">
         {/* Story */}
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400 font-bold mb-2">The Story</p>
-          <p className="text-sm text-gray-600 leading-relaxed italic">{m.story}</p>
+        <div className="glass p-6 rounded-3xl border border-white/60 shadow-lg">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 font-bold mb-3">The Story & Heritage</p>
+          <p className="text-base text-slate-700 leading-relaxed font-medium">{m.story}</p>
         </div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {[
             ['Founded', m.founded],
             ['Employees', m.employees.toLocaleString()],
@@ -362,64 +363,71 @@ const DetailModal = ({ m, onClose, onAdd, isInCart }: { m: Manufacturer; onClose
             ['Contact', m.contactPerson],
             ['Phone', m.phone],
           ].map(([k, v]) => (
-            <div key={String(k)} className="p-3 rounded-xl border border-gray-200 bg-gray-50">
-              <p className="text-[10px] uppercase tracking-wide text-gray-400 font-bold mb-0.5">{k}</p>
-              <p className="text-sm font-semibold text-gray-900">{v}</p>
+            <div key={String(k)} className="p-4 rounded-2xl border border-orange-200/40 bg-white/50 text-center">
+              <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">{k}</p>
+              <p className="text-sm font-black text-slate-900">{v}</p>
             </div>
           ))}
         </div>
 
         {/* Speciality */}
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400 font-bold mb-2">Speciality</p>
-          <p className="text-sm text-gray-600">{m.speciality}</p>
+        <div className="p-6 rounded-3xl border border-orange-200/40 bg-white/50">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-orange-600 font-bold mb-2">Technical Speciality</p>
+          <p className="text-sm text-slate-700 font-medium leading-relaxed">{m.speciality}</p>
         </div>
 
         {/* License */}
-        <div className="p-4 rounded-xl border border-amber-200 bg-amber-50 flex items-start gap-3">
-          <span className="text-xl">📜</span>
+        <div className="p-5 rounded-2xl border border-emerald-200/50 bg-emerald-50/50 flex items-start gap-4 shadow-sm">
+          <span className="text-2xl p-2 bg-white rounded-xl shadow-sm border border-emerald-100">📜</span>
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-gray-400 font-bold mb-0.5">{m.licenseType}</p>
-            <p className="text-sm font-bold text-amber-700">{m.license}</p>
+            <p className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold mb-0.5">{m.licenseType}</p>
+            <p className="text-sm font-black text-emerald-900">{m.license}</p>
           </div>
         </div>
 
         {/* Address */}
-        <p className="text-sm text-gray-500">📍 {m.address}</p>
+        <p className="text-sm text-slate-600 font-bold px-2 flex items-center gap-2">
+          <span className="text-orange-500 text-lg">📍</span> {m.address}
+        </p>
 
         {/* India depth */}
-        <div className="p-4 rounded-xl border border-gray-200 bg-gray-50">
-          <div className="flex items-center gap-4 mb-2">
-            <span className="text-3xl font-bold text-amber-600">{m.indiaPct}%</span>
+        <div className="p-6 rounded-3xl border border-orange-200/40 bg-gradient-to-br from-white/80 to-orange-50/50">
+          <div className="flex items-center gap-5 mb-4">
+            <span className="text-4xl font-black text-emerald-600 bg-white px-3 py-1 rounded-xl shadow-sm border border-emerald-100">{m.indiaPct}%</span>
             <div>
-              <p className="text-sm text-gray-600"><span className="text-green-600 font-bold">{m.raw}%</span> Indian raw material</p>
-              <p className="text-xs text-gray-400">{m.rawNote}</p>
+              <p className="text-sm text-slate-700 font-bold"><span className="text-emerald-600 font-black">{m.raw}%</span> Indian raw material tracking</p>
+              <p className="text-xs text-slate-500 mt-0.5">{m.rawNote}</p>
             </div>
           </div>
-          <IndiaBar pct={m.raw} />
+          <div className="bg-white rounded-full p-1 shadow-inner">
+            <IndiaBar pct={m.raw} />
+          </div>
         </div>
 
         {/* Pricing */}
-        <div>
-          <div className="flex items-baseline gap-2 mb-2">
-            <span className="text-2xl font-bold text-gray-900">₹{m.price.toLocaleString('en-IN')}</span>
-            <span className="text-sm text-gray-400">{m.unit}</span>
+        <div className="p-6 rounded-3xl bg-slate-900 text-white relative overflow-hidden shadow-2xl">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/20 blur-2xl rounded-full" />
+          <div className="relative z-10">
+            <div className="flex items-baseline gap-2 mb-4">
+              <span className="text-4xl font-black text-white">₹{m.price.toLocaleString('en-IN')}</span>
+              <span className="text-sm text-slate-400 font-bold">{m.unit}</span>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="text-[10px] font-black px-3 py-1.5 rounded-lg bg-orange-500/20 text-orange-400 border border-orange-500/30 uppercase tracking-widest">📦 MOQ: {m.moq.toLocaleString()} {m.moqUnit}</span>
+              <span className="text-[10px] font-black px-3 py-1.5 rounded-lg bg-white/10 text-white border border-white/20 uppercase tracking-widest">GST {m.gst}</span>
+              <span className="text-[10px] font-black px-3 py-1.5 rounded-lg bg-white/10 text-white border border-white/20 uppercase tracking-widest">HSN {m.hsn}</span>
+            </div>
+            <p className="text-xs text-slate-400 font-medium">Payment terms: {m.paymentTerms}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="text-xs font-bold px-3 py-1 rounded-lg bg-green-50 text-green-700 border border-green-200">📦 MOQ: {m.moq.toLocaleString()} {m.moqUnit}</span>
-            <span className="text-xs font-bold px-3 py-1 rounded-lg bg-gray-100 text-gray-600 border border-gray-200">GST {m.gst}</span>
-            <span className="text-xs font-bold px-3 py-1 rounded-lg bg-gray-100 text-gray-600 border border-gray-200">HSN {m.hsn}</span>
-          </div>
-          <p className="text-xs text-gray-400 mt-2">Payment: {m.paymentTerms}</p>
         </div>
 
         {/* CTA */}
         <button
           onClick={onAdd}
-          className={`w-full py-3 rounded-xl text-sm font-semibold transition-all ${isInCart ? 'bg-green-600 text-white' : 'bg-gray-900 text-white hover:bg-gray-700'
+          className={`w-full py-5 rounded-2xl text-base font-black tracking-widest transition-all shadow-xl hover:scale-[1.01] active:scale-95 ${isInCart ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-orange-500/20'
             }`}
         >
-          {isInCart ? '✓ In RFQ Cart' : '🛒 Add to RFQ Cart'}
+          {isInCart ? '✓ IN RFQ CART' : '🛒 ADD TO RFQ CART'}
         </button>
       </div>
     </div>
@@ -489,10 +497,18 @@ export default function ManufacturersPage() {
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#faf8f3] flex">
+    <div className="relative min-h-screen overflow-x-hidden">
+      <div className="aurora-bg" />
+      <div className="indian-pattern-overlay" />
+      <div className="rangoli-corner rangoli-corner--tl" />
+      <div className="rangoli-corner rangoli-corner--br" />
+
+      <Navbar />
+
+      <div className="flex mt-20">
 
       {/* ── LEFT SIDEBAR ────────────────────────────────────────────── */}
-      <aside className="w-[280px] min-h-screen sticky top-0 border-r border-gray-200 bg-white px-5 py-7 overflow-y-auto flex-shrink-0">
+      <aside className="w-[280px] min-h-screen sticky top-0 border-r border-orange-200/40 glass-warm px-5 py-7 overflow-y-auto flex-shrink-0 z-10">
 
         {/* Header */}
         <div className="mb-7">
@@ -512,7 +528,7 @@ export default function ManufacturersPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search manufacturers..."
-            className="w-full px-4 py-3 pr-10 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"
+            className="w-full px-4 py-4 pr-10 rounded-2xl glass border border-orange-200/50 text-sm outline-none focus:ring-4 focus:ring-orange-400/20 focus:border-orange-400 transition font-medium"
           />
           <svg className="absolute right-3 top-3.5 text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
@@ -529,12 +545,12 @@ export default function ManufacturersPage() {
                 key={cat}
                 onClick={() => setActiveCat(cat)}
                 className={`w-full text-left px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all duration-150 flex items-center justify-between ${active
-                  ? 'bg-gray-900 text-white border-gray-900 shadow-sm'
-                  : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                  ? 'bg-slate-900 text-white border-slate-900 shadow-lg scale-105'
+                  : 'bg-white/50 text-slate-700 border-orange-200/40 hover:bg-white hover:border-orange-300'
                   }`}
               >
                 <span>{cat}</span>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${active ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'}`}>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${active ? 'bg-white/20 text-white' : 'bg-orange-100 text-orange-600'}`}>
                   {categoryCounts[cat] ?? 0}
                 </span>
               </button>
@@ -568,18 +584,20 @@ export default function ManufacturersPage() {
       <main className="flex-1 overflow-hidden">
 
         {/* Hero strip */}
-        <section className="px-10 py-10 border-b border-gray-200 bg-white">
-          <p className="text-xs uppercase tracking-[0.18em] text-gray-400 font-bold mb-2">Verified Partners</p>
-          <h1 className="text-5xl font-bold text-gray-900 mb-3">
+        <section className="px-10 py-12 border-b border-orange-200/40 glass-warm relative z-10">
+          <p className="text-xs uppercase tracking-[0.18em] text-orange-600 font-bold mb-3 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" /> Verified Partners
+          </p>
+          <h1 className="text-5xl lg:text-6xl font-black text-slate-900 mb-4 tracking-tight">
             {activeCat === 'All' ? 'All Manufacturers' : activeCat}
           </h1>
-          <p className="text-gray-600 text-lg max-w-3xl leading-8">
+          <p className="text-slate-600 text-lg max-w-3xl leading-relaxed font-medium">
             Licensed Indian manufacturers, cooperatives, and artisan clusters — with full supply chain transparency and bulk pricing.
           </p>
         </section>
 
         {/* Sort + Cart bar */}
-        <section className="sticky top-0 z-30 bg-white border-b border-gray-200 px-10 py-4">
+        <section className="sticky top-0 z-30 glass border-b border-orange-200/40 px-10 py-4 shadow-sm backdrop-blur-md">
           <div className="flex justify-between gap-5 flex-wrap items-center">
             <div className="flex gap-2 flex-wrap">
               {([
@@ -592,9 +610,9 @@ export default function ManufacturersPage() {
                 <button
                   key={opt.value}
                   onClick={() => setSortBy(opt.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${sortBy === opt.value
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition-all shadow-sm border ${sortBy === opt.value
+                    ? 'bg-slate-900 text-white border-slate-900'
+                    : 'bg-white text-slate-600 hover:bg-orange-50 border-orange-200/50 hover:text-orange-600'
                     }`}
                 >
                   {opt.label}
@@ -604,7 +622,7 @@ export default function ManufacturersPage() {
 
             <button
               onClick={() => setShowCart(true)}
-              className="px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold shadow-md flex items-center gap-2 hover:bg-gray-700 transition relative"
+              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-black tracking-wider shadow-lg shadow-orange-500/20 flex items-center gap-2 hover:scale-105 transition-transform"
             >
               🛒 RFQ Cart ({cartCount}) • ₹{cartTotal.toLocaleString('en-IN')}
             </button>
@@ -620,7 +638,7 @@ export default function ManufacturersPage() {
           </div>
 
           {filtered.length > 0 ? (
-            <div className="grid grid-cols-3 gap-6 items-stretch">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
               {filtered.map(m => (
                 <div key={m.id} className="h-full">
                   <ManufacturerCard
@@ -633,14 +651,15 @@ export default function ManufacturersPage() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <p className="text-lg font-semibold text-gray-700 mb-1">No manufacturers found</p>
-              <p className="text-sm text-gray-400">Try adjusting your search or filters</p>
+            <div className="flex flex-col items-center justify-center py-24 text-center glass-warm rounded-[40px] border border-orange-200/40">
+              <span className="text-5xl mb-4 opacity-50">🔍</span>
+              <p className="text-xl font-black text-slate-800 mb-1">No manufacturers found</p>
+              <p className="text-sm font-medium text-slate-500">Try adjusting your search or filters</p>
               <button
                 onClick={() => { setSearch(''); setActiveCat('All'); setF100(false); setFExport(false); }}
-                className="mt-5 px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-700 transition"
+                className="mt-6 px-6 py-3 rounded-2xl bg-slate-900 text-white text-sm font-bold tracking-wider hover:bg-black transition-all shadow-lg"
               >
-                Clear all filters
+                CLEAR ALL FILTERS
               </button>
             </div>
           )}
@@ -650,15 +669,15 @@ export default function ManufacturersPage() {
       {/* ── CART DRAWER ─────────────────────────────────────────────── */}
       {showCart && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowCart(false)} />
-          <div className="relative w-[380px] h-screen bg-white shadow-2xl border-l border-gray-200 flex flex-col">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowCart(false)} />
+          <div className="relative w-full max-w-[400px] h-screen glass-warm shadow-2xl border-l border-orange-200/50 flex flex-col pt-16">
             {/* Header */}
-            <div className="p-5 border-b border-gray-200 flex justify-between items-center">
+            <div className="p-6 border-b border-orange-200/40 flex justify-between items-center bg-white/40">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">RFQ Cart</h2>
-                <p className="text-xs text-gray-400 mt-0.5">{cartCount} item{cartCount !== 1 ? 's' : ''} · Bulk Quote Request</p>
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">RFQ Cart</h2>
+                <p className="text-xs font-bold text-orange-600 tracking-wide mt-1 uppercase">{cartCount} item{cartCount !== 1 ? 's' : ''} · Bulk Quote Request</p>
               </div>
-              <button onClick={() => setShowCart(false)} className="text-gray-400 hover:text-gray-700 text-sm font-semibold transition p-2 hover:bg-gray-100 rounded-lg">
+              <button onClick={() => setShowCart(false)} className="text-slate-400 hover:text-orange-600 text-sm font-bold transition p-2 hover:bg-orange-100/50 rounded-xl">
                 ✕ Close
               </button>
             </div>
@@ -721,7 +740,6 @@ export default function ManufacturersPage() {
         </div>
       )}
 
-      {/* ── DETAIL MODAL ─────────────────────────────────────────────── */}
       {modal && (
         <DetailModal
           m={modal}
@@ -730,6 +748,7 @@ export default function ManufacturersPage() {
           isInCart={isInCart(modal.id)}
         />
       )}
+      </div>
     </div>
   );
 }

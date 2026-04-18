@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CalendarDays, Sparkles, ShoppingBag, BookOpen, PartyPopper } from 'lucide-react';
+import { CalendarDays, Sparkles, ShoppingBag, BookOpen, PartyPopper, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 import { FestivalData, FestivalType, festivals } from './festivalFeatureData';
 
@@ -133,6 +134,9 @@ const FestivalModeSection: React.FC = () => {
             Bharat Origin adapts to our calendar. From Diwali lamps to Holi colors, the platform
             transforms to prioritize <span className="text-slate-900 font-bold">artisan-made festive essentials</span> and the stories behind them.
           </p>
+          <Link href="/festivals" className="mt-10 group flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold tracking-wider hover:bg-fuchsia-500 hover:shadow-xl hover:shadow-fuchsia-500/20 transition-all duration-300 w-fit">
+            EXPLORE FESTIVALS <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </motion.div>
 
       </div>

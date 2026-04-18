@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { MapPin, Store, Navigation, ShoppingBag, ArrowUpRight } from 'lucide-react';
+import { MapPin, Store, Navigation, ShoppingBag, ArrowUpRight, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { highlights } from './RetailFeatureData';
 
 const RetailFeatureSection = () => {
@@ -96,9 +97,9 @@ const RetailFeatureSection = () => {
             Indian-made goods using our real-time spatial geolocation engine.
           </p>
           
-          <button className="mt-10 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold tracking-wider hover:bg-emerald-500 hover:shadow-xl hover:shadow-emerald-500/20 transition-all duration-300 flexitems-center gap-3 group">
-            OPEN RADAR
-          </button>
+          <Link href="/ai-shopper" className="mt-10 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold tracking-wider hover:bg-emerald-500 hover:shadow-xl hover:shadow-emerald-500/20 transition-all duration-300 flex items-center gap-3 group w-fit">
+            OPEN RADAR <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </motion.div>
 
       </div>

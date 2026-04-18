@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import productsData from './products.json';
 import brandProductsData from './brand-products.json';
+import Navbar from '../components/Navbar';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -311,7 +312,16 @@ function ShopContent() {
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#faf8f3] flex">
+    <div className="relative min-h-screen overflow-x-hidden">
+      {/* Aurora Background */}
+      <div className="aurora-bg" />
+      <div className="indian-pattern-overlay" />
+      <div className="rangoli-corner rangoli-corner--tl" />
+      <div className="rangoli-corner rangoli-corner--br" />
+
+      <Navbar />
+
+      <div className="flex mt-20">
 
       {/* ── LEFT SIDEBAR ────────────────────────────────────────────── */}
       <aside className="w-[280px] min-h-screen sticky top-0 border-r border-gray-200 bg-white px-5 py-7 overflow-y-auto flex-shrink-0">
@@ -705,8 +715,8 @@ function ShopContent() {
                   <span>Total</span>
                   <span>₹{cartTotal.toLocaleString('en-IN')}</span>
                 </div>
-                <button className="w-full bg-gray-900 text-white py-3.5 rounded-xl font-semibold text-sm hover:bg-gray-700 transition active:scale-[0.99]">
-                  Checkout →
+                <button className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3.5 rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-orange-500/25 transition active:scale-[0.99]">
+                  Checkout → Support Indian Brands 🇮🇳
                 </button>
                 <button
                   onClick={() => setCartItems([])}
@@ -719,6 +729,7 @@ function ShopContent() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
@@ -726,9 +737,9 @@ function ShopContent() {
 export default function ShopPage() {
   return (
     <Suspense fallback={
-       <div className="min-h-screen bg-[#faf8f3] flex items-center justify-center flex-col gap-4">
-         <div className="w-10 h-10 border-4 border-gray-900 border-t-transparent rounded-full animate-spin" />
-         <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Loading Shop...</p>
+       <div className="min-h-screen bg-[#FFF8F0] flex items-center justify-center flex-col gap-4">
+         <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+         <p className="text-orange-600 font-bold uppercase tracking-widest text-sm">Loading Bharat Bazaar...</p>
        </div>
     }>
       <ShopContent />

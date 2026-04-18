@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 
 import { Brand, BRANDS, CATEGORIES } from "./brandStoriesData";
+import Navbar from "../components/Navbar";
 
 
 const Index = () => {
@@ -44,6 +45,10 @@ const Index = () => {
       {/* Global Backgrounds from globals.css */}
       <div className="aurora-bg" />
       <div className="indian-pattern-overlay" />
+      <div className="rangoli-corner rangoli-corner--tl" />
+      <div className="rangoli-corner rangoli-corner--br" />
+
+      <Navbar />
 
       <AnimatePresence mode="wait">
         {selectedBrand ? (

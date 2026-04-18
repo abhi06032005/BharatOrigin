@@ -2,142 +2,193 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, ArrowUpRight, Star, ShieldCheck } from 'lucide-react';
+import { Search, ArrowUpRight, MapPin, ShieldCheck } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Link from 'next/link';
 
 const statesData = [
-  { id: 1, name: 'Andhra Pradesh', craft: 'Kalamkari & Kondapalli Toys', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 90 },
-  { id: 2, name: 'Arunachal Pradesh', craft: 'Applique Work & Handwoven Textiles', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 85 },
-  { id: 3, name: 'Assam', craft: 'Muga Silk & Cane Crafts', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 88 },
-  { id: 4, name: 'Bihar', craft: 'Madhubani Painting & Manjusha Art', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 87 },
-  { id: 5, name: 'Chhattisgarh', craft: 'Bell Metal & Tribal Crafts', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 84 },
-  { id: 6, name: 'Goa', craft: 'Azulejos Tiles & Pottery', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 86 },
-  { id: 7, name: 'Gujarat', craft: 'Patola Silk & Lippan Art', image: 'https://images.unsplash.com/photo-1599932025732-f2560374e2d4', score: 96 },
-  { id: 8, name: 'Haryana', craft: 'Phulkari & Pottery', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 82 },
-  { id: 9, name: 'Himachal Pradesh', craft: 'Kullu Shawls & Chamba Rumal', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 88 },
-  { id: 10, name: 'Jharkhand', craft: 'Dokra Art & Bamboo Crafts', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 83 },
-  { id: 11, name: 'Karnataka', craft: 'Channapatna Toys & Sandalwood', image: 'https://images.unsplash.com/photo-1582234373443-41c38f45a720', score: 92 },
-  { id: 12, name: 'Kerala', craft: 'Kasavu Sarees & Coir Art', image: 'https://images.unsplash.com/photo-1593439343833-21c61833075c', score: 94 },
-  { id: 13, name: 'Madhya Pradesh', craft: 'Chanderi & Maheshwari Sarees', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 90 },
-  { id: 14, name: 'Maharashtra', craft: 'Paithani Sarees & Warli Painting', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 93 },
-  { id: 15, name: 'Manipur', craft: 'Handloom & Bamboo Crafts', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 87 },
-  { id: 16, name: 'Meghalaya', craft: 'Basketry & Weaving', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 85 },
-  { id: 17, name: 'Mizoram', craft: 'Handloom Textiles & Bamboo Crafts', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 84 },
-  { id: 18, name: 'Nagaland', craft: 'Naga Shawls & Wood Carving', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 86 },
-  { id: 19, name: 'Odisha', craft: 'Pattachitra & Silver Filigree', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 91 },
-  { id: 20, name: 'Punjab', craft: 'Phulkari & Blue Pottery', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 89 },
-  { id: 21, name: 'Rajasthan', craft: 'Blue Pottery & Block Prints', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 98 },
-  { id: 22, name: 'Sikkim', craft: 'Thangka Painting & Handicrafts', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 83 },
-  { id: 23, name: 'Tamil Nadu', craft: 'Kanchipuram Silk & Tanjore Painting', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 92 },
-  { id: 24, name: 'Telangana', craft: 'Pochampally Ikat & Bidriware', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 90 },
-  { id: 25, name: 'Tripura', craft: 'Bamboo & Cane Crafts', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 82 },
-  { id: 26, name: 'Uttar Pradesh', craft: 'Banarasi Silk & Chikankari', image: 'https://images.unsplash.com/photo-1610116306796-6fea9f4fae38', score: 95 },
-  { id: 27, name: 'Uttarakhand', craft: 'Woolen Shawls & Wood Carving', image: 'https://images.unsplash.com/photo-1590001158193-79cd76306f94', score: 88 },
-  { id: 28, name: 'West Bengal', craft: 'Terracotta & Jamdani', image: 'https://images.unsplash.com/photo-1621360341396-4886616ca88a', score: 89 }
+  { id: 1, name: 'Andhra Pradesh', craft: 'Kalamkari & Kondapalli Toys', score: 90, color: 'from-rose-400 to-pink-500', emoji: '🎨' },
+  { id: 2, name: 'Arunachal Pradesh', craft: 'Applique Work & Handwoven Textiles', score: 85, color: 'from-violet-400 to-purple-500', emoji: '🧵' },
+  { id: 3, name: 'Assam', craft: 'Muga Silk & Cane Crafts', score: 88, color: 'from-amber-400 to-orange-500', emoji: '🌿' },
+  { id: 4, name: 'Bihar', craft: 'Madhubani Painting & Manjusha Art', score: 87, color: 'from-yellow-400 to-amber-500', emoji: '🖌️' },
+  { id: 5, name: 'Chhattisgarh', craft: 'Bell Metal & Tribal Crafts', score: 84, color: 'from-orange-400 to-red-500', emoji: '🔔' },
+  { id: 6, name: 'Goa', craft: 'Azulejos Tiles & Pottery', score: 86, color: 'from-cyan-400 to-teal-500', emoji: '🏺' },
+  { id: 7, name: 'Gujarat', craft: 'Patola Silk & Lippan Art', score: 96, color: 'from-orange-500 to-amber-600', emoji: '✨' },
+  { id: 8, name: 'Haryana', craft: 'Phulkari & Pottery', score: 82, color: 'from-lime-400 to-green-500', emoji: '🌸' },
+  { id: 9, name: 'Himachal Pradesh', craft: 'Kullu Shawls & Chamba Rumal', score: 88, color: 'from-sky-400 to-blue-500', emoji: '🧣' },
+  { id: 10, name: 'Jharkhand', craft: 'Dokra Art & Bamboo Crafts', score: 83, color: 'from-emerald-400 to-green-600', emoji: '🎋' },
+  { id: 11, name: 'Karnataka', craft: 'Channapatna Toys & Sandalwood', score: 92, color: 'from-amber-500 to-orange-600', emoji: '🧸' },
+  { id: 12, name: 'Kerala', craft: 'Kasavu Sarees & Coir Art', score: 94, color: 'from-emerald-500 to-teal-600', emoji: '🌴' },
+  { id: 13, name: 'Madhya Pradesh', craft: 'Chanderi & Maheshwari Sarees', score: 90, color: 'from-rose-500 to-pink-600', emoji: '🧶' },
+  { id: 14, name: 'Maharashtra', craft: 'Paithani Sarees & Warli Painting', score: 93, color: 'from-orange-500 to-red-600', emoji: '🎭' },
+  { id: 15, name: 'Manipur', craft: 'Handloom & Bamboo Crafts', score: 87, color: 'from-fuchsia-400 to-pink-500', emoji: '🎪' },
+  { id: 16, name: 'Meghalaya', craft: 'Basketry & Weaving', score: 85, color: 'from-teal-400 to-cyan-500', emoji: '🧺' },
+  { id: 17, name: 'Mizoram', craft: 'Handloom Textiles & Bamboo Crafts', score: 84, color: 'from-indigo-400 to-blue-500', emoji: '🪄' },
+  { id: 18, name: 'Nagaland', craft: 'Naga Shawls & Wood Carving', score: 86, color: 'from-red-400 to-rose-500', emoji: '🪵' },
+  { id: 19, name: 'Odisha', craft: 'Pattachitra & Silver Filigree', score: 91, color: 'from-amber-400 to-yellow-500', emoji: '🪬' },
+  { id: 20, name: 'Punjab', craft: 'Phulkari & Blue Pottery', score: 89, color: 'from-sky-400 to-indigo-500', emoji: '💙' },
+  { id: 21, name: 'Rajasthan', craft: 'Blue Pottery & Block Prints', score: 98, color: 'from-orange-500 to-amber-600', emoji: '🏰' },
+  { id: 22, name: 'Sikkim', craft: 'Thangka Painting & Handicrafts', score: 83, color: 'from-violet-400 to-indigo-500', emoji: '🎑' },
+  { id: 23, name: 'Tamil Nadu', craft: 'Kanchipuram Silk & Tanjore Painting', score: 92, color: 'from-red-500 to-orange-600', emoji: '🎨' },
+  { id: 24, name: 'Telangana', craft: 'Pochampally Ikat & Bidriware', score: 90, color: 'from-emerald-400 to-teal-500', emoji: '⚱️' },
+  { id: 25, name: 'Tripura', craft: 'Bamboo & Cane Crafts', score: 82, color: 'from-lime-400 to-emerald-500', emoji: '🎋' },
+  { id: 26, name: 'Uttar Pradesh', craft: 'Banarasi Silk & Chikankari', score: 95, color: 'from-orange-500 to-rose-600', emoji: '🧵' },
+  { id: 27, name: 'Uttarakhand', craft: 'Woolen Shawls & Wood Carving', score: 88, color: 'from-sky-400 to-blue-600', emoji: '🏔️' },
+  { id: 28, name: 'West Bengal', craft: 'Terracotta & Jamdani', score: 89, color: 'from-rose-400 to-red-500', emoji: '🏺' },
 ];
 
 export default function StateDiscoveryGrid() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredStates = statesData.filter(state =>
-    state.name.toLowerCase().includes(searchTerm.toLowerCase())
+    state.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    state.craft.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    // THEME CHANGE: bg-[#1A1A1A] (Charcoal)
-    <section className="relative min-h-screen bg-[#1A1A1A] py-24 px-6 overflow-hidden">
-      
-      {/* Subtle Gradient Glow (Champagne Gold) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_-10%,rgba(197,160,89,0.08),transparent_60%)] pointer-events-none" />
-      
-      {/* Overlay Texture */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-screen" 
-        style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/carbon-fibre.png')` }} 
-      />
+    <div className="relative min-h-screen overflow-x-hidden">
+      {/* Aurora Background */}
+      <div className="aurora-bg" />
+      <div className="indian-pattern-overlay" />
+      <div className="rangoli-corner rangoli-corner--tl" />
+      <div className="rangoli-corner rangoli-corner--br" />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        
-        <div className="flex flex-col items-center mb-20">
+      <Navbar />
+
+      <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10">
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="flex items-center gap-4 mb-4"
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center gap-3 mb-6"
           >
-            <div className="h-px w-10 bg-[#C5A059]/40" />
-            <span className="text-[#C5A059] font-sans tracking-[0.5em] text-[9px] uppercase font-black">Heritage Archives</span>
-            <div className="h-px w-10 bg-[#C5A059]/40" />
+            <div className="h-px w-10 bg-orange-400/40" />
+            <span className="text-orange-600 font-black tracking-[0.4em] text-[10px] uppercase">Heritage Archives</span>
+            <div className="h-px w-10 bg-orange-400/40" />
           </motion.div>
-          
-          <h3 className="text-white font-serif font-light text-5xl md:text-6xl mb-12 text-center tracking-tight">
-            The <span className="text-[#C5A059] italic font-medium">Provenance</span> List
-          </h3>
 
-          {/* SEARCH BAR: Dark Minimalist Style */}
-          <div className="relative w-full max-w-lg">
-            <div className="flex items-center bg-[#242424] border border-white/5 focus-within:border-[#C5A059]/50 px-6 py-4 transition-all duration-300">
-              <Search className="text-[#C5A059]/40 mr-4" size={18} />
-              <input 
+          <h1 className="text-5xl md:text-7xl font-black text-slate-900 leading-[1.05] tracking-tight mb-6">
+            The <span className="text-gradient-saffron italic">Provenance</span> List
+          </h1>
+          <p className="text-lg text-slate-500 font-medium max-w-lg mx-auto mb-10">
+            Every Indian state carries a legacy of craft, colour, and culture. Explore them all.
+          </p>
+
+          {/* Search Bar */}
+          <div className="relative w-full max-w-lg mx-auto">
+            <div className="flex items-center glass-warm border border-orange-200/50 px-6 py-4 rounded-2xl shadow-md focus-within:border-orange-400 focus-within:shadow-orange-500/10 transition-all">
+              <Search className="text-orange-400 mr-4 flex-shrink-0" size={18} />
+              <input
                 type="text"
-                placeholder="Find a region..."
-                className="bg-transparent border-none outline-none text-white w-full placeholder:text-stone-600 font-light tracking-widest text-xs uppercase"
+                placeholder="Find a state or craft..."
+                className="bg-transparent border-none outline-none text-slate-800 w-full placeholder:text-slate-400 font-medium text-sm"
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
-        </div>
 
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {/* Stats strip */}
+          <div className="flex flex-wrap justify-center gap-8 mt-10">
+            {[
+              { val: '28', label: 'States & UTs' },
+              { val: '2,400+', label: 'GI Tagged Crafts' },
+              { val: '100%', label: 'Origin Verified' },
+            ].map((s, i) => (
+              <div key={i} className="text-center">
+                <p className="text-2xl font-black text-slate-900">{s.val}</p>
+                <p className="text-xs text-slate-400 font-semibold uppercase tracking-widest">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Grid */}
+        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
-            {filteredStates.map((state) => (
+            {filteredStates.map((state, i) => (
               <motion.div
                 layout
                 key={state.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                whileHover={{ y: -8 }}
-                className="group relative"
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ delay: i * 0.04, duration: 0.4 }}
+                whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                className="group"
               >
-                {/* MODERN GALLERY CARD */}
-                <div className="relative aspect-[3/4] bg-[#242424] overflow-hidden border border-white/5 group-hover:border-[#C5A059]/30 transition-colors duration-500">
-                  
-                  <img 
-                    src={state.image} 
-                    alt={state.name} 
-                    className="w-full h-full object-cover grayscale-[100%] group-hover:grayscale-0 transition-all duration-1000 scale-[1.02] group-hover:scale-110 opacity-40 group-hover:opacity-80"
-                  />
-                  
-                  {/* Subtle Dark Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent opacity-80" />
+                <Link href={`/state/${state.name.toLowerCase().replace(/ /g, '-')}`}>
+                  <div className="relative bg-white/80 backdrop-blur-sm border border-orange-100/60 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-orange-500/15 hover:border-orange-200 transition-all duration-400 h-full">
+                    {/* Gradient Top Strip */}
+                    <div className={`h-1.5 w-full bg-gradient-to-r ${state.color}`} />
 
-                  {/* SCORE BADGE: Bottom Right Minimalist */}
-                  <div className="absolute top-0 right-0 p-6 z-30">
-                    <span className="text-[10px] text-white/40 font-mono group-hover:text-[#C5A059] transition-colors tracking-tighter">
-                      RANK #{state.score}
-                    </span>
+                    {/* Bharat Score Badge */}
+                    <div className="absolute top-4 right-4 z-10">
+                      <span className="text-[10px] font-black text-slate-500 group-hover:text-orange-600 transition-colors">
+                        BS #{state.score}
+                      </span>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6">
+                      {/* Emoji + Name */}
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${state.color} flex items-center justify-center text-xl shadow-md flex-shrink-0`}>
+                          {state.emoji}
+                        </div>
+                        <div>
+                          <h3 className="font-black text-slate-900 text-lg leading-tight group-hover:text-orange-700 transition-colors">
+                            {state.name}
+                          </h3>
+                          <div className="flex items-center gap-1 mt-1">
+                            <MapPin className="w-3 h-3 text-orange-400" />
+                            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">India</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide mb-5 line-clamp-2">
+                        {state.craft}
+                      </p>
+
+                      {/* Verified + Explore Row */}
+                      <div className="flex items-center justify-between pt-4 border-t border-orange-100/60">
+                        <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600">
+                          <ShieldCheck className="w-3 h-3" /> GI Verified
+                        </span>
+                        <span className="flex items-center gap-1 text-[10px] font-black text-orange-600 group-hover:gap-2 transition-all">
+                          EXPLORE <ArrowUpRight size={12} />
+                        </span>
+                      </div>
+
+                      {/* Hover bottom line */}
+                      <div className={`h-0.5 w-0 group-hover:w-full bg-gradient-to-r ${state.color} transition-all duration-500 mt-3 rounded-full`} />
+                    </div>
                   </div>
-
-                  {/* CONTENT */}
-                  <div className="absolute bottom-0 inset-x-0 p-8 z-30">
-                    <h4 className="text-white font-serif text-3xl mb-1 tracking-tighter group-hover:text-[#C5A059] transition-colors">
-                      {state.name}
-                    </h4>
-                    
-                    <p className="text-stone-500 text-[11px] font-medium tracking-wide mb-6 uppercase">
-                      {state.craft}
-                    </p>
-
-                    <div className="h-px w-0 group-hover:w-full bg-[#C5A059]/50 transition-all duration-700 mb-6" />
-
-                    <button className="flex items-center gap-3 text-white text-[9px] font-black tracking-[0.4em] uppercase group-hover:gap-5 transition-all">
-                      EXPLORE <ArrowUpRight size={14} className="text-[#C5A059]" />
-                    </button>
-                  </div>
-                </div>
+                </Link>
               </motion.div>
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {filteredStates.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center justify-center py-20 text-center"
+          >
+            <div className="text-5xl mb-4">🔍</div>
+            <p className="text-lg font-bold text-slate-700 mb-1">No states found</p>
+            <p className="text-sm text-slate-400">Try searching a different name or craft</p>
+          </motion.div>
+        )}
       </div>
-    </section>
+    </div>
   );
 }

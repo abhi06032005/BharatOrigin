@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ScanText, Cpu, Search, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
 import { detectionStats } from './scanData';
 
 const AIScanSection = () => {
@@ -98,9 +99,9 @@ const AIScanSection = () => {
           </p>
 
           <div className="mt-12">
-            <button className="group relative px-10 py-5 bg-slate-900 text-white font-bold tracking-wider rounded-2xl hover:bg-cyan-500 hover:shadow-xl hover:shadow-cyan-500/20 transition-all duration-300 flex items-center justify-center gap-3">
+            <Link href="/scan" className="group relative px-10 py-5 bg-slate-900 text-white font-bold tracking-wider rounded-2xl hover:bg-cyan-500 hover:shadow-xl hover:shadow-cyan-500/20 transition-all duration-300 flex items-center justify-center gap-3 w-fit">
               TRY AI SCANNER <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            </button>
+            </Link>
           </div>
         </motion.div>
 

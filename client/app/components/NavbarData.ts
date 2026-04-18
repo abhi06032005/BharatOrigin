@@ -1,6 +1,10 @@
 export const NavItems = [
-  { name: 'Features', href: '#' },
-  { name: 'Artisans', href: '#' },
-  { name: 'Wholesale', href: '#' },
+  { name: 'Shop', href: '/shop' },
+  { name: 'Artisans', href: '/artisans' },
+  { name: 'Brand Stories', href: '/brand-stories' },
+  { name: 'Gully Gems', href: '/gullygems' },
+  { name: 'Wholesale', href: '/manufacturers' },
+  { name: 'States', href: '/state' },
   { name: 'Bharat Score', href: '/scan' },
+  { name: 'Nearby Shops', href: '/ai-shopper' },
 ];

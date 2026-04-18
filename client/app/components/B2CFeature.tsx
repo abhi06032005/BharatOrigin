@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ShoppingBag, MapPin, ShieldCheck, BarChart3, ArrowRight, CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
 import { features } from './B2CFeatureData';
 
 const B2CFeatureSection = () => {
@@ -39,9 +40,9 @@ const B2CFeatureSection = () => {
           </p>
 
           <div className="mt-10 flex flex-wrap gap-4">
-            <button className="px-8 py-4 bg-slate-900 text-white font-bold tracking-wider rounded-2xl hover:bg-orange-500 transition-all duration-300 flex items-center gap-3 shadow-xl hover:shadow-orange-500/20 group">
+            <Link href="/shop" className="px-8 py-4 bg-slate-900 text-white font-bold tracking-wider rounded-2xl hover:bg-orange-500 transition-all duration-300 flex items-center gap-3 shadow-xl hover:shadow-orange-500/20 group">
               START SHOPPING <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
           </div>
         </motion.div>
 

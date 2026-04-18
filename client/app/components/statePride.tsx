@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Map, Star, ShoppingBag, Users, Award, ChevronRight } from 'lucide-react';
+import { Map, Star, ShoppingBag, Users, Award, ChevronRight, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface StateInfo {
   accent: string;
@@ -95,6 +96,9 @@ const StatePrideSection: React.FC = () => {
               </button>
             ))}
           </div>
+          <Link href="/state" className="mt-6 group flex items-center gap-2 px-7 py-3.5 bg-slate-900 text-white rounded-2xl font-bold tracking-wider hover:bg-orange-500 hover:shadow-xl hover:shadow-orange-500/20 transition-all duration-300 w-fit">
+            EXPLORE ALL STATES <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </motion.div>
 
         {/* ── Right Side Glass Showcase ── */}
