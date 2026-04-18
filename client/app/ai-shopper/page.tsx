@@ -316,7 +316,7 @@ export default function AIShopperPage() {
               </motion.div>
 
               <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3 tracking-tight">
-                Namaste! 🙏
+                Namaste!
               </h2>
               <p className="text-lg text-gray-500 max-w-lg mb-2 leading-relaxed">
                 I'm your <span className="font-bold text-orange-600">AI Personal Shopper</span> — tell me what you need,
@@ -533,7 +533,7 @@ export default function AIShopperPage() {
             </button>
           </form>
           <p className="text-center text-[10px] text-gray-300 mt-2">
-            AI recommendations are based on your query — all products are from verified Indian brands 🇮🇳
+            AI recommendations are based on your query — all products are from verified Indian brands.
           </p>
         </div>
       </main>
@@ -664,7 +664,7 @@ export default function AIShopperPage() {
                   </div>
                   <div className="flex justify-between text-sm text-gray-500 mb-4">
                     <span>Delivery</span>
-                    <span className="font-bold text-emerald-600">FREE 🇮🇳</span>
+                    <span className="font-bold text-emerald-600">FREE</span>
                   </div>
                   <div className="flex justify-between font-black text-lg mb-5 pt-3 border-t border-gray-100">
                     <span>Total</span>

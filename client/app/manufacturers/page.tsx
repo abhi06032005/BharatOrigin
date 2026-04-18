@@ -230,9 +230,8 @@ const ManufacturerCard = ({
   return (
     <div className="glass-warm border border-orange-200/40 rounded-3xl p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-orange-500/10 hover:border-orange-300 relative overflow-hidden">
 
-      {/* Top: emoji + badges */}
-      <div className="flex items-start justify-between">
-        <span className="text-4xl">{m.emoji}</span>
+      {/* Top: badges */}
+      <div className="flex items-start justify-end gap-2 relative z-10 w-full min-h-[40px]">
         <div className="flex gap-1.5">
           <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200">
             ✓ {m.indiaPct}% India
@@ -334,14 +333,15 @@ const DetailModal = ({ m, onClose, onAdd, isInCart }: { m: Manufacturer; onClose
         <button onClick={onClose} className="absolute top-0 right-6 text-slate-400 hover:text-orange-600 text-sm font-bold w-10 h-10 hover:bg-orange-100 rounded-2xl flex items-center justify-center transition">
           ✕
         </button>
-        <span className="text-6xl flex-shrink-0 p-4 bg-white rounded-3xl shadow-sm border border-orange-100">{m.emoji}</span>
-        <div className="flex-1 min-w-0 pr-8">
-          <p className="text-2xl font-black text-slate-900 leading-snug mb-2">{m.product}</p>
-          <p className="text-sm font-bold text-amber-600 mb-3">🏭 {m.name}</p>
-          <div className="flex flex-wrap gap-2">
-            {m.certs.map(c => (
-              <span key={c} className="text-[10px] font-black px-2 py-1 rounded bg-emerald-50/80 text-emerald-700 border border-emerald-200/50 uppercase tracking-widest shadow-sm">✓ {c}</span>
-            ))}
+        <div className="flex flex-col md:flex-row gap-6 items-start">
+          <div className="flex-1 min-w-0 pr-8">
+            <p className="text-2xl font-black text-slate-900 leading-snug mb-2">{m.product}</p>
+            <p className="text-sm font-bold text-amber-600 mb-3">🏭 {m.name}</p>
+            <div className="flex flex-wrap gap-2">
+              {m.certs.map(c => (
+                <span key={c} className="text-[10px] font-black px-2 py-1 rounded bg-emerald-50/80 text-emerald-700 border border-emerald-200/50 uppercase tracking-widest shadow-sm">✓ {c}</span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -488,8 +488,8 @@ export default function ManufacturersPage() {
     switch (sortBy) {
       case 'price_asc': return [...list].sort((a, b) => a.price - b.price);
       case 'price_desc': return [...list].sort((a, b) => b.price - a.price);
-      case 'rating': return [...list].sort((a, b) => b.rating - a.rating);
-      case 'india_pct': return [...list].sort((a, b) => b.indiaPct - a.indiaPct);
+      case 'rating': return [...list].sort((a, b) => a.rating - b.rating);
+      case 'india_pct': return [...list].sort((a, b) => a.indiaPct - b.indiaPct);
       default: return list;
     }
   }, [activeCat, search, sortBy, f100, fExport]);
@@ -693,7 +693,6 @@ export default function ManufacturersPage() {
               ) : (
                 cart.map(item => (
                   <div key={item.id} className="border border-gray-200 rounded-xl p-4 flex gap-3">
-                    <span className="text-3xl flex-shrink-0">{item.emoji}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-gray-900 truncate">{item.product}</p>
                       <p className="text-xs text-amber-600 font-semibold mt-0.5">{item.name}</p>

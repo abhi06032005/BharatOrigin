@@ -27,7 +27,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full min-h-screen flex items-center pt-24 pb-12 overflow-hidden">
-      
+
       {/* ── Indian Decorative SVG Elements ── */}
       {/* Top-right Mandala */}
       <svg className="absolute -top-32 -right-32 w-[500px] h-[500px] opacity-[0.06] pointer-events-none" viewBox="0 0 200 200">
@@ -36,12 +36,12 @@ export default function HeroSection() {
         <circle cx="100" cy="100" r="50" fill="none" stroke="#C87533" strokeWidth="0.8" />
         <circle cx="100" cy="100" r="30" fill="none" stroke="#C87533" strokeWidth="0.5" />
         {[...Array(12)].map((_, i) => (
-          <line key={i} x1="100" y1="10" x2="100" y2="190" stroke="#C87533" strokeWidth="0.3" 
-                transform={`rotate(${i * 30} 100 100)`} />
+          <line key={i} x1="100" y1="10" x2="100" y2="190" stroke="#C87533" strokeWidth="0.3"
+            transform={`rotate(${i * 30} 100 100)`} />
         ))}
         {[...Array(8)].map((_, i) => (
-          <path key={`p${i}`} d={`M100 100 Q${80 + i * 5} ${50 - i * 3} ${100 + 40 * Math.cos(i * Math.PI / 4)} ${100 + 40 * Math.sin(i * Math.PI / 4)}`} 
-                fill="none" stroke="#FF9933" strokeWidth="0.5" />
+          <path key={`p${i}`} d={`M100 100 Q${80 + i * 5} ${50 - i * 3} ${100 + 40 * Math.cos(i * Math.PI / 4)} ${100 + 40 * Math.sin(i * Math.PI / 4)}`}
+            fill="none" stroke="#FF9933" strokeWidth="0.5" />
         ))}
       </svg>
 
@@ -56,10 +56,10 @@ export default function HeroSection() {
       </svg>
 
       <div className="w-full max-w-7xl mx-auto px-6 md:px-12 z-10 relative">
-        
+
         {/* ── Top Row: Badge + Language indicator ── */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -86,7 +86,7 @@ export default function HeroSection() {
 
         {/* ── Main Content Grid ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
+
           {/* ── Left Column: Giant Typography ── */}
           <div className="lg:col-span-6 flex flex-col items-start pr-0 lg:pr-8">
 
@@ -120,9 +120,9 @@ export default function HeroSection() {
                 — {BHARAT_VERSIONS[langIdx].sub}
               </motion.p>
             </AnimatePresence>
-            
+
             <p className="text-base md:text-lg text-slate-600 font-medium mb-10 max-w-md leading-relaxed">
-              The world&apos;s first transparent cultural supply chain. Trace every product back to the hands that made it — from 29 states, directly to your doorstep.
+              The world&apos;s first transparent cultural supply chain. Trace every product back to the hands that made it — from 28 states, directly to your doorstep.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -139,7 +139,7 @@ export default function HeroSection() {
           {/* ── Right Column: Dynamic Hero Image ── */}
           <div className="lg:col-span-6 relative h-[450px] lg:h-[520px] xl:h-[580px] w-full rounded-[40px] overflow-hidden shadow-2xl group border border-orange-200/50">
             <AnimatePresence mode="wait">
-              <motion.img 
+              <motion.img
                 key={activeCard}
                 src={HERITAGE_CARDS[activeCard].img}
                 initial={{ opacity: 0, scale: 1.05 }}
@@ -156,7 +156,7 @@ export default function HeroSection() {
             {/* Bottom Content Area */}
             <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 flex items-end justify-between">
               <div>
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   key={`score-${activeCard}`}
@@ -164,8 +164,8 @@ export default function HeroSection() {
                 >
                   BHARAT SCORE {HERITAGE_CARDS[activeCard].score}
                 </motion.div>
-                
-                <motion.h3 
+
+                <motion.h3
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   key={`title-${activeCard}`}
@@ -173,8 +173,8 @@ export default function HeroSection() {
                 >
                   {HERITAGE_CARDS[activeCard].title}
                 </motion.h3>
-                
-                <motion.div 
+
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   key={`loc-${activeCard}`}
@@ -203,8 +203,8 @@ export default function HeroSection() {
                   <ShieldCheck className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                   <p className="font-bold text-white text-xs leading-tight">100% Verified</p>
-                   <p className="text-[9px] text-white/70 uppercase tracking-wider">Origin Tracking</p>
+                  <p className="font-bold text-white text-xs leading-tight">100% Verified</p>
+                  <p className="text-[9px] text-white/70 uppercase tracking-wider">Origin Tracking</p>
                 </div>
               </div>
             </div>
@@ -212,12 +212,11 @@ export default function HeroSection() {
             {/* Position Indicators */}
             <div className="absolute top-8 left-8 flex gap-2">
               {HERITAGE_CARDS.map((_, i) => (
-                <button 
-                  key={i} 
+                <button
+                  key={i}
                   onClick={() => setActiveCard(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === activeCard ? 'w-8 bg-orange-500' : 'w-3 bg-white/40 hover:bg-white/60'
-                  }`} 
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i === activeCard ? 'w-8 bg-orange-500' : 'w-3 bg-white/40 hover:bg-white/60'
+                    }`}
                 />
               ))}
             </div>
@@ -229,8 +228,8 @@ export default function HeroSection() {
       {/* ── Inline SVG: Paisley wave divider at the bottom ── */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg viewBox="0 0 1440 80" className="w-full h-auto" preserveAspectRatio="none">
-          <path d="M0,60 Q180,20 360,40 Q540,60 720,30 Q900,0 1080,40 Q1260,80 1440,50 L1440,80 L0,80Z" 
-                fill="rgba(255,248,240,0.5)" />
+          <path d="M0,60 Q180,20 360,40 Q540,60 720,30 Q900,0 1080,40 Q1260,80 1440,50 L1440,80 L0,80Z"
+            fill="rgba(255,248,240,0.5)" />
         </svg>
       </div>
     </section>

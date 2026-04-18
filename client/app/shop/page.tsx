@@ -492,10 +492,10 @@ function ShopContent() {
                       </div>
                       <h3 className="text-xl font-black text-gray-900">
                         Searching for <span className="text-red-500 line-through decoration-2">{foreignBrandMatch.foreign.charAt(0).toUpperCase() + foreignBrandMatch.foreign.slice(1)}</span>?
-                        <span className="text-orange-600 ml-2">Try Indian! 💪</span>
+                        <span className="text-orange-600 ml-2">Try Indian!</span>
                       </h3>
                       <p className="text-sm text-gray-500 mt-1">
-                        <span className="font-bold capitalize">{foreignBrandMatch.foreign}</span> is a {foreignBrandMatch.logo} {foreignBrandMatch.country} brand.
+                        <span className="font-bold capitalize">{foreignBrandMatch.foreign}</span> is a {foreignBrandMatch.country} brand.
                         We found <span className="font-bold text-orange-700">{foreignBrandMatch.indianBrands.length} Indian alternatives</span> with equal or better quality.
                       </p>
                     </div>

@@ -51,11 +51,10 @@ const FestivalProductCard = ({
     >
       <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 blur-2xl rounded-full" />
 
-      {/* Top row: emoji + tag */}
-      <div className="flex items-start justify-between gap-3 relative z-10">
-        <span className="text-4xl p-2 bg-white rounded-2xl shadow-sm border border-orange-100">{product.emoji}</span>
+      {/* Top row: tag */}
+      <div className="flex items-start justify-end gap-3 relative z-10 w-full min-h-[40px]">
         {product.tag && (
-          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-sm">
+          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-sm self-start mt-2">
             {product.tag}
           </span>
         )}
@@ -70,7 +69,7 @@ const FestivalProductCard = ({
 
       {/* Artisan */}
       <p className="text-[11px] font-bold text-orange-600 uppercase tracking-widest relative z-10 mt-1">
-        🏺 {product.artisan}
+        {product.artisan}
       </p>
 
       {/* Name */}

@@ -137,10 +137,10 @@ export default function StateDiscoveryGrid() {
 
                     {/* Content */}
                     <div className="p-6">
-                      {/* Emoji + Name */}
+                      {/* Initial + Name */}
                       <div className="flex items-start gap-3 mb-4">
-                        <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${state.color} flex items-center justify-center text-xl shadow-md flex-shrink-0`}>
-                          {state.emoji}
+                        <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${state.color} flex items-center justify-center text-xl font-bold text-white shadow-md flex-shrink-0`}>
+                          {state.name[0]}
                         </div>
                         <div>
                           <h3 className="font-black text-slate-900 text-lg leading-tight group-hover:text-orange-700 transition-colors">

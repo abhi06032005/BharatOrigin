@@ -6,5 +6,5 @@ export const NavItems = [
   { name: 'Wholesale', href: '/manufacturers' },
   { name: 'States', href: '/state' },
   { name: 'Bharat Score', href: '/scan' },
-  { name: 'Nearby Shops', href: '/ai-shopper' },
+  { name: 'AI Shopper', href: '/ai-shopper' },
 ];
