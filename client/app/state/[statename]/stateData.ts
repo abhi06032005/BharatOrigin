@@ -1,3 +1,16 @@
+export type Product = {
+  id: number;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  category: string;
+  description: string;
+  rating: number;
+  reviews: number;
+  inStock: boolean;
+  tag?: string;
+};
+
 export type StateData = {
   displayName: string;
   capital: string;
@@ -5,18 +18,7 @@ export type StateData = {
   heroColor: string;
   accentColor: string;
   tagline: string;
-  products: {
-    id: number;
-    name: string;
-    price: number;
-    originalPrice?: number;
-    category: string;
-    description: string;
-    rating: number;
-    reviews: number;
-    inStock: boolean;
-    tag?: string;
-  }[];
+  products: Product[];
 };
 
 export const STATE_DATA: Record<string, StateData> = {

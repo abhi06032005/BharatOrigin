@@ -387,8 +387,6 @@ export default function App() {
     (params?.statename as string) ||
     "kerala";
 
-  ];
-
   /* normalize for STATE_DATA keys */
   const normalize = (value: string) =>
     value
