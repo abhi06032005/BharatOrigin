@@ -7,4 +7,5 @@ export const NavItems = [
   { name: 'States', href: '/state' },
   { name: 'Bharat Score', href: '/scan' },
   { name: 'AI Shopper', href: '/ai-shopper' },
+  { name: 'Growth OS', href: '/growth-os' },
 ];

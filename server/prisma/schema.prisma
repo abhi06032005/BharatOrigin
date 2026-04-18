@@ -1,0 +1,160 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//
+// USERS (Clerk-auth linked)
+//
+model User {
+  id      String   @id @default(uuid())
+  name    String?
+  email   String   @unique
+}
+
+//
+// STATE TABLE (for mapping state-wise shopping)
+//
+model State {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  region    String?
+  imageUrl  String?
+
+  brands    Brand[]
+  artisans  Artisan[]
+  products  Product[]
+}
+
+//
+// BRAND TABLE
+model Brand {
+  id             String   @id @default(uuid())
+  name           String
+  founderName    String?
+  stateId        String                     // FIXED
+  category       String
+  verification   String   @default("Pending")
+  bharatScore    Int      @default(0)
+
+  state          State     @relation(fields: [stateId], references: [id]) // FIXED
+  products       Product[]
+}
+
+//
+// PRODUCTS
+//
+model Product {
+  id         String   @id @default(uuid())
+  brandId    String?
+  name       String
+  category   String
+  price      Float
+  imageUrl   String?
+
+  stateId    String?
+
+  // relations
+  brand      Brand?   @relation(fields: [brandId], references: [id])
+  state      State?   @relation(fields: [stateId], references: [id])
+
+  wholesalerProducts WholesalerProduct[]
+}
+
+//
+// ARTISAN
+//
+model Artisan {
+  id            String   @id @default(uuid())
+  name          String
+  region        String
+  craftType     String
+  imageUrl      String?
+  bharatScore   Int      @default(100)
+
+  // Location
+  city          String?
+  latitude      Float?
+  longitude     Float?
+
+  // Detail fields (mirrors CITY_DB artisan shape)
+  specialty     String?
+  whyUnique     String?
+  buyingOptions String?
+
+  stateId       String?
+  state         State?   @relation(fields: [stateId], references: [id])
+}
+
+//
+// RETAILER
+//
+model Retailer {
+  id        String   @id @default(uuid())
+  name      String
+  location  String
+  shopType  String
+}
+
+//
+// WHOLESALER PRODUCT TABLE
+//
+model WholesalerProduct {
+  id            String   @id @default(uuid())
+  wholesalerId  String
+  productId     String
+
+  bulkPrice     Float
+  minOrderQty   Int
+  maxOrderQty   Int
+  stock         Int
+
+  product       Product @relation(fields: [productId], references: [id])
+}
+
+//
+// ONBOARDING REQUEST
+//
+model OnboardingRequest {
+  id              String   @id @default(uuid())
+  clerkUserId     String?
+  persona         String   // "artisan", "shop", "manufacturer", "brand"
+  
+  // Basic Details
+  name            String
+  phone           String
+  email           String
+  stateLocation   String
+  
+  // Artisan specific
+  craftType       String?
+  experience      String?
+  giTag           String?
+  
+  // Shop Owner specific
+  shopName        String?
+  gstNumber       String?
+  inventoryType   String?
+  
+  // Manufacturer specific
+  factoryName     String?
+  sector          String?
+  capacity        String?
+  
+  // Brand specific
+  brandName       String?
+  tagline         String?
+  inceptionYear   String?
+
+  status          String   @default("Pending")
+  createdAt       DateTime @default(now())
+}

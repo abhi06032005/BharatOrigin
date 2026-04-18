@@ -1,0 +1,22 @@
+services:
+  # Backend Service
+  - type: web
+    name: bharat-origin-server
+    runtime: node
+    rootDir: server
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.0
+
+  # Frontend Service
+  - type: web
+    name: bharat-origin-client
+    runtime: node
+    rootDir: client
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.0
