@@ -140,13 +140,13 @@ export default function AIShopperPage() {
         style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.04)' }}
       >
         {/* Image */}
-        <div className="relative h-44 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
           <Image
             src={product.image}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
             priority={index < 3}
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src =
@@ -610,7 +610,7 @@ export default function AIShopperPage() {
                             alt={item.name}
                             fill
                             sizes="64px"
-                            className="object-cover"
+                            className="object-cover object-center"
                             onError={(e) => {
                               (e.currentTarget as HTMLImageElement).src =
                                 `https://placehold.co/100x100/fff7ed/f97316?text=${encodeURIComponent(item.brand)}`;
