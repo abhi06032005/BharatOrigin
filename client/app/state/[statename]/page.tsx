@@ -169,18 +169,48 @@ const StateProductsPage = ({
     useState("All");
 
   useEffect(() => {
-    setLoading(true);
+    let active = true;
+    const fetchStateData = async () => {
+      setLoading(true);
+      
+      const fallback = STATE_DATA[stateName];
+      let productsLoaded = false;
+      
+      // 1. Fetch live regional data
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const res = await fetch(`${apiUrl}/api/shopping/state/${stateName}`);
+        if (res.ok) {
+          const dataLive = await res.json();
+          if (dataLive.products && dataLive.products.length > 0 && active) {
+             // We merge live products with fallback metadata
+             setData({
+               displayName: fallback?.displayName || stateName,
+               region: fallback?.region || "India",
+               tagline: fallback?.tagline || `Live fetched regional authentic products.`,
+               accentColor: fallback?.accentColor || "#111",
+               products: dataLive.products
+             });
+             setFilterCategory("All");
+             setLoading(false);
+             productsLoaded = true;
+          }
+        }
+      } catch (err) {
+        console.error("Live state fetch failed, falling back", err);
+      }
+      
+      // 2. Fallback to local offline data
+      if (active && !productsLoaded) {
+        setData(fallback);
+        setFilterCategory("All");
+        setLoading(false);
+      }
+    };
 
-    const timer = setTimeout(() => {
-      setData(
-        STATE_DATA[stateName]
-      );
+    fetchStateData();
 
-      setFilterCategory("All");
-      setLoading(false);
-    }, 700);
-
-    return () => clearTimeout(timer);
+    return () => { active = false; };
   }, [stateName]);
 
   const categories = data

@@ -209,7 +209,10 @@ const SkeletonCard = () => (
 function ShopContent() {
   const searchParams = useSearchParams();
   const brandQuery = searchParams.get('brand');
-  const products = [...(productsData as Product[]), ...(brandProductsData as Product[])];
+  
+  // Start with offline fallback data
+  const fallbackData = [...(productsData as Product[]), ...(brandProductsData as Product[])];
+  const [products, setProducts] = useState<Product[]>(fallbackData);
 
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -222,6 +225,7 @@ function ShopContent() {
     }, 300);
     return () => clearTimeout(handler);
   }, [search]);
+  
   const [selectedScore, setSelectedScore] = useState<'all' | 'green' | 'orange' | 'red'>('all');
   const [sortBy, setSortBy] = useState<'featured' | 'price_asc' | 'price_desc' | 'rating' | 'bharat_score'>('featured');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -239,11 +243,41 @@ function ShopContent() {
     setSwadeshiDismissed(false);
   }, [debouncedSearch]);
 
+  // Fetch Live Data (Pure Indian)
   useEffect(() => {
-    setIsLoading(true);
-    const t = setTimeout(() => setIsLoading(false), 1500); // Fake load time
-    return () => clearTimeout(t);
-  }, [brandQuery]);
+    let active = true;
+    const fetchLiveProducts = async () => {
+      setIsLoading(true);
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const res = await fetch(`${apiUrl}/api/shopping/explore?category=${selectedCategory}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.products && data.products.length > 0 && active) {
+            setProducts(data.products);
+            setIsLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Live fetch failed, using offline fallback", err);
+      }
+      
+      // If failed or empty, fallback
+      if (active) {
+        // Just filter the fallback data by category so it still reacts to clicks
+        const filteredFallback = selectedCategory === 'All' 
+          ? fallbackData 
+          : fallbackData.filter(p => p.category === selectedCategory);
+        setProducts(filteredFallback);
+        setIsLoading(false);
+      }
+    };
+
+    fetchLiveProducts();
+
+    return () => { active = false; };
+  }, [selectedCategory, brandQuery]);
 
   // ── Cart helpers ──────────────────────────────────────────────────────────
 

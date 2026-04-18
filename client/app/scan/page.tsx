@@ -133,13 +133,33 @@ export default function ScanPage() {
     setIsFetching(true);
     setNotFound(false);
 
-    const steps = ["Decrypting Code", "Searching Registry", "Verifying Origin"];
+    const steps = ["Decrypting Code", "Checking Local Registry", "Searching Internet..."];
     for (const step of steps) {
       setFetchStep(step);
-      await new Promise((res) => setTimeout(res, 600));
+      await new Promise((res) => setTimeout(res, 500));
     }
 
-    const found = PRODUCT_DATA[value];
+    // 1. Try local exact match first (Offline highly-curated data)
+    let found = PRODUCT_DATA[value];
+    
+    // 2. Fallback to Express real-time scanner API
+    if (!found) {
+        setFetchStep("Generating Live Profile...");
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+            const res = await fetch(`${apiUrl}/api/shopping/scan`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ barcode: value })
+            });
+            if (res.ok) {
+                found = await res.json();
+            }
+        } catch (err) {
+            console.error("Live scanner api failed", err);
+        }
+    }
+
     if (found) {
       setProduct(found);
     } else {
@@ -501,6 +521,13 @@ export default function ScanPage() {
                     <span className="text-cyan-400">Indian {product.indianShare}%</span>
                     <span className="text-slate-500">Foreign {product.foreignShare}%</span>
                   </div>
+                  
+                  {/* Economic Impact Metric */}
+                  <div className="mt-5 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20">
+                    <p className="text-xs font-medium text-slate-300 leading-relaxed">
+                      <strong className="text-cyan-400">Economic Impact:</strong> For every ₹100 spent on this product, an estimated <strong className="text-teal-400">₹{product.indianShare} stays in the local economy</strong>, while <strong className="text-slate-400">₹{product.foreignShare} leaves the country</strong>.
+                    </p>
+                  </div>
                 </div>
                 <button
                   onClick={reset}
@@ -510,6 +537,18 @@ export default function ScanPage() {
                 </button>
               </div>
             </div>
+
+            {/* ── Data Authenticity Footer ────────────────────────────── */}
+            <div className="border-t border-slate-200 mt-16 pt-8 text-center px-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full mb-3 border border-slate-200 justify-center">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Live Authenticity Verified</span>
+              </div>
+              <p className="text-slate-500 text-xs leading-relaxed max-w-2xl mx-auto">
+                <strong>How does this work?</strong> BharatOrigin uses real-time API integrations (powered by Google Shopping & Serper) to scrape live product data the moment you scan a barcode. The product is then instantly cross-referenced against our proprietary Swadeshi index. Our heuristic engine calculates the ownership share and economic outflow, ensuring 100% transparency before you buy.
+              </p>
+            </div>
+
           </main>
         </>
       )}

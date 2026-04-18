@@ -96,21 +96,60 @@ export default function AIShopperPage() {
     setMessages(prev => [...prev, userMsg]);
 
     setIsTyping(true);
-    // Simulate AI processing time
-    await delay(800 + Math.random() * 1200);
 
-    const results = findMatchingProducts(text);
-    const aiContent = generateAIResponse(text, results);
+    try {
+      // Use environment variable for backend URL if hosted, fallback to localhost for local dev
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/shopping/search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: text })
+      });
+      
+      let finalResults: MatchResult[] = [];
+      const data = await response.json();
 
-    const aiMsg: ChatMessage = {
-      id: (Date.now() + 1).toString(),
-      role: 'assistant',
-      content: aiContent,
-      results,
-      timestamp: new Date(),
-    };
-    setIsTyping(false);
-    setMessages(prev => [...prev, aiMsg]);
+      if (response.ok && data.products && data.products.length > 0) {
+        // Map to MatchResult structure
+        finalResults = data.products.map((p: ShopperProduct) => ({
+          product: p,
+          relevanceScore: 100,
+          matchReasons: ['Live Internet Match']
+        }));
+      } else {
+        throw new Error("Empty or failed response from live API");
+      }
+
+      const aiContent = generateAIResponse(text, finalResults);
+
+      const aiMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: aiContent,
+        results: finalResults,
+        timestamp: new Date(),
+      };
+      
+      setIsTyping(false);
+      setMessages(prev => [...prev, aiMsg]);
+
+    } catch (err) {
+      console.warn("Live search failed, falling back to local DB...", err);
+      // Fallback to local offline cache
+      await delay(800);
+      const results = findMatchingProducts(text);
+      const aiContent = generateAIResponse(text, results);
+
+      const aiMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: aiContent,
+        results,
+        timestamp: new Date(),
+      };
+      setIsTyping(false);
+      setMessages(prev => [...prev, aiMsg]);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {

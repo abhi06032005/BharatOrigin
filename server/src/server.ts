@@ -9,6 +9,7 @@ import morgan from 'morgan';
 import onboardingRoute from "../routes/onboardingRoute";
 import artisansRoute from "../routes/artisansRoute";
 import growthOsRoute from "../routes/growthOsRoute";
+import shoppingRoute from "../routes/shoppingRoute";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use(express.json());
 app.use('/api/onboarding', onboardingRoute);
 app.use('/api/artisans', artisansRoute);
 app.use('/api/growth-os', growthOsRoute);
+app.use('/api/shopping', shoppingRoute);
 
 // ── Global Error Handler ──
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

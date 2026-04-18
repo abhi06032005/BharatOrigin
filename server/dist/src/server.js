@@ -12,6 +12,8 @@ const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const morgan_1 = __importDefault(require("morgan"));
 const onboardingRoute_1 = __importDefault(require("../routes/onboardingRoute"));
 const artisansRoute_1 = __importDefault(require("../routes/artisansRoute"));
+const growthOsRoute_1 = __importDefault(require("../routes/growthOsRoute"));
+const shoppingRoute_1 = __importDefault(require("../routes/shoppingRoute"));
 const app = (0, express_1.default)();
 // ── Security & Production Middlewares ──
 app.use((0, helmet_1.default)());
@@ -34,6 +36,8 @@ app.use(express_1.default.json());
 // ── Routes ──
 app.use('/api/onboarding', onboardingRoute_1.default);
 app.use('/api/artisans', artisansRoute_1.default);
+app.use('/api/growth-os', growthOsRoute_1.default);
+app.use('/api/shopping', shoppingRoute_1.default);
 // ── Global Error Handler ──
 app.use((err, req, res, next) => {
     console.error('Unhandled Server Error: ', err.message);
