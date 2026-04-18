@@ -53,84 +53,128 @@ function ArtisanCard({ artisan, index }: { artisan: BackendArtisan; index: numbe
   const c = CARD_COLORS[index % CARD_COLORS.length];
   const bsMeta = getBharatMeta(artisan.bharat_score);
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${artisan.latitude},${artisan.longitude}`;
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.06 }}
-      className={`group relative bg-white/80 backdrop-blur-sm border ${c.border} rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-1 transition-all duration-300`}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ y: -8, transition: { duration: 0.2 } }}
+      transition={{ duration: 0.5, delay: index * 0.05 }}
+      className={`group relative bg-white/60 backdrop-blur-md border ${c.border} rounded-[2rem] overflow-hidden hover:shadow-2xl hover:shadow-orange-500/15 transition-all duration-500`}
     >
-      {/* Gradient top strip */}
+      {/* Premium Glow Effect */}
+      <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${c.gradient} opacity-0 group-hover:opacity-10 blur-3xl transition-opacity duration-700`} />
+
+      {/* Header Accent Line */}
       <div className={`h-1.5 w-full bg-gradient-to-r ${c.gradient}`} />
-      <div className="p-5">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-3">
-            <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${c.gradient} flex items-center justify-center text-white text-lg font-black shadow-lg flex-shrink-0`}>
+
+      <div className="p-6">
+        {/* Header Section */}
+        <div className="flex items-start justify-between mb-5">
+          <div className="flex items-center gap-4">
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${c.gradient} flex items-center justify-center text-white text-xl font-black shadow-[0_8px_20px_-4px_rgba(0,0,0,0.1)] flex-shrink-0 group-hover:scale-110 transition-transform duration-500`}>
               {artisan.name[0]}
             </div>
             <div>
-              <h3 className="font-black text-slate-900 text-[15px] leading-snug">{artisan.name}</h3>
-              <span className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1 ${c.tag}`}>
-                {artisan.craft}
-              </span>
+              <h3 className="font-black text-slate-900 text-lg leading-tight tracking-tight group-hover:text-orange-600 transition-colors duration-300">
+                {artisan.name}
+              </h3>
+              <div className="flex items-center gap-2 mt-1">
+                <span className={`inline-flex items-center px-3 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase ${c.tag}`}>
+                  {artisan.craft}
+                </span>
+                <span className="flex items-center gap-1 text-[10px] font-black text-slate-400">
+                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> TOP RATED
+                </span>
+              </div>
             </div>
           </div>
-          <button onClick={() => setLiked(!liked)} className="p-2 rounded-xl hover:bg-rose-50 transition-colors flex-shrink-0">
-            <Heart className={`w-4 h-4 transition-all ${liked ? "fill-rose-500 text-rose-500" : "text-gray-300"}`} />
-          </button>
+          <motion.button
+            whileTap={{ scale: 0.8 }}
+            onClick={() => setLiked(!liked)}
+            className={`p-2.5 rounded-2xl transition-all duration-300 ${liked ? "bg-rose-50 border-rose-100" : "bg-slate-50 border-slate-100"} border`}
+          >
+            <Heart className={`w-4 h-4 transition-all ${liked ? "fill-rose-500 text-rose-500" : "text-slate-300"}`} />
+          </motion.button>
         </div>
-        {/* Location + Distance + Score */}
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <span className="flex items-center gap-1 text-xs text-slate-500 font-semibold">
-            <MapPin className="w-3 h-3 text-orange-400" /> {artisan.city}, {artisan.region}
-          </span>
-          <span className="text-slate-300">·</span>
-          <span className="flex items-center gap-1 text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded-lg border border-slate-200">
-            <Navigation className="w-3 h-3 text-emerald-500" />
-            {artisan.distance_km} km away
-          </span>
-          <span className={`ml-auto text-[10px] font-black px-2.5 py-1 rounded-full border ${bsMeta.bg} ${bsMeta.text} ${bsMeta.border}`}>
-            BS {artisan.bharat_score}
-          </span>
+
+        {/* Location & Metrics Grid */}
+        <div className="grid grid-cols-2 gap-3 mb-5">
+          <div className="bg-slate-50/50 rounded-2xl p-3 border border-slate-100 flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-sm">
+              <MapPin className="w-4 h-4 text-orange-500" />
+            </div>
+            <div>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Location</p>
+              <p className="text-[11px] font-bold text-slate-700 truncate max-w-[80px]">{artisan.city}</p>
+            </div>
+          </div>
+          <div className="bg-emerald-50/30 rounded-2xl p-3 border border-emerald-100/50 flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-sm">
+              <Navigation className="w-4 h-4 text-emerald-500" />
+            </div>
+            <div>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Distance</p>
+              <p className="text-[11px] font-bold text-slate-700">{artisan.distance_km} km</p>
+            </div>
+          </div>
         </div>
-        {/* Specialty */}
-        <p className="text-sm text-slate-600 leading-relaxed mb-4">{artisan.specialty}</p>
-        {/* CTA buttons */}
-        <div className="flex gap-2 mb-2">
+
+        {/* Specialty & Bharat Score */}
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-xs text-slate-600 font-medium italic pr-4">
+            "{artisan.specialty}"
+          </p>
+          <div className={`flex-shrink-0 flex flex-col items-center justify-center w-12 h-12 rounded-full border-2 ${bsMeta.border} ${bsMeta.bg} shadow-sm`}>
+            <p className="text-[8px] font-black text-slate-400 leading-none mb-0.5">S-RANK</p>
+            <p className={`text-sm font-black ${bsMeta.text}`}>{artisan.bharat_score}</p>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3">
           <a
             href={mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex-1 flex items-center justify-center gap-2 text-xs font-bold py-2.5 rounded-xl text-white ${c.btn} transition-all active:scale-95 shadow-sm`}
+            className={`flex-[2] flex items-center justify-center gap-2.5 text-xs font-black py-3.5 rounded-2xl text-white ${c.btn} shadow-lg shadow-orange-500/20 active:scale-95 transition-all duration-300`}
           >
-            <ExternalLink className="w-3.5 h-3.5" /> View on Maps
+            <Globe className="w-4 h-4" /> NAVIGATE
           </a>
           <button
             onClick={() => setExpanded(!expanded)}
-            className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:border-orange-300 hover:text-orange-600 transition-all flex items-center gap-1.5"
+            className={`flex-1 flex items-center justify-center rounded-2xl border transition-all duration-300 ${expanded ? "bg-slate-900 border-slate-900 text-white" : "bg-white border-slate-200 text-slate-600 hover:border-orange-300"}`}
           >
-            {expanded ? <><ChevronUp className="w-3 h-3" /> Less</> : <><ChevronDown className="w-3 h-3" /> More</>}
+            {expanded ? <X className="w-4 h-4" /> : <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />}
           </button>
         </div>
-        {/* Expandable section */}
+
+        {/* Detailed Info */}
         <AnimatePresence>
           {expanded && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
               className="overflow-hidden"
             >
-              <div className="pt-4 space-y-3 border-t border-slate-100">
-                <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">✨ Why Unique</p>
-                  <p className="text-sm text-slate-700 leading-relaxed">{artisan.why_unique}</p>
+              <div className="pt-6 mt-6 border-t border-dashed border-slate-200 space-y-5">
+                <div className="relative">
+                  <div className="absolute left-0 top-0 w-1 h-full bg-amber-400 rounded-full" />
+                  <div className="pl-4">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                      <Zap className="w-3 h-3 text-amber-500" /> WHY UNIQUE
+                    </p>
+                    <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                      {artisan.why_unique}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">🛍️ Buying Options</p>
-                  <p className="text-sm text-slate-700 leading-relaxed">{artisan.buying_options}</p>
+                <div className="bg-orange-50/50 rounded-2xl p-4 border border-orange-100">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">GET IT NOW</p>
+                  <p className="text-xs text-orange-900 font-bold leading-relaxed">
+                    {artisan.buying_options}
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -140,6 +184,7 @@ function ArtisanCard({ artisan, index }: { artisan: BackendArtisan; index: numbe
     </motion.div>
   );
 }
+
 // ─── Radar Ping ──────────────────────────────────────────────────────────────
 function RadarPing({ delay, top, left, label }: { delay: number; top: string; left: string; label: string }) {
   return (
@@ -147,18 +192,20 @@ function RadarPing({ delay, top, left, label }: { delay: number; top: string; le
       className="absolute"
       style={{ top, left }}
       initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: [0, 1, 0.6, 0], scale: [0, 1.2, 1, 0] }}
-      transition={{ duration: 3.5, repeat: Infinity, delay }}
+      animate={{ opacity: [0, 1, 0.8, 0], scale: [0, 1.1, 1, 0] }}
+      transition={{ duration: 4, repeat: Infinity, delay }}
     >
-      <div className="relative">
-        <div className="w-3 h-3 bg-amber-400 rounded-full shadow-[0_0_12px_rgba(251,191,36,0.8)]" />
+      <div className="relative group cursor-crosshair">
+        <div className="w-2.5 h-2.5 bg-orange-500 rounded-full ring-4 ring-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.6)]" />
         <motion.div
-          className="absolute -inset-2 border border-amber-400/40 rounded-full"
-          animate={{ scale: [1, 2.5], opacity: [0.6, 0] }}
-          transition={{ duration: 2, repeat: Infinity, delay }}
+          className="absolute -inset-3 border-2 border-orange-500/30 rounded-full"
+          animate={{ scale: [1, 2.8], opacity: [0.8, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, delay }}
         />
-        <div className="absolute left-4 -top-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-orange-100 px-2 py-1 text-[9px] font-bold text-slate-700 whitespace-nowrap">
-          {label}
+        <div className="absolute left-6 -top-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+          <div className="bg-slate-900 text-white rounded-lg shadow-2xl px-3 py-1.5 text-[10px] font-black whitespace-nowrap border border-white/20">
+            {label.toUpperCase()}
+          </div>
         </div>
       </div>
     </motion.div>
@@ -230,10 +277,14 @@ export default function GullyGemsPage() {
       { timeout: 10000 }
     );
   }, [fetchNearby, radius]);
-  // ── Quick search for Nitte (hardcoded coords from seed.ts) ────────────────
-  const quickSearchNitte = () => {
-    setUserLocation({ lat: 13.1812, lng: 74.9351, name: "Nitte" });
-    fetchNearby(13.1812, 74.9351, radius);
+  // ── Explore All (Removed Nitte hardcoded search) ──────────────────────────
+  const exploreAll = () => {
+    // Optional: could default to center of India or just fetch all
+    if (userLocation) {
+        fetchNearby(userLocation.lat, userLocation.lng, 500); // Massive radius to see everything
+    } else {
+        fetchNearby(20.5937, 78.9629, 3000); // Center of India, huge radius
+    }
   };
   // ── Filter crafts ─────────────────────────────────────────────────────────
   const craftTypes = ["All", ...Array.from(new Set(artisans.map(a => a.craft)))];
@@ -255,156 +306,176 @@ export default function GullyGemsPage() {
       <Navbar />
       <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10">
         {/* ── Hero Section ──────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-12 items-center mb-16">
           {/* Left: Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-warm border border-amber-200/50 text-amber-700 text-xs font-bold tracking-widest uppercase mb-6 shadow-sm"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl glass border border-amber-200/50 text-amber-800 text-[10px] font-black tracking-[0.2em] uppercase mb-8 shadow-sm"
             >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,1)]" />
               </span>
-              Hyperlocal Discovery Engine
+              HYPERLOCAL ARTISAN RADAR
             </motion.div>
-            <h1 className="text-5xl md:text-6xl xl:text-7xl font-black text-slate-900 leading-[1.05] tracking-tight mb-6">
+
+            <h1 className="text-6xl md:text-7xl xl:text-8xl font-black text-slate-900 leading-[0.95] tracking-tighter mb-8">
               Discover<br />
-              <span className="text-gradient-saffron">Gully Gems</span>
+              <span className="text-gradient-saffron drop-shadow-sm">Gully Gems</span>
             </h1>
-            <p className="text-lg text-slate-600 font-medium leading-relaxed mb-8 max-w-lg">
-              Find authentic Indian artisans{" "}
-              <span className="text-slate-900 font-bold">near your location</span>.
-              Powered by real-time geolocation and our verified artisan database spanning all of India.
+
+            <p className="text-xl text-slate-600 font-medium leading-relaxed mb-10 max-w-xl">
+              Authentic Indian craftsmanship, <span className="text-slate-900 font-black">located near you</span>. 
+              Our AI-powered radar identifies verified artisans within your immediate vicinity.
             </p>
-            {/* Stat chips */}
-            <div className="flex flex-wrap gap-6 mb-10">
+
+            {/* Stat chips - More Premium Style */}
+            <div className="flex flex-wrap gap-8 mb-12">
               {[
-                { icon: <Users className="w-4 h-4" />, val: "40+", label: "Verified Artisans" },
-                { icon: <Globe className="w-4 h-4" />, val: "9+", label: "Cities Covered" },
-                { icon: <ShieldCheck className="w-4 h-4" />, val: "100%", label: "Origin Verified" },
+                { icon: <Users className="w-5 h-5 text-orange-500" />, val: "150+", label: "Elite Artisans" },
+                { icon: <Globe className="w-5 h-5 text-emerald-500" />, val: "Pan-India", label: "Network Coverage" },
+                { icon: <ShieldCheck className="w-5 h-5 text-indigo-500" />, val: "O-V2", label: "Origin Verified" },
               ].map((s, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                  className="flex items-center gap-2.5"
+                  transition={{ delay: 0.4 + i * 0.1 }}
+                  className="relative group"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500">{s.icon}</div>
-                  <div>
-                    <p className="font-black text-slate-900 leading-none text-lg">{s.val}</p>
-                    <p className="text-xs text-slate-400 font-semibold">{s.label}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-white shadow-lg shadow-slate-200/50 flex items-center justify-center transition-transform group-hover:rotate-6">
+                      {s.icon}
+                    </div>
+                    <div>
+                      <p className="font-black text-slate-900 leading-none text-xl">{s.val}</p>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{s.label}</p>
+                    </div>
                   </div>
                 </motion.div>
               ))}
             </div>
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-3">
+
+            {/* CTA Buttons - Premium Redesign */}
+            <div className="flex flex-wrap gap-4">
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px -12px rgba(249, 115, 22, 0.4)" }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleLocate}
                 disabled={locating}
-                className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold tracking-wider rounded-2xl hover:shadow-xl hover:shadow-orange-500/30 transition-all duration-300 group disabled:opacity-60"
+                className="flex items-center gap-4 px-10 py-5 bg-slate-900 text-white font-black tracking-widest rounded-[1.5rem] transition-all duration-300 group disabled:opacity-60 relative overflow-hidden"
               >
-                {locating ? (
-                  <><Loader2 className="w-5 h-5 animate-spin" /> Detecting location...</>
-                ) : (
-                  <><Navigation className="w-5 h-5 group-hover:scale-110 transition-transform" /> USE MY LOCATION</>
-                )}
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="relative flex items-center gap-4">
+                    {locating ? (
+                    <><Loader2 className="w-5 h-5 animate-spin" /> SCANNING SATELLITES...</>
+                    ) : (
+                    <><Navigation className="w-5 h-5 group-hover:rotate-45 transition-transform duration-500" /> ACTIVATE GPS RADAR</>
+                    )}
+                </span>
               </motion.button>
+              
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={quickSearchNitte}
-                className="flex items-center gap-2 px-6 py-4 glass-warm font-bold text-amber-800 tracking-wider rounded-2xl border border-orange-200/50 hover:bg-white/80 transition-all duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={exploreAll}
+                className="flex items-center gap-3 px-8 py-5 glass-warm font-black text-slate-700 tracking-widest rounded-[1.5rem] border border-orange-200/50 hover:bg-white/90 transition-all duration-300"
               >
-                <MapPin className="w-4 h-4" /> SEARCH NEAR NITTE
+                <Search className="w-5 h-5 text-orange-400" /> EXPLORE ALL GEMS
               </motion.button>
             </div>
-            {/* Location detected */}
+
+            {/* Location Status Badge */}
             <AnimatePresence>
               {userLocation && (
                 <motion.div
-                  initial={{ opacity: 0, y: 6 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="mt-4 flex items-center gap-2.5 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-2.5 w-fit"
+                  className="mt-8 flex items-center gap-3 text-[11px] text-emerald-800 bg-emerald-50/80 backdrop-blur-sm border border-emerald-100 rounded-2xl px-5 py-3 w-fit shadow-sm"
                 >
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                  <div className="flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </div>
+                  <span className="font-bold uppercase tracking-widest">
+                    Live Lock: <span className="text-emerald-600 font-black">{userLocation.name.toUpperCase()}</span>
                   </span>
-                  <span className="font-semibold">Located: <span className="font-black">{userLocation.name}</span></span>
-                  <span className="text-emerald-500 text-xs">({userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)})</span>
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
-          {/* Right: Radar Visualization */}
+
+          {/* Right: Premium Radar Visualization */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="hidden lg:flex items-center justify-center"
+            transition={{ duration: 1, delay: 0.1, ease: "circOut" }}
+            className="hidden lg:flex items-center justify-center p-8"
           >
-            <div className="relative w-[380px] h-[380px]">
-              {/* Radar base */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl border border-slate-700/50 overflow-hidden">
-                {[80, 58, 38, 22].map((s, i) => (
-                  <div key={i} className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-amber-500/15"
+            <div className="relative w-[440px] h-[440px]">
+              {/* Complex Radar Base */}
+              <div className="absolute inset-0 rounded-full bg-slate-900 shadow-[0_32px_80px_-20px_rgba(15,23,42,0.4)] border-4 border-slate-800 overflow-hidden group">
+                {/* Visual Rings */}
+                {[90, 70, 50, 30, 10].map((s, i) => (
+                  <div key={i} className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-orange-500/10"
                     style={{ width: `${s}%`, height: `${s}%` }} />
                 ))}
-                {/* Sweep */}
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0"
-                  style={{ background: "conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(251,146,60,0.3) 30deg, transparent 60deg)" }}
+                
+                {/* Scanning Sweep */}
+                <div className="absolute inset-0 animate-radar origin-center"
+                  style={{ background: "conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(249,115,22,0.15) 20deg, transparent 45deg)" }}
                 />
-                {/* Center */}
-                <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-orange-500/20 border-2 border-orange-400/60 flex items-center justify-center z-10">
-                  <MapPin className="w-4 h-4 text-orange-400" />
+                
+                {/* Secondary Sweep (faster) */}
+                <div className="absolute inset-0 animate-radar origin-center"
+                   style={{ 
+                    animationDuration: '4s',
+                    background: "conic-gradient(from 200deg at 50% 50%, transparent 0deg, rgba(16,185,129,0.05) 10deg, transparent 30deg)" 
+                   }}
+                />
+
+                {/* HUD Elements */}
+                <div className="absolute top-[15%] left-[15%] text-[8px] font-black text-amber-500/40 tracking-[0.3em]">SEC_01_NAV</div>
+                <div className="absolute bottom-[15%] right-[15%] text-[8px] font-black text-amber-500/40 tracking-[0.3em]">SENS_MAX</div>
+
+                {/* Center Point */}
+                <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-orange-500/10 border border-orange-500/30 flex items-center justify-center z-20">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(249,115,22,1)]" />
                 </div>
-                {/* Crosshairs */}
-                <div className="absolute inset-0 flex items-center justify-center"><div className="w-full h-px bg-amber-500/10" /></div>
-                <div className="absolute inset-0 flex items-center justify-center"><div className="h-full w-px bg-amber-500/10" /></div>
-                {/* Pings */}
-                <RadarPing delay={0.4} top="18%" left="58%" label="Silk Weaver" />
-                <RadarPing delay={0.9} top="60%" left="22%" label="Pottery Artisan" />
-                <RadarPing delay={1.5} top="72%" left="65%" label="Spice Maker" />
-                <RadarPing delay={0.7} top="30%" left="38%" label="Wood Carver" />
-                <RadarPing delay={1.2} top="48%" left="74%" label="Brass Worker" />
+
+                {/* Active Pings */}
+                <RadarPing delay={0.4} top="22%" left="62%" label="Pottery Hub" />
+                <RadarPing delay={1.2} top="65%" left="25%" label="Silk Weaver" />
+                <RadarPing delay={1.8} top="40%" left="75%" label="Brass Foundry" />
+                <RadarPing delay={0.8} top="35%" left="30%" label="Handloom" />
+                <RadarPing delay={2.5} top="75%" left="60%" label="Wood Craft" />
               </div>
-              {/* Floating gems card */}
+
+              {/* Floating Performance Indicator */}
               <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-4 -right-4 glass-warm rounded-2xl p-4 border border-orange-200/40 shadow-xl"
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-6 -right-6 glass-dark rounded-2xl p-4 border border-white/10 shadow-2xl z-30"
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <Diamond className="w-4 h-4 text-amber-500" />
-                  <p className="text-xs font-black text-slate-900">{artisans.length > 0 ? `${artisans.length} Gems Found` : "Scanning..."}</p>
-                </div>
-                <p className="text-[10px] text-orange-600 font-bold tracking-wider">
-                  {userLocation ? `NEAR ${userLocation.name.toUpperCase()}` : "AWAITING LOCATION..."}
-                </p>
-              </motion.div>
-              {/* Floating score card */}
-              <motion.div
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute -top-4 -left-4 glass rounded-xl p-3 border border-white/60 shadow-lg"
-              >
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Radius</p>
-                <p className="text-2xl font-black text-gradient-saffron">{radius}km</p>
+                 <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Radar Sensitivity</p>
+                 <div className="flex items-end gap-1 h-3">
+                    {[0.4, 0.7, 1, 0.6, 0.9].map((h, i) => (
+                        <motion.div 
+                            key={i}
+                            className="w-1 bg-amber-500/80 rounded-full"
+                            animate={{ height: [`${h*100}%`, `${(1-h)*100}%`, `${h*100}%`] }}
+                            transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.1 }}
+                        />
+                    ))}
+                 </div>
               </motion.div>
             </div>
           </motion.div>

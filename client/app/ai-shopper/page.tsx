@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import {
   Sparkles, Send, ShoppingBag, Star, MapPin, ArrowLeft, Tag,
   MessageSquare, Zap, Heart, TrendingUp, Package, ChevronRight,
@@ -140,13 +141,16 @@ export default function AIShopperPage() {
       >
         {/* Image */}
         <div className="relative h-44 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-          <img
+          <Image
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={e => {
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            priority={index < 3}
+            onError={(e) => {
               (e.currentTarget as HTMLImageElement).src =
-                `https://placehold.co/400x300/f9fafb/d1d5db?text=${encodeURIComponent(product.brand)}`;
+                `https://placehold.co/400x300/fff7ed/f97316?text=${encodeURIComponent(product.brand)}`;
             }}
           />
           {/* Overlays */}
@@ -600,15 +604,19 @@ export default function AIShopperPage() {
                         exit={{ opacity: 0, x: -20 }}
                         className="flex gap-4 p-4 rounded-2xl border border-gray-100 bg-gray-50/50"
                       >
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
-                          onError={e => {
-                            (e.currentTarget as HTMLImageElement).src =
-                              `https://placehold.co/100x100/f9fafb/d1d5db?text=${encodeURIComponent(item.brand)}`;
-                          }}
-                        />
+                        <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            sizes="64px"
+                            className="object-cover"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src =
+                                `https://placehold.co/100x100/fff7ed/f97316?text=${encodeURIComponent(item.brand)}`;
+                            }}
+                          />
+                        </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-bold uppercase tracking-wider text-orange-600">{item.brand}</p>
                           <p className="text-sm font-bold text-gray-900 truncate">{item.name}</p>

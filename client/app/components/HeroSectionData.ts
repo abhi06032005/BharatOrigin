@@ -18,14 +18,14 @@ export const HERITAGE_CARDS = [
     title: 'Blue Pottery',
     origin: 'Jaipur, Rajasthan',
     score: 96,
-    img: '/hero3.png',
+    img: '/bluepottery.jpg',
     craft: 'Ceramic Art',
   },
   {
     title: 'Organic Spices',
     origin: 'Munnar, Kerala',
     score: 94,
-    img: '/hero1.png',
+    img: '/spices.jpg',
     craft: 'Traditional Farming',
   },
 ];
