@@ -186,9 +186,11 @@ const StateProductsPage = ({
              // We merge live products with fallback metadata
              setData({
                displayName: fallback?.displayName || stateName,
+               capital: fallback?.capital || "Multiple Cities",
                region: fallback?.region || "India",
-               tagline: fallback?.tagline || `Live fetched regional authentic products.`,
+               heroColor: fallback?.heroColor || "#111",
                accentColor: fallback?.accentColor || "#111",
+               tagline: fallback?.tagline || `Live fetched regional authentic products.`,
                products: dataLive.products
              });
              setFilterCategory("All");

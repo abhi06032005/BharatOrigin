@@ -8,9 +8,10 @@ import {
   ShieldCheck, Heart
 } from "lucide-react";
 import Navbar from "../components/Navbar";
+
 // ─── Types matching backend response ─────────────────────────────────────────
 interface BackendArtisan {
-  id: number;
+  id: number | string;
   name: string;
   craft: string;
   city: string;
@@ -21,8 +22,11 @@ interface BackendArtisan {
   bharat_score: number;
   latitude: number;
   longitude: number;
-  distance_km: number;
+  distance_km: number | null;
+  mapsLink?: string;
+  isLive?: boolean;
 }
+
 interface NearbyResponse {
   success: boolean;
   userLat: number;
@@ -32,8 +36,10 @@ interface NearbyResponse {
   artisans: BackendArtisan[];
   error?: string;
 }
+
 // ─── Constants ───────────────────────────────────────────────────────────────
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 const CARD_COLORS = [
   { gradient: "from-orange-500 to-amber-500", bg: "bg-orange-50/80", border: "border-orange-200/60", tag: "bg-orange-100 text-orange-700", btn: "bg-orange-500 hover:bg-orange-600", dot: "bg-orange-400" },
   { gradient: "from-emerald-500 to-teal-500", bg: "bg-emerald-50/80", border: "border-emerald-200/60", tag: "bg-emerald-100 text-emerald-700", btn: "bg-emerald-500 hover:bg-emerald-600", dot: "bg-emerald-400" },
@@ -41,11 +47,13 @@ const CARD_COLORS = [
   { gradient: "from-rose-500 to-pink-500", bg: "bg-rose-50/80", border: "border-rose-200/60", tag: "bg-rose-100 text-rose-700", btn: "bg-rose-500 hover:bg-rose-600", dot: "bg-rose-400" },
   { gradient: "from-sky-500 to-cyan-500", bg: "bg-sky-50/80", border: "border-sky-200/60", tag: "bg-sky-100 text-sky-700", btn: "bg-sky-500 hover:bg-sky-600", dot: "bg-sky-400" },
 ];
+
 const getBharatMeta = (score: number) => {
   if (score >= 90) return { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" };
   if (score >= 75) return { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" };
   return { bg: "bg-rose-50", text: "text-rose-700", border: "border-rose-200" };
 };
+
 // ─── Artisan Card ────────────────────────────────────────────────────────────
 function ArtisanCard({ artisan, index }: { artisan: BackendArtisan; index: number }) {
   const [expanded, setExpanded] = useState(false);
@@ -62,14 +70,10 @@ function ArtisanCard({ artisan, index }: { artisan: BackendArtisan; index: numbe
       transition={{ duration: 0.5, delay: index * 0.05 }}
       className={`group relative bg-white/60 backdrop-blur-md border ${c.border} rounded-[2rem] overflow-hidden hover:shadow-2xl hover:shadow-orange-500/15 transition-all duration-500`}
     >
-      {/* Premium Glow Effect */}
       <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${c.gradient} opacity-0 group-hover:opacity-10 blur-3xl transition-opacity duration-700`} />
-
-      {/* Header Accent Line */}
       <div className={`h-1.5 w-full bg-gradient-to-r ${c.gradient}`} />
 
       <div className="p-6">
-        {/* Header Section */}
         <div className="flex items-start justify-between mb-5">
           <div className="flex items-center gap-4">
             <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${c.gradient} flex items-center justify-center text-white text-xl font-black shadow-[0_8px_20px_-4px_rgba(0,0,0,0.1)] flex-shrink-0 group-hover:scale-110 transition-transform duration-500`}>
@@ -98,7 +102,6 @@ function ArtisanCard({ artisan, index }: { artisan: BackendArtisan; index: numbe
           </motion.button>
         </div>
 
-        {/* Location & Metrics Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           <div className="bg-slate-50/50 rounded-2xl p-3 border border-slate-100 flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-sm">
@@ -115,12 +118,15 @@ function ArtisanCard({ artisan, index }: { artisan: BackendArtisan; index: numbe
             </div>
             <div>
               <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Distance</p>
-              <p className="text-[11px] font-bold text-slate-700">{artisan.distance_km} km</p>
+              <p className="text-[11px] font-bold text-slate-700">
+                {artisan.distance_km !== null && artisan.distance_km !== undefined
+                  ? `${artisan.distance_km} km`
+                  : "—"}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Specialty & Bharat Score */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-xs text-slate-600 font-medium italic pr-4">
             "{artisan.specialty}"
@@ -131,15 +137,14 @@ function ArtisanCard({ artisan, index }: { artisan: BackendArtisan; index: numbe
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex gap-3">
           <a
-            href={mapsUrl}
+            href={artisan.mapsLink || mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={`flex-[2] flex items-center justify-center gap-2.5 text-xs font-black py-3.5 rounded-2xl text-white ${c.btn} shadow-lg shadow-orange-500/20 active:scale-95 transition-all duration-300`}
           >
-            <Globe className="w-4 h-4" /> NAVIGATE
+            <Globe className="w-4 h-4" /> {artisan.isLive ? 'VIEW MAPS' : 'NAVIGATE'}
           </a>
           <button
             onClick={() => setExpanded(!expanded)}
@@ -148,39 +153,38 @@ function ArtisanCard({ artisan, index }: { artisan: BackendArtisan; index: numbe
             {expanded ? <X className="w-4 h-4" /> : <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />}
           </button>
         </div>
+      </div>
 
-        {/* Detailed Info */}
-        <AnimatePresence>
-          {expanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="pt-6 mt-6 border-t border-dashed border-slate-200 space-y-5">
-                <div className="relative">
-                  <div className="absolute left-0 top-0 w-1 h-full bg-amber-400 rounded-full" />
-                  <div className="pl-4">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                      <Zap className="w-3 h-3 text-amber-500" /> WHY UNIQUE
-                    </p>
-                    <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                      {artisan.why_unique}
-                    </p>
-                  </div>
-                </div>
-                <div className="bg-orange-50/50 rounded-2xl p-4 border border-orange-100">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">GET IT NOW</p>
-                  <p className="text-xs text-orange-900 font-bold leading-relaxed">
-                    {artisan.buying_options}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="pt-6 mt-6 border-t border-dashed border-slate-200 space-y-5">
+              <div className="relative">
+                <div className="absolute left-0 top-0 w-1 h-full bg-amber-400 rounded-full" />
+                <div className="pl-4">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                    <Zap className="w-3 h-3 text-amber-500" /> WHY UNIQUE
+                  </p>
+                  <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                    {artisan.why_unique}
                   </p>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              <div className="bg-orange-50/50 rounded-2xl p-4 border border-orange-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">GET IT NOW</p>
+                <p className="text-xs text-orange-900 font-bold leading-relaxed">
+                  {artisan.buying_options}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -211,6 +215,7 @@ function RadarPing({ delay, top, left, label }: { delay: number; top: string; le
     </motion.div>
   );
 }
+
 // ─── Main Page ───────────────────────────────────────────────────────────────
 export default function GullyGemsPage() {
   const [artisans, setArtisans] = useState<BackendArtisan[]>([]);
@@ -219,29 +224,67 @@ export default function GullyGemsPage() {
   const [error, setError] = useState("");
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; name: string } | null>(null);
   const [radius, setRadius] = useState(50);
-  const [searchCity, setSearchCity] = useState("");
   const [filterCraft, setFilterCraft] = useState("All");
+
   // ── Fetch artisans from backend ───────────────────────────────────────────
-  const fetchNearby = useCallback(async (lat: number, lng: number, radiusKm: number) => {
+  const fetchNearby = useCallback(async (lat: number, lng: number, radiusKm: number, cityName?: string) => {
     setIsLoading(true);
     setError("");
     setArtisans([]);
     try {
-      const res = await fetch(`${API_BASE}/api/artisans/nearby?lat=${lat}&lng=${lng}&radius=${radiusKm}&limit=40`);
-      const data: NearbyResponse = await res.json();
-      if (data.success) {
-        setArtisans(data.artisans);
-        if (data.artisans.length === 0) {
-          setError(`No artisans found within ${radiusKm} km. Try increasing the radius.`);
-        }
-      } else {
-        setError(data.error || "Failed to fetch nearby artisans.");
+      const [dbRes, liveRes] = await Promise.all([
+        fetch(`${API_BASE}/api/artisans/nearby?lat=${lat}&lng=${lng}&radius=${radiusKm}&limit=20`),
+        // ← Pass lat & lng so backend computes real distances for live results
+        fetch(`${API_BASE}/api/shopping/artisans-live?city=${encodeURIComponent(cityName || 'India')}&category=Artisans&lat=${lat}&lng=${lng}`)
+      ]);
+
+      const dbData: NearbyResponse = await dbRes.json();
+      const liveData = await liveRes.json();
+
+      let combined: BackendArtisan[] = [];
+
+      if (liveData.artisans) {
+        combined = liveData.artisans.map((a: any) => ({
+          id: a.id,
+          name: a.name,
+          craft: a.category || "Authentic Craft",
+          city: a.location?.split(',')[0] || cityName || "Local",
+          region: "Live Discovery",
+          specialty: a.story,
+          why_unique: a.story,
+          buying_options: "In-person visit highly recommended for authentic experience.",
+          bharat_score: a.bharatScore,
+          latitude: a.latitude,
+          longitude: a.longitude,
+          distance_km: a.distance_km,
+          mapsLink: a.mapsLink,
+          isLive: true
+        }));
       }
-    } catch {
+
+      if (dbData.success) {
+        combined = [...combined, ...dbData.artisans];
+      }
+
+      // Sort entire combined list nearest-first
+      combined.sort((a, b) => {
+        const distA = a.distance_km ?? Infinity;
+        const distB = b.distance_km ?? Infinity;
+        return (distA as number) - (distB as number);
+      });
+
+      setArtisans(combined);
+
+      if (combined.length === 0) {
+        setError(`No artisans found within ${radiusKm} km. Try increasing the radius.`);
+      }
+    } catch (err) {
+      console.error("Fetch Gems Error:", err);
       setError("Cannot reach the server. Make sure the backend is running on port 5000.");
     }
     setIsLoading(false);
   }, []);
+
   // ── Geolocation ───────────────────────────────────────────────────────────
   const handleLocate = useCallback(() => {
     if (!navigator.geolocation) {
@@ -250,64 +293,89 @@ export default function GullyGemsPage() {
     }
     setLocating(true);
     setError("");
+
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        // Reverse geocode for display name
+        const { latitude, longitude, accuracy } = pos.coords;
+
         let cityName = "Your Location";
         try {
+          // zoom=14 gives neighbourhood/suburb level — much more precise than zoom=10
           const geo = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=10`,
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=14`,
             { headers: { "Accept-Language": "en" } }
           );
           const geoData = await geo.json();
           const addr = geoData.address ?? {};
-          cityName = addr.city || addr.town || addr.village || addr.county || addr.state || "Your Location";
+          // Walk from most → least granular
+          cityName =
+            addr.neighbourhood ||
+            addr.suburb ||
+            addr.city_district ||
+            addr.city ||
+            addr.town ||
+            addr.village ||
+            addr.county ||
+            addr.state ||
+            "Your Location";
         } catch {
-          // keep default name
+          // keep default
         }
+
         setUserLocation({ lat: latitude, lng: longitude, name: cityName });
         setLocating(false);
-        fetchNearby(latitude, longitude, radius);
+        fetchNearby(latitude, longitude, radius, cityName);
       },
-      () => {
+      (err) => {
         setLocating(false);
-        setError("Location access denied. Please allow location access or use manual search.");
+        const msgs: Record<number, string> = {
+          1: "Location access denied. Allow it in your browser settings.",
+          2: "Position unavailable. Check your device GPS or network.",
+          3: "Location timed out. Move to open sky and try again.",
+        };
+        setError(msgs[err.code] || "Unknown location error.");
       },
-      { timeout: 10000 }
+      {
+        enableHighAccuracy: true,   // uses GPS chip, not IP/WiFi estimate
+        maximumAge: 0,              // never use a cached position
+        timeout: 15000,             // give GPS chip enough time to lock
+      }
     );
   }, [fetchNearby, radius]);
-  // ── Explore All (Removed Nitte hardcoded search) ──────────────────────────
+
+  // ── Explore All ───────────────────────────────────────────────────────────
   const exploreAll = () => {
-    // Optional: could default to center of India or just fetch all
     if (userLocation) {
-        fetchNearby(userLocation.lat, userLocation.lng, 500); // Massive radius to see everything
+      fetchNearby(userLocation.lat, userLocation.lng, 500, userLocation.name);
     } else {
-        fetchNearby(20.5937, 78.9629, 3000); // Center of India, huge radius
+      fetchNearby(20.5937, 78.9629, 3000, "India");
     }
   };
+
   // ── Filter crafts ─────────────────────────────────────────────────────────
   const craftTypes = ["All", ...Array.from(new Set(artisans.map(a => a.craft)))];
   const filtered = filterCraft === "All" ? artisans : artisans.filter(a => a.craft === filterCraft);
+
   // ── Radius change ─────────────────────────────────────────────────────────
   const handleRadiusChange = (newRadius: number) => {
     setRadius(newRadius);
     if (userLocation) {
-      fetchNearby(userLocation.lat, userLocation.lng, newRadius);
+      fetchNearby(userLocation.lat, userLocation.lng, newRadius, userLocation.name);
     }
   };
+
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      {/* Aurora Background */}
       <div className="aurora-bg" />
       <div className="indian-pattern-overlay" />
       <div className="rangoli-corner rangoli-corner--tl" />
       <div className="rangoli-corner rangoli-corner--br" />
       <Navbar />
+
       <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10">
+
         {/* ── Hero Section ──────────────────────────────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-12 items-center mb-16">
-          {/* Left: Content */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -332,11 +400,10 @@ export default function GullyGemsPage() {
             </h1>
 
             <p className="text-xl text-slate-600 font-medium leading-relaxed mb-10 max-w-xl">
-              Authentic Indian craftsmanship, <span className="text-slate-900 font-black">located near you</span>. 
+              Authentic Indian craftsmanship, <span className="text-slate-900 font-black">located near you</span>.
               Our AI-powered radar identifies verified artisans within your immediate vicinity.
             </p>
 
-            {/* Stat chips - More Premium Style */}
             <div className="flex flex-wrap gap-8 mb-12">
               {[
                 { icon: <Users className="w-5 h-5 text-orange-500" />, val: "150+", label: "Elite Artisans" },
@@ -363,7 +430,6 @@ export default function GullyGemsPage() {
               ))}
             </div>
 
-            {/* CTA Buttons - Premium Redesign */}
             <div className="flex flex-wrap gap-4">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 20px 40px -12px rgba(249, 115, 22, 0.4)" }}
@@ -374,14 +440,14 @@ export default function GullyGemsPage() {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <span className="relative flex items-center gap-4">
-                    {locating ? (
+                  {locating ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> SCANNING SATELLITES...</>
-                    ) : (
+                  ) : (
                     <><Navigation className="w-5 h-5 group-hover:rotate-45 transition-transform duration-500" /> ACTIVATE GPS RADAR</>
-                    )}
+                  )}
                 </span>
               </motion.button>
-              
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -392,7 +458,6 @@ export default function GullyGemsPage() {
               </motion.button>
             </div>
 
-            {/* Location Status Badge */}
             <AnimatePresence>
               {userLocation && (
                 <motion.div
@@ -413,7 +478,7 @@ export default function GullyGemsPage() {
             </AnimatePresence>
           </motion.div>
 
-          {/* Right: Premium Radar Visualization */}
+          {/* Right: Radar */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -421,37 +486,22 @@ export default function GullyGemsPage() {
             className="hidden lg:flex items-center justify-center p-8"
           >
             <div className="relative w-[440px] h-[440px]">
-              {/* Complex Radar Base */}
               <div className="absolute inset-0 rounded-full bg-slate-900 shadow-[0_32px_80px_-20px_rgba(15,23,42,0.4)] border-4 border-slate-800 overflow-hidden group">
-                {/* Visual Rings */}
                 {[90, 70, 50, 30, 10].map((s, i) => (
                   <div key={i} className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-orange-500/10"
                     style={{ width: `${s}%`, height: `${s}%` }} />
                 ))}
-                
-                {/* Scanning Sweep */}
                 <div className="absolute inset-0 animate-radar origin-center"
                   style={{ background: "conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(249,115,22,0.15) 20deg, transparent 45deg)" }}
                 />
-                
-                {/* Secondary Sweep (faster) */}
                 <div className="absolute inset-0 animate-radar origin-center"
-                   style={{ 
-                    animationDuration: '4s',
-                    background: "conic-gradient(from 200deg at 50% 50%, transparent 0deg, rgba(16,185,129,0.05) 10deg, transparent 30deg)" 
-                   }}
+                  style={{ animationDuration: '4s', background: "conic-gradient(from 200deg at 50% 50%, transparent 0deg, rgba(16,185,129,0.05) 10deg, transparent 30deg)" }}
                 />
-
-                {/* HUD Elements */}
                 <div className="absolute top-[15%] left-[15%] text-[8px] font-black text-amber-500/40 tracking-[0.3em]">SEC_01_NAV</div>
                 <div className="absolute bottom-[15%] right-[15%] text-[8px] font-black text-amber-500/40 tracking-[0.3em]">SENS_MAX</div>
-
-                {/* Center Point */}
                 <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-orange-500/10 border border-orange-500/30 flex items-center justify-center z-20">
                   <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(249,115,22,1)]" />
                 </div>
-
-                {/* Active Pings */}
                 <RadarPing delay={0.4} top="22%" left="62%" label="Pottery Hub" />
                 <RadarPing delay={1.2} top="65%" left="25%" label="Silk Weaver" />
                 <RadarPing delay={1.8} top="40%" left="75%" label="Brass Foundry" />
@@ -459,27 +509,27 @@ export default function GullyGemsPage() {
                 <RadarPing delay={2.5} top="75%" left="60%" label="Wood Craft" />
               </div>
 
-              {/* Floating Performance Indicator */}
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -top-6 -right-6 glass-dark rounded-2xl p-4 border border-white/10 shadow-2xl z-30"
               >
-                 <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Radar Sensitivity</p>
-                 <div className="flex items-end gap-1 h-3">
-                    {[0.4, 0.7, 1, 0.6, 0.9].map((h, i) => (
-                        <motion.div 
-                            key={i}
-                            className="w-1 bg-amber-500/80 rounded-full"
-                            animate={{ height: [`${h*100}%`, `${(1-h)*100}%`, `${h*100}%`] }}
-                            transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.1 }}
-                        />
-                    ))}
-                 </div>
+                <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Radar Sensitivity</p>
+                <div className="flex items-end gap-1 h-3">
+                  {[0.4, 0.7, 1, 0.6, 0.9].map((h, i) => (
+                    <motion.div
+                      key={i}
+                      className="w-1 bg-amber-500/80 rounded-full"
+                      animate={{ height: [`${h * 100}%`, `${(1 - h) * 100}%`, `${h * 100}%`] }}
+                      transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.1 }}
+                    />
+                  ))}
+                </div>
               </motion.div>
             </div>
           </motion.div>
         </div>
+
         {/* ── Controls Bar ──────────────────────────────────────────── */}
         {userLocation && (
           <motion.div
@@ -489,7 +539,6 @@ export default function GullyGemsPage() {
             className="glass-warm rounded-3xl border border-orange-200/50 shadow-xl p-5 mb-10"
           >
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-              {/* Radius selector */}
               <div className="flex items-center gap-2">
                 <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Radius:</span>
                 {[10, 25, 50, 100].map(r => (
@@ -497,15 +546,14 @@ export default function GullyGemsPage() {
                     key={r}
                     onClick={() => handleRadiusChange(r)}
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${radius === r
-                        ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white border-transparent shadow-md"
-                        : "bg-white/80 text-slate-600 border-orange-200 hover:border-orange-400"
+                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white border-transparent shadow-md"
+                      : "bg-white/80 text-slate-600 border-orange-200 hover:border-orange-400"
                       }`}
                   >
                     {r} km
                   </button>
                 ))}
               </div>
-              {/* Craft filter */}
               {artisans.length > 0 && (
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Craft:</span>
@@ -514,8 +562,8 @@ export default function GullyGemsPage() {
                       key={craft}
                       onClick={() => setFilterCraft(craft)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex-shrink-0 ${filterCraft === craft
-                          ? "bg-slate-900 text-white border-slate-900"
-                          : "bg-white/80 text-slate-600 border-orange-200 hover:border-orange-400"
+                        ? "bg-slate-900 text-white border-slate-900"
+                        : "bg-white/80 text-slate-600 border-orange-200 hover:border-orange-400"
                         }`}
                     >
                       {craft}
@@ -526,6 +574,7 @@ export default function GullyGemsPage() {
             </div>
           </motion.div>
         )}
+
         {/* ── Error ─────────────────────────────────────────────────── */}
         <AnimatePresence>
           {error && (
@@ -545,6 +594,7 @@ export default function GullyGemsPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
         {/* ── Loading State ─────────────────────────────────────────── */}
         {isLoading && (
           <motion.div
@@ -573,7 +623,8 @@ export default function GullyGemsPage() {
             </div>
           </motion.div>
         )}
-        {/* ── Empty State (no search yet) ──────────────────────────── */}
+
+        {/* ── Empty State ───────────────────────────────────────────── */}
         {!userLocation && !isLoading && !error && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -582,7 +633,7 @@ export default function GullyGemsPage() {
             className="grid grid-cols-1 sm:grid-cols-3 gap-5"
           >
             {[
-              { icon: "📍", val: "GPS", label: "Auto Location", sub: "Uses your device GPS" },
+              { icon: "📍", val: "GPS", label: "Auto Location", sub: "High-accuracy GPS chip" },
               { icon: "🧑‍🎨", val: "40+", label: "Artisans in Database", sub: "Across 9 cities" },
               { icon: "🗺️", val: "Real-time", label: "Distance Calc", sub: "Haversine geospatial" },
             ].map((s, i) => (
@@ -601,13 +652,10 @@ export default function GullyGemsPage() {
             ))}
           </motion.div>
         )}
+
         {/* ── Results Grid ──────────────────────────────────────────── */}
         {!isLoading && filtered.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            {/* Results header */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-black text-slate-900">
@@ -618,12 +666,11 @@ export default function GullyGemsPage() {
                   {filterCraft !== "All" && ` · ${filterCraft}`}
                 </p>
               </div>
-              <div className="flex items-center gap-2 text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                Live from Database
+              <div className="flex items-center gap-2 text-xs text-orange-600 font-bold bg-orange-50 px-3 py-1.5 rounded-full border border-orange-200">
+                <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                AI-Powered Radar Active
               </div>
             </div>
-            {/* Cards grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {filtered.map((artisan, i) => (
                 <ArtisanCard key={artisan.id} artisan={artisan} index={i} />
@@ -631,6 +678,7 @@ export default function GullyGemsPage() {
             </div>
           </motion.div>
         )}
+
         {/* ── Footer ────────────────────────────────────────────────── */}
         <div className="mt-20 text-center pt-8 border-t border-orange-100/60">
           <div className="flex items-center justify-center gap-2 text-slate-400 text-xs font-semibold">

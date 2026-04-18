@@ -16,7 +16,7 @@ const baseTransition: Transition = {
   ease: easeCurve,
 };
 
-const fadeUp = (delay  = 0) => ({
+const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 28 },
   animate: { opacity: 1, y: 0 },
   transition: {
