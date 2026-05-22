@@ -120,7 +120,8 @@ export default function AIShopperPage() {
         throw new Error("Empty or failed response from live API");
       }
 
-      const aiContent = generateAIResponse(text, finalResults);
+      // Use AI-generated message from Groq backend, fallback to local generator
+      const aiContent = data.aiMessage || generateAIResponse(text, finalResults);
 
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),

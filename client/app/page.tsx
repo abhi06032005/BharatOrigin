@@ -4,15 +4,11 @@ import React from 'react';
 
 import HeroSection from './components/HeroSection';
 import Navbar from './components/Navbar';
-import IndiaMap from './components/IndiaMap';
-import B2CFeatureCard from './components/B2CFeature';
 import ArtisanFeatureSection from './components/Artisian';
 import BrandStorySection from './components/Brand';
-import FestivalModeSection from './components/festivalFeature';
 import GullyGemsSection from './components/gullyGems';
 import RetailFeatureSection from './components/RetailFeature';
 import AIScanSection from './components/scan';
-import StatePrideSection from './components/statePride';
 import B2BWholesaleSection from './components/wholeSale';
 
 export default function HomePage() {
@@ -20,7 +16,7 @@ export default function HomePage() {
     <main className="relative overflow-x-hidden w-full min-h-screen">
       {/* Global Animated Aurora Background */}
       <div className="aurora-bg" />
-      
+
       {/* Indian Mandala Pattern Overlay */}
       <div className="indian-pattern-overlay" />
 
@@ -30,36 +26,25 @@ export default function HomePage() {
 
       <Navbar />
       <HeroSection />
-      
-      <div className="section-divider" />
-      <B2CFeatureCard />
-      
+
       <div className="section-divider" />
       <ArtisanFeatureSection />
-      
+
       <div className="section-divider" />
       <BrandStorySection />
-      
-      <div className="section-divider" />
-      <FestivalModeSection />
-      
+
       <div className="section-divider" />
       <GullyGemsSection />
-      
+
       <div className="section-divider" />
       <RetailFeatureSection />
-      
+
       <div className="section-divider" />
       <AIScanSection />
-      
-      <div className="section-divider" />
-      <StatePrideSection />
-      
+
       <div className="section-divider" />
       <B2BWholesaleSection />
-      
-      <div className="section-divider" />
-      <IndiaMap />
+
     </main>
   );
 }

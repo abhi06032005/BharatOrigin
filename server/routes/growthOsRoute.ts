@@ -1,12 +1,11 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
+import { askGroq, askGroqJSON, GROWTH_OS_SYSTEM_PROMPT, DOCUMENT_ANALYSIS_PROMPT } from '../lib/groqAI';
 
 const router = express.Router();
-
-// Setup Multer to store uploaded files in memory
 const upload = multer({ storage: multer.memoryStorage() });
 
-// POST /api/growth-os/analyze
+// POST /api/growth-os/analyze — AI-powered document analysis
 router.post('/analyze', upload.single('file'), async (req: Request, res: Response): Promise<void> => {
   try {
     const file = req.file;
@@ -15,12 +14,27 @@ router.post('/analyze', upload.single('file'), async (req: Request, res: Respons
       return;
     }
 
-    // Simulate heavy OCR/AI Reading latency (3 seconds)
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
     const fileName = file.originalname.toLowerCase();
-    
-    // Simulate smart logic
+    const fileContent = file.buffer.toString('utf-8').slice(0, 5000); // Take first 5000 chars
+
+    // Try Groq AI analysis first
+    const aiInsights = await askGroqJSON(
+      DOCUMENT_ANALYSIS_PROMPT,
+      `Document name: "${file.originalname}" (${(file.size / 1024).toFixed(1)} KB)\n\nDocument content (first portion):\n${fileContent}\n\nAnalyze this business document and provide actionable intelligence for an Indian SME/artisan.`
+    );
+
+    if (aiInsights) {
+      res.json({
+        success: true,
+        fileName: file.originalname,
+        fileSize: file.size,
+        insights: aiInsights,
+        aiPowered: true
+      });
+      return;
+    }
+
+    // Fallback to rule-based logic if Groq is unavailable
     let mockInsights = {
       summary: "Your business metrics show healthy revenue but narrowing profit margins due to operational inefficiencies.",
       points: [
@@ -60,7 +74,8 @@ router.post('/analyze', upload.single('file'), async (req: Request, res: Respons
       success: true,
       fileName: file.originalname,
       fileSize: file.size,
-      insights: mockInsights
+      insights: mockInsights,
+      aiPowered: false
     });
   } catch (error) {
     console.error(error);
@@ -68,19 +83,29 @@ router.post('/analyze', upload.single('file'), async (req: Request, res: Respons
   }
 });
 
-// POST /api/growth-os/chat
+// POST /api/growth-os/chat — AI Business Advisor
 router.post('/chat', async (req: Request, res: Response): Promise<void> => {
   try {
     const { message } = req.body;
-    
+
     if (!message) {
       res.status(400).json({ error: "No message provided" });
       return;
     }
 
-    // Simulate API Latency (1-2 seconds)
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
-    
+    // Try Groq AI first
+    const aiReply = await askGroq(
+      GROWTH_OS_SYSTEM_PROMPT,
+      message,
+      { maxTokens: 400, temperature: 0.7 }
+    );
+
+    if (aiReply) {
+      res.json({ reply: aiReply, aiPowered: true });
+      return;
+    }
+
+    // Fallback to rule-based responses
     const lowerMsg = message.toLowerCase();
     let reply = "I'm your AI Business Advisor. I recommend exploring the Demand & Market Intelligence section to find your next expansion target.";
 
@@ -89,14 +114,14 @@ router.post('/chat', async (req: Request, res: Response): Promise<void> => {
     } else if (lowerMsg.includes('hire') || lowerMsg.includes('workers') || lowerMsg.includes('workforce') || lowerMsg.includes('team')) {
       reply = "The holiday season is approaching. Our systems suggest you need 3 temporary helpers to manage expected logistics volume. Check the Workforce tab to find nearby pre-vetted freelancers.";
     } else if (lowerMsg.includes('expansion') || lowerMsg.includes('city') || lowerMsg.includes('market') || lowerMsg.includes('demand')) {
-      reply = "Our demand heatmap indicates a 40% surge in interest for organic goods from Surat and Ahmedabad. Considering your current base in Mumbai, expanding into Surat offers a highly optimized logistics route. Should I generate a full feasibility report?";
+      reply = "Our demand heatmap indicates a 40% surge in interest for organic goods from Surat and Ahmedabad. Considering your current base in Mumbai, expanding into Surat offers a highly optimized logistics route.";
     } else if (lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
       reply = "Hello! Upload your latest sales ledger in the Document AI tab if you want me to analyze recent trends. How can I help you grow today?";
     } else if (lowerMsg.includes('pricing')) {
       reply = "Your competitor analysis shows your pricing is 15% lower than the market average for premium categories. We recommend testing a 5% price increase over the next 2 weeks to safely improve margins.";
     }
 
-    res.json({ reply });
+    res.json({ reply, aiPowered: false });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to process chat query." });

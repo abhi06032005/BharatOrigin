@@ -1,0 +1,218 @@
+/* ─── Aurora Design System ──────────────────────────────────────────────── */
+:root {
+  /* Core Backgrounds */
+  --bg-base:      #FFF8F0;
+  --bg-surface:   rgba(255, 255, 255, 0.7);
+  --bg-canvas:    #FFFFFF;
+  
+  /* Text Accents */
+  --text-primary: #1E293B;
+  --text-muted:   #64748B;
+  
+  /* Aurora Highlights */
+  --aurora-saffron: #F97316;
+  --aurora-emerald: #10B981;
+  --aurora-indigo:  #4F46E5;
+  --aurora-rose:    #F43F5E;
+  
+  /* Glowing Shadows */
+  --shadow-glow-sm: 0 4px 20px rgba(15, 23, 42, 0.05);
+  --shadow-glow-md: 0 8px 30px rgba(15, 23, 42, 0.08);
+  --shadow-glow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
+  --shadow-glass:   0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+html { 
+  scroll-behavior: smooth; 
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ─── Global Background with Indian Motifs ────────────────────────── */
+.aurora-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background: 
+    /* Warm saffron glow top-left */
+    radial-gradient(ellipse at 5% 10%, rgba(255, 153, 51, 0.12) 0%, transparent 45%),
+    /* Deep emerald glow bottom-right */
+    radial-gradient(ellipse at 90% 85%, rgba(16, 185, 129, 0.10) 0%, transparent 45%),
+    /* Subtle indigo center */
+    radial-gradient(ellipse at 50% 50%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+    /* Warm base */
+    linear-gradient(180deg, #FFF8F0 0%, #FEF3E2 50%, #FFF5EB 100%);
+  animation: aurora-shift 25s ease-in-out infinite alternate;
+}
+
+/* Indian Paisley/Mandala Overlay Pattern */
+.indian-pattern-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23C87533' fill-opacity='1'%3E%3Cpath d='M40 0c5.523 0 10 4.477 10 10s-4.477 10-10 10S30 15.523 30 10 34.477 0 40 0zm0 60c5.523 0 10 4.477 10 10s-4.477 10-10 10-10-4.477-10-10 4.477-10 10-10zM0 40c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10S0 45.523 0 40zm60 0c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10z'/%3E%3Cpath d='M40 20c11.046 0 20 8.954 20 20s-8.954 20-20 20-20-8.954-20-20 8.954-20 20-20zm0 4c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16-7.163-16-16-16z'/%3E%3Cpath d='M40 30a10 10 0 110 20 10 10 0 010-20zm0 4a6 6 0 100 12 6 6 0 000-12z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px;
+}
+
+/* Rangoli corner decorations */
+.rangoli-corner {
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.06;
+}
+.rangoli-corner--tl {
+  top: -60px;
+  left: -60px;
+  width: 400px;
+  height: 400px;
+  background: conic-gradient(from 0deg at 50% 50%, #FF9933 0deg, #EA580C 60deg, #F97316 120deg, #FF9933 180deg, #EA580C 240deg, #F97316 300deg, #FF9933 360deg);
+  border-radius: 50%;
+  filter: blur(60px);
+}
+.rangoli-corner--br {
+  bottom: -80px;
+  right: -80px;
+  width: 500px;
+  height: 500px;
+  background: conic-gradient(from 180deg at 50% 50%, #10B981 0deg, #059669 90deg, #14B8A6 180deg, #10B981 270deg, #059669 360deg);
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+/* ─── Core Glass Utility ─────────────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: var(--shadow-glass);
+}
+
+.glass-warm {
+  background: rgba(255, 248, 240, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 200, 120, 0.25);
+  box-shadow: 0 8px 32px rgba(200, 117, 51, 0.08);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+/* ─── Keyframes ──────────────────────────────────────────────────── */
+
+@keyframes aurora-shift {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.05) translate(1%, -1%); }
+  100% { transform: scale(1) translate(-1%, 1%); }
+}
+
+@keyframes scan {
+  0%   { top: 0%; }
+  100% { top: 100%; }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-16px); }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%      { transform: translateY(-10px) rotate(1deg); }
+  66%      { transform: translateY(-6px) rotate(-1deg); }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes radar-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes gradient-x {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes diya-flicker {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Utility Classes ────────────────────────────────────────────── */
+.animate-scan        { animation: scan 3s linear infinite alternate; }
+.animate-float-slow  { animation: float-slow 5s ease-in-out infinite; }
+.animate-float-gentle { animation: float-gentle 7s ease-in-out infinite; }
+.animate-pulse-ring  { animation: pulse-ring 2s cubic-bezier(0.2,0.6,0.4,1) infinite; }
+.animate-radar       { animation: radar-spin 10s linear infinite; }
+.animate-gradient-x  { animation: gradient-x 15s ease infinite; background-size: 200% 200%; }
+.animate-diya        { animation: diya-flicker 3s ease-in-out infinite; }
+.animate-fadeIn      { animation: fadeIn 0.5s ease-out forwards; }
+
+/* Text Gradient Utilities */
+.text-gradient-saffron {
+  background: linear-gradient(135deg, #FF9933, #EA580C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #10B981, #059669);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.text-gradient-indigo {
+  background: linear-gradient(135deg, #6366F1, #4F46E5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.text-gradient-warm {
+  background: linear-gradient(135deg, #C87533, #B45309, #92400E);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── Indian Illustration Dividers ────────────────────────────────── */
+.section-divider {
+  width: 100%;
+  height: 60px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60'%3E%3Cpath d='M0 30 Q150 0 300 30 Q450 60 600 30 Q750 0 900 30 Q1050 60 1200 30' fill='none' stroke='%23C8753333' stroke-width='1.5'/%3E%3Ccircle cx='300' cy='30' r='4' fill='%23FF993344'/%3E%3Ccircle cx='600' cy='30' r='4' fill='%2310B98144'/%3E%3Ccircle cx='900' cy='30' r='4' fill='%23FF993344'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}

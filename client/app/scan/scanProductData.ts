@@ -8,6 +8,11 @@ export type IndianAlternative = {
   image_url: string;
 };
 
+export type ChemicalRisk = {
+  name: string;
+  risk: string;
+};
+
 export type Product = {
   name: string;
   score: number;
@@ -26,6 +31,7 @@ export type Product = {
   employees?: string;
   about?: string;
   alternatives?: IndianAlternative[]; // NEW — shown when isIndian = false
+  harmfulChemicals?: ChemicalRisk[]; // NEW
 };
 
 export const PRODUCT_DATA: Record<string, Product> = {
